@@ -1,0 +1,3 @@
+INDEX VERSION 1.126+D:\u4ebnici i lekcii\lekcii\Graduation Work\SharedTraveller\STAndroid\.metadata\.plugins\org.eclipse.jdt.core
+3522138534.index
+1955198745.index
