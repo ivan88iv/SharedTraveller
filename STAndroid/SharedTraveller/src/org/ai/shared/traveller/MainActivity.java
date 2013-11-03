@@ -1,4 +1,6 @@
-package org.ai.sharedtraveller;
+package org.ai.shared.traveller;
+
+import org.ai.sharedtraveller.R;
 
 import android.os.Bundle;
 import android.app.Activity;
