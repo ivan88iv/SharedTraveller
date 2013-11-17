@@ -2,31 +2,38 @@ package org.ai.shared.traveller.network.connection.response;
 
 public class ServerResponse<T>
 {
-	private final T data;
+    private final T data;
 
-	private final int statusCode;
+    private final int statusCode;
 
-	private final String errorMessage;
+    private final String errorMessage;
 
-	public ServerResponse(final T inData, final int inCode, final String inMsg)
-	{
-		data = inData;
-		statusCode = inCode;
-		errorMessage = inMsg;
-	}
+    public ServerResponse(final int inCode, final String inMsg)
+    {
+        data = null;
+        statusCode = inCode;
+        errorMessage = inMsg;
+    }
 
-	public T getData()
-	{
-		return data;
-	}
+    public ServerResponse(final T inData, final int inCode, final String inMsg)
+    {
+        data = inData;
+        statusCode = inCode;
+        errorMessage = inMsg;
+    }
 
-	public int getStatusCode()
-	{
-		return statusCode;
-	}
+    public T getData()
+    {
+        return data;
+    }
 
-	public String getErrorMessage()
-	{
-		return errorMessage;
-	}
+    public int getStatusCode()
+    {
+        return statusCode;
+    }
+
+    public String getErrorMessage()
+    {
+        return errorMessage;
+    }
 }

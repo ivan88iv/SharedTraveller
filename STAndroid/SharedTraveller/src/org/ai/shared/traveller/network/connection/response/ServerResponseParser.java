@@ -17,15 +17,17 @@ public class ServerResponseParser<T>
         assert null != inIS : NULL_IS;
 
         final ObjectMapper mapper = new ObjectMapper();
-        final TypeReference<ServerResponse<T>> typeRef = new TypeReference<ServerResponse<T>>()
+        final TypeReference<T> typeRef = new TypeReference<T>()
         {
         };
 
-        ServerResponse<T> parsedResponse = null;
+        ServerResponse<T> parsedResponse =
+                new ServerResponse<T>(200, null);
 
         try
         {
-            parsedResponse = mapper.readValue(inIS, typeRef);
+            final T serviceData = mapper.readValue(inIS, typeRef);
+            parsedResponse = new ServerResponse<T>(serviceData, 200, "OLE");
         } catch (final IOException ioe)
         {
             throw new ParseException("Could not parse service response.", ioe);

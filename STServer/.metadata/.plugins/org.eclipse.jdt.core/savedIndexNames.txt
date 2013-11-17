@@ -1,0 +1,1 @@
+INDEX VERSION 1.126+D:\u4ebnici i lekcii\lekcii\Graduation Work\SharedTraveller\STServer\.metadata\.plugins\org.eclipse.jdt.core
