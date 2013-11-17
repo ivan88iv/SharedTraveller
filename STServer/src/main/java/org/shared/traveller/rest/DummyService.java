@@ -16,7 +16,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 public class DummyService
 {
 
-	@RequestMapping(method = RequestMethod.POST)
+	@RequestMapping( method = RequestMethod.POST)
 	public ResponseEntity<DummyRequest> createOrder(@RequestBody DummyRequest order, UriComponentsBuilder builder)
 	{
 		// PROMQNA!
