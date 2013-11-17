@@ -28,6 +28,54 @@ public abstract class AbstractRestClient
         type = inType;
     }
 
+    public <T> ServerResponse<T> callService(final URL inURL,
+            final ServerResponseParser<T> inResponseParser)
+            throws ServiceConnectionException, ParseException
+    {
+        assert null != inURL : NO_URL;
+        assert null != inResponseParser : NO_PARSER;
+
+        ServerResponse<T> parsedResponse = null;
+        final HttpURLConnection connection = connectService(inURL);
+
+        try
+        {
+            final InputStream inputStream = null;
+
+            try
+            {
+                System.out.println("===================================");
+                System.out.println("code: " + connection.getResponseCode());
+                System.out
+                        .println("message " + connection.getResponseMessage());
+                System.out.println("===================================");
+                connection.getInputStream();
+            } catch (final IOException ioe)
+            {
+                throw new ServiceConnectionException(
+                        "No result is returned from the service call.", ioe);
+            }
+
+            ParseException parseException = null;
+            try
+            {
+                parsedResponse = inResponseParser.parseResponse(inputStream);
+            } catch (final ParseException pe)
+            {
+                parseException = pe;
+            } finally
+            {
+                closeResultStream(inputStream, parseException);
+            }
+
+        } finally
+        {
+            connection.disconnect();
+        }
+
+        return parsedResponse;
+    }
+
     private HttpURLConnection connectService(final URL inURL)
             throws ServiceConnectionException
     {
@@ -67,49 +115,6 @@ public abstract class AbstractRestClient
         }
 
         return connection;
-    }
-
-    public <T> ServerResponse<T> callService(final URL inURL,
-            final ServerResponseParser<T> inResponseParser)
-            throws ServiceConnectionException, ParseException
-    {
-        assert null != inURL : NO_URL;
-        assert null != inResponseParser : NO_PARSER;
-
-        ServerResponse<T> parsedResponse = null;
-        final HttpURLConnection connection = connectService(inURL);
-
-        try
-        {
-            final InputStream inputStream = null;
-
-            try
-            {
-                connection.getInputStream();
-            } catch (final IOException ioe)
-            {
-                throw new ServiceConnectionException(
-                        "No result is returned from the service call.", ioe);
-            }
-
-            ParseException parseException = null;
-            try
-            {
-                parsedResponse = inResponseParser.parseResponse(inputStream);
-            } catch (final ParseException pe)
-            {
-                parseException = pe;
-            } finally
-            {
-                closeResultStream(inputStream, parseException);
-            }
-
-        } finally
-        {
-            connection.disconnect();
-        }
-
-        return parsedResponse;
     }
 
     private void closeResultStream(final InputStream inStream,
