@@ -12,7 +12,6 @@ public abstract class AbstractEntity implements Serializable
 	@Override
 	public int hashCode()
 	{
-		// COMMENT
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((getId() == null) ? 0 : getId().hashCode());
