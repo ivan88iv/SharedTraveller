@@ -19,7 +19,6 @@ public class DummyService
 	@RequestMapping( method = RequestMethod.POST)
 	public ResponseEntity<DummyRequest> createOrder(@RequestBody DummyRequest order, UriComponentsBuilder builder)
 	{
-		// PROMQNA!
 		return new ResponseEntity<DummyRequest>(order, HttpStatus.CREATED);
 	}
 
