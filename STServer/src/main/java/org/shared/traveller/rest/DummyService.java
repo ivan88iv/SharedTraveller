@@ -15,7 +15,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 @RequestMapping("/dummy")
 public class DummyService
 {
-
 	@RequestMapping( method = RequestMethod.POST)
 	public ResponseEntity<DummyRequest> createOrder(@RequestBody DummyRequest order, UriComponentsBuilder builder)
 	{

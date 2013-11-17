@@ -8,6 +8,9 @@
         android:minSdkVersion="7"
         android:targetSdkVersion="18" />
 
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"></uses-permission>
+    <uses-permission android:name="android.permission.INTERNET"></uses-permission>
+    
     <application android:name="org.ai.shared.traveller.application.STApplication"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
