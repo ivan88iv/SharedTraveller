@@ -1,23 +1,25 @@
 package org.ai.shared.traveller;
 
-import org.ai.shared.traveller.network.connection.AbstractNetworkActivity;
-import org.ai.shared.traveller.network.connection.rest.client.RequestTypes;
-import org.ai.shared.traveller.network.connection.rest.client.SimpleClient;
 import org.ai.sharedtraveller.R;
 
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.view.ViewPager;
 import android.view.Menu;
 
-public class MainActivity extends AbstractNetworkActivity
+import com.viewpagerindicator.PageIndicator;
+import com.viewpagerindicator.TitlePageIndicator;
+
+public class MainActivity extends FragmentActivity
+// AbstractNetworkActivity
 {
-
-    @Override
-    protected void onCreate(final Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-    }
-
+    // @Override
+    // protected void onCreate(final Bundle savedInstanceState)
+    // {
+    // super.onCreate(savedInstanceState);
+    // setContentView(R.layout.activity_main);
+    // }
+    //
     @Override
     public boolean onCreateOptionsMenu(final Menu menu)
     {
@@ -26,10 +28,32 @@ public class MainActivity extends AbstractNetworkActivity
         return true;
     }
 
+    //
+    // @Override
+    // protected void attachTasks()
+    // {
+    // final SimpleClient sc = new SimpleClient(RequestTypes.GET);
+    // addTask(new DummyTaskGet(sc));
+    // }
+    private FragmentAdapter adapter;
+    private ViewPager pager;
+    private PageIndicator indicator;
+    private final int number = 0;
+
     @Override
-    protected void attachTasks()
+    protected void onCreate(final Bundle savedInstanceState)
     {
-        final SimpleClient sc = new SimpleClient(RequestTypes.GET);
-        addTask(new DummyTaskGet(sc));
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        adapter = new FragmentAdapter(getSupportFragmentManager());
+
+        pager = (ViewPager) findViewById(R.id.pager);
+        pager.setAdapter(adapter);
+
+        indicator = (TitlePageIndicator) findViewById(R.id.indicator);
+        indicator.setViewPager(pager);
+
     }
+
 }

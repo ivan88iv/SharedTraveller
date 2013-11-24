@@ -11,6 +11,12 @@ import org.ai.shared.traveller.exceptions.ServiceConnectionException;
 import org.ai.shared.traveller.network.connection.response.ServerResponse;
 import org.ai.shared.traveller.network.connection.response.ServerResponseParser;
 
+/**
+ * The class contains the general functionality used to make a service call
+ * 
+ * @author Ivan
+ * 
+ */
 public abstract class AbstractRestClient
 {
     private static final String NO_URL = "No URL is supplied.";
@@ -21,6 +27,12 @@ public abstract class AbstractRestClient
 
     private final RequestTypes type;
 
+    /**
+     * The constructor creates a new abstract rest client
+     * 
+     * @param inType
+     *            the request type made by the client
+     */
     public AbstractRestClient(final RequestTypes inType)
     {
         assert null != inType : NULL_REQUEST_TYPE;
@@ -28,6 +40,19 @@ public abstract class AbstractRestClient
         type = inType;
     }
 
+    /**
+     * The method is used to call a service
+     * 
+     * @param inURL
+     *            the URL of the service
+     * @param inResponseParser
+     *            the parser of the service response
+     * @return the parser server response
+     * @throws ServiceConnectionException
+     *             if no proper connection could be made to the server
+     * @throws ParseException
+     *             if a problem occurs while trying to parse the server result
+     */
     public <T> ServerResponse<T> callService(final URL inURL,
             final ServerResponseParser<T> inResponseParser)
             throws ServiceConnectionException, ParseException
@@ -40,16 +65,13 @@ public abstract class AbstractRestClient
 
         try
         {
-            final InputStream inputStream = null;
+            InputStream inputStream = null;
+            int resposeCode = 200;
 
             try
             {
-                System.out.println("===================================");
-                System.out.println("code: " + connection.getResponseCode());
-                System.out
-                        .println("message " + connection.getResponseMessage());
-                System.out.println("===================================");
-                connection.getInputStream();
+                inputStream = connection.getInputStream();
+                resposeCode = connection.getResponseCode();
             } catch (final IOException ioe)
             {
                 throw new ServiceConnectionException(
@@ -59,7 +81,8 @@ public abstract class AbstractRestClient
             ParseException parseException = null;
             try
             {
-                parsedResponse = inResponseParser.parseResponse(inputStream);
+                parsedResponse = inResponseParser.parseResponse(
+                        resposeCode, inputStream);
             } catch (final ParseException pe)
             {
                 parseException = pe;
@@ -67,7 +90,6 @@ public abstract class AbstractRestClient
             {
                 closeResultStream(inputStream, parseException);
             }
-
         } finally
         {
             connection.disconnect();
@@ -76,6 +98,30 @@ public abstract class AbstractRestClient
         return parsedResponse;
     }
 
+    /**
+     * The method is used to prepare the specific settings for the current
+     * service call
+     * 
+     * @param inConnection
+     *            the service connection for the call
+     * @throws ServiceConnectionException
+     *             if a problem occurs while trying to prepare the additional
+     *             connection settings
+     */
+    protected abstract void prepareCallSepcificSettings(
+            final HttpURLConnection inConnection)
+            throws ServiceConnectionException;
+
+    /**
+     * The method makes the service connection
+     * 
+     * @param inURL
+     *            the URL of the service
+     * @return the newly established connection
+     * @throws ServiceConnectionException
+     *             if a problem occurs while trying to open a new service
+     *             connection
+     */
     private HttpURLConnection connectService(final URL inURL)
             throws ServiceConnectionException
     {
@@ -117,6 +163,19 @@ public abstract class AbstractRestClient
         return connection;
     }
 
+    /**
+     * The method closes the input stream that holds the service response
+     * 
+     * @param inStream
+     *            the stream which is to be closed
+     * @param inParseException
+     *            the instance represents a parse exception that has resulted
+     *            just before the stream close moment or null if none has been
+     *            present
+     * @throws ServiceConnectionException
+     *             if no parse exception has been thrown and if we are unable to
+     *             close the stream
+     */
     private void closeResultStream(final InputStream inStream,
             final ParseException inParseException)
             throws ServiceConnectionException
@@ -134,8 +193,4 @@ public abstract class AbstractRestClient
             }
         }
     }
-
-    protected abstract void prepareCallSepcificSettings(
-            final HttpURLConnection inConnection)
-            throws ServiceConnectionException;
 }

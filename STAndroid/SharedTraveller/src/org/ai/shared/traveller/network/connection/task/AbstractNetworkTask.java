@@ -7,13 +7,25 @@ import java.text.MessageFormat;
 import org.ai.shared.traveller.exceptions.IllegalUrlException;
 import org.ai.shared.traveller.exceptions.ParseException;
 import org.ai.shared.traveller.exceptions.ServiceConnectionException;
+import org.ai.shared.traveller.network.connection.path.resolver.PathResolver;
 import org.ai.shared.traveller.network.connection.response.ServerResponse;
 import org.ai.shared.traveller.network.connection.response.ServerResponseParser;
 import org.ai.shared.traveller.network.connection.rest.client.AbstractRestClient;
+import org.shared.traveller.rest.domain.ErrorResponse;
 
 import android.os.AsyncTask;
 import android.util.Log;
 
+/**
+ * The class represents the common functionality used for all tasks that perform
+ * REST server calls
+ * 
+ * @author Ivan
+ * 
+ * @param <Result>
+ *            the type of the body contained in the server response that is
+ *            received after making the call to the server
+ */
 public abstract class AbstractNetworkTask<Result> extends
         AsyncTask<Void, Void, ServerResponse<Result>> implements INetworkTask
 {
@@ -27,29 +39,56 @@ public abstract class AbstractNetworkTask<Result> extends
 
     private final AbstractRestClient restClient;
 
-    private final ServerResponseParser<Result> parser =
-            new ServerResponseParser<Result>();
+    private final ServerResponseParser<Result> parser;
 
-    public AbstractNetworkTask(final String inUrl,
-            final AbstractRestClient inClient)
+    private final PathResolver resolver = new PathResolver();
+
+    /**
+     * The constructor creates a new abstract network task
+     * 
+     * @param inServerPath
+     *            the path in the server
+     * @param inClient
+     *            the client used to make the REST service calls
+     * @param inClass
+     *            the class of the server response body type
+     */
+    public AbstractNetworkTask(final String inServerPath,
+            final AbstractRestClient inClient, final Class<Result> inClass)
     {
         super();
 
         try
         {
-            requestAddress = new URL(inUrl);
+            parser = new ServerResponseParser<Result>(inClass);
+            requestAddress = new URL(resolver.resolvePath(inServerPath));
         } catch (final MalformedURLException murle)
         {
-            throw new IllegalUrlException(inUrl, murle);
+            throw new IllegalUrlException(inServerPath, murle);
         }
 
         restClient = inClient;
     }
 
+    /**
+     * The method is executed on successful execution of the service request
+     * 
+     * @param inResult
+     *            body of the server response received after making the service
+     *            call
+     */
     protected abstract void onSuccess(final Result inResult);
 
+    /**
+     * The method is executed on unsuccessful execution of the service call
+     * 
+     * @param inStatusCode
+     *            the status code of the server response
+     * @param inError
+     *            the error container of the server response
+     */
     protected abstract void onError(final int inStatusCode,
-            final String inMessage);
+            final ErrorResponse inError);
 
     @Override
     public void perform()
@@ -70,20 +109,21 @@ public abstract class AbstractNetworkTask<Result> extends
         try
         {
             response = restClient.callService(requestAddress, parser);
-
         } catch (final ParseException pe)
         {
             Log.d("AbstractNetwTask", UNABLE_TO_PARSE_RESULT, pe);
-            response = new ServerResponse<Result>(null,
-                    400, UNABLE_TO_PARSE_RESULT);
+            final ErrorResponse content = new ErrorResponse();
+            content.setMessage(UNABLE_TO_PARSE_RESULT);
+            response = new ServerResponse<Result>(400, content);
         } catch (final ServiceConnectionException sce)
         {
             Log.d("AbstractNetwTask",
                     MessageFormat.format(UNABLE_TO_CONNECT, requestAddress),
                     sce);
-            response = new ServerResponse<Result>(null,
-                    400,
-                    MessageFormat.format(UNABLE_TO_CONNECT, requestAddress));
+            final ErrorResponse content = new ErrorResponse();
+            content.setMessage(MessageFormat.format(
+                    UNABLE_TO_CONNECT, requestAddress));
+            response = new ServerResponse<Result>(400, content);
         }
 
         return response;
@@ -97,10 +137,10 @@ public abstract class AbstractNetworkTask<Result> extends
             // TODO put actual response code value here
             if (result.getStatusCode() == 200)
             {
-                onSuccess(result.getData());
+                onSuccess(result.getResponseBody());
             } else
             {
-                onError(result.getStatusCode(), result.getErrorMessage());
+                onError(result.getStatusCode(), result.getErrorResponse());
             }
         }
     }

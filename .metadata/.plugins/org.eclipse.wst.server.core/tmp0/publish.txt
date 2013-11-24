@@ -1,0 +1,4 @@
+#Tomcat publish data
+#Sun Nov 24 19:42:44 EET 2013
+org.eclipse.jst.jee.server\:/binary\:C\:\\Users\\Ivan\\.m2\\repository\\org\\springframework\\spring-web\\3.2.5.RELEASE\\spring-web-3.2.5.RELEASE.jar=WEB-INF/lib/spring-web-3.2.5.RELEASE.jar
+org.eclipse.jst.j2ee.server\:STRestModel=WEB-INF/lib/STRestModel-0.0.1.jar

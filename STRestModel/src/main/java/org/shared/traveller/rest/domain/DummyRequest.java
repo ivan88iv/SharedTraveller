@@ -1,17 +1,24 @@
 package org.shared.traveller.rest.domain;
 
-public class DummyRequest
+import java.io.Serializable;
+
+public class DummyRequest implements Serializable
 {
-	private String name;
+    /**
+     * The serial version UID
+     */
+    private static final long serialVersionUID = 1804707997184575696L;
 
-	public String getName()
-	{
-		return name;
-	}
+    private String name;
 
-	public void setName(String name)
-	{
-		this.name = name;
-	}
+    public String getName()
+    {
+        return name;
+    }
+
+    public void setName(final String name)
+    {
+        this.name = name;
+    }
 
 }
