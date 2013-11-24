@@ -27,7 +27,7 @@
   </dependencies>
   
   <build>
-	<finalName>SharedTraveller</finalName>
+	<finalName>STRestModel</finalName>
 	
 <!--     <plugins> -->
 <!-- 		<plugin> -->

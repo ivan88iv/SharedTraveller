@@ -5,60 +5,60 @@ import java.util.List;
 
 import org.ai.shared.traveller.network.connection.task.INetworkTask;
 
-import android.app.Activity;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.support.v4.app.FragmentActivity;
 
-public abstract class AbstractNetworkActivity extends Activity
+public abstract class AbstractNetworkActivity extends FragmentActivity
 {
-    private final List<INetworkTask> tasks = new ArrayList<INetworkTask>();
+	private final List<INetworkTask> tasks = new ArrayList<INetworkTask>();
 
-    protected abstract void attachTasks();
+	protected abstract void attachTasks();
 
-    @Override
-    protected void onResume()
-    {
-        attachTasks();
-        executeTasks();
-        super.onResume();
-    }
+	@Override
+	protected void onResume()
+	{
+		attachTasks();
+		executeTasks();
+		super.onResume();
+	}
 
-    @Override
-    protected void onPause()
-    {
-        unbindTasks();
-        super.onPause();
-    }
+	@Override
+	protected void onPause()
+	{
+		unbindTasks();
+		super.onPause();
+	}
 
-    protected void addTask(final INetworkTask inTask)
-    {
-        if (null != tasks)
-        {
-            tasks.add(inTask);
-        }
-    }
+	protected void addTask(final INetworkTask inTask)
+	{
+		if (null != tasks)
+		{
+			tasks.add(inTask);
+		}
+	}
 
-    private void executeTasks()
-    {
-        final ConnectivityManager connManager =
-                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        final NetworkInfo netInfo = connManager.getActiveNetworkInfo();
+	private void executeTasks()
+	{
+		final ConnectivityManager connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+		final NetworkInfo netInfo = connManager.getActiveNetworkInfo();
 
-        if (null != netInfo && netInfo.isConnected())
-        {
-            for (final INetworkTask task : tasks)
-            {
-                task.perform();
-            }
-        }
-    }
+		if (null != netInfo && netInfo.isConnected())
+		{
+			for (final INetworkTask task : tasks)
+			{
+				task.perform();
+			}
+		}
+	}
 
-    private void unbindTasks()
-    {
-        for (final INetworkTask task : tasks)
-        {
-            task.unbind();
-        }
-    }
+	private void unbindTasks()
+	{
+		for (final INetworkTask task : tasks)
+		{
+			task.unbind();
+		}
+		tasks.clear();
+	}
 }
