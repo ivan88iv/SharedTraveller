@@ -17,6 +17,7 @@ import org.ai.shared.traveller.network.connection.rest.client.SimpleClient;
 import org.ai.sharedtraveller.R;
 import org.shared.traveller.rest.domain.Announcement;
 import org.shared.traveller.rest.domain.AnnouncementsList;
+import org.shared.traveller.rest.domain.ErrorResponse;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -60,7 +61,7 @@ public class AnnouncementLazyLoadingAdapter extends EndlessAdapter
 	private AtomicInteger count = new AtomicInteger(-1);
 	private List<Announcement> chunk = new ArrayList<Announcement>();
 	private final AbstractRestClient restClient;
-	private final ServerResponseParser<AnnouncementsList> parser = new ServerResponseParser<AnnouncementsList>();
+	private final ServerResponseParser<AnnouncementsList> parser = new ServerResponseParser<AnnouncementsList>(AnnouncementsList.class);
 
 	public AnnouncementLazyLoadingAdapter(Context ctxt, ArrayList<Announcement> list)
 	{
@@ -151,16 +152,20 @@ public class AnnouncementLazyLoadingAdapter extends EndlessAdapter
 		catch (final ParseException pe)
 		{
 			Log.d("AbstractNetwTask", UNABLE_TO_PARSE_RESULT, pe);
-			response = new ServerResponse<AnnouncementsList>(null, 400, UNABLE_TO_PARSE_RESULT);
+			final ErrorResponse content = new ErrorResponse();
+			content.setMessage(UNABLE_TO_PARSE_RESULT);
+			response = new ServerResponse<AnnouncementsList>(400, content);
 		}
 		catch (final ServiceConnectionException sce)
 		{
 			Log.d("AbstractNetwTask", MessageFormat.format(UNABLE_TO_CONNECT, url), sce);
-			response = new ServerResponse<AnnouncementsList>(null, 400, MessageFormat.format(UNABLE_TO_CONNECT, url));
+			final ErrorResponse content = new ErrorResponse();
+			content.setMessage(MessageFormat.format(UNABLE_TO_CONNECT, url));
+			response = new ServerResponse<AnnouncementsList>(400, content);
 		}
 
-		count.set(response.getData().getCount());
-		chunk = response.getData().getList();
+		count.set(response.getResponseBody().getCount());
+		chunk = response.getResponseBody().getList();
 		return getWrappedAdapter().getCount() < count.get();
 	}
 

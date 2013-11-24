@@ -8,10 +8,8 @@
 	  <relativePath>../STParent</relativePath>
 	</parent>
 	
-<!-- 	<groupId>org.shared.traveller</groupId> -->
 	<artifactId>STServer</artifactId>
 	<packaging>war</packaging>
-<!-- 	<version>0.0.1</version> -->
 
 	<name>SharedTraveller Maven Webapp</name>
 	<url>http://maven.apache.org</url>
@@ -21,7 +19,6 @@
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
-<!-- 			<version>4.11</version> -->
 		</dependency>
 
 		<!-- Hibernate dependencies -->

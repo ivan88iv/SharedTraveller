@@ -31,14 +31,13 @@ public class AnnouncementsSwipeListFragment extends Fragment
 	public void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
+		adapter = new AnnouncementLazyLoadingAdapter(getActivity(), new ArrayList<Announcement>());
 	}
 
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
-		adapter = new AnnouncementLazyLoadingAdapter(getActivity(), new ArrayList<Announcement>());
-
 		View fragment = inflater.inflate(R.layout.swipe_list_view_fragment, container, false);
 
 		swipeListView = (SwipeListView) fragment.findViewById(R.id.example_lv_list);

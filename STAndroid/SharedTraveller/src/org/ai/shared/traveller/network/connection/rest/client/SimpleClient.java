@@ -4,6 +4,13 @@ import java.net.HttpURLConnection;
 
 import org.ai.shared.traveller.exceptions.ServiceConnectionException;
 
+/**
+ * The class represents a simple service client that does not apply any
+ * additional service call settings
+ * 
+ * @author Ivan
+ * 
+ */
 public class SimpleClient extends AbstractRestClient
 {
     public SimpleClient(final RequestTypes inType)
