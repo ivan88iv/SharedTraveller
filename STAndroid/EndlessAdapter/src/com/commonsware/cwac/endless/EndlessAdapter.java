@@ -49,10 +49,32 @@ import com.commonsware.cwac.adapter.AdapterWrapper;
  */
 abstract public class EndlessAdapter extends AdapterWrapper
 {
+
+	/**
+	 * This method can be used for next data chunk retrieving.
+	 * 
+	 * @param position
+	 *            the index of last element in array in the adapter
+	 * @return
+	 * @throws Exception
+	 */
 	abstract protected boolean executeInBackground(int position) throws Exception;
 
+	/**
+	 * When elements are ready to be displayed. This method allows you to 
+	 * create view representing one row of the table.  
+	 * 
+	 * @param position
+	 * @param convertView
+	 * @param parent
+	 * @return
+	 */
 	abstract protected View getDataView(int position, View convertView, ViewGroup parent);
 
+	/**
+	 * This method is called right after new data is loaded. And can be used for appending 
+	 * newly loaded data to existing array in the adapter. 
+	 */
 	abstract protected void appendData();
 
 	private View pendingView = null;
@@ -69,7 +91,7 @@ abstract public class EndlessAdapter extends AdapterWrapper
 	{
 		super(wrapped);
 	}
-	
+
 	public EndlessAdapter(Context context, ListAdapter wrapped)
 	{
 		super(wrapped);

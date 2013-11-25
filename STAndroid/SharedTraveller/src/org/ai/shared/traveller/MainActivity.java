@@ -69,7 +69,7 @@ public class MainActivity extends AbstractNetworkActivity
 				findViewById(R.id.fragment_container).setVisibility(View.VISIBLE);
 				FragmentManager fragmentManager = getSupportFragmentManager();
 				FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-				fragmentTransaction.add(R.id.fragment_container, new AnnouncementsSwipeListFragment());
+				fragmentTransaction.add(R.id.fragment_container, new AnnouncementsSwipeListFragment(), "swipe");
 				fragmentTransaction.addToBackStack("swipeListView");
 				fragmentTransaction.commit();
 
@@ -85,7 +85,6 @@ public class MainActivity extends AbstractNetworkActivity
 	protected void onResume()
 	{
 		super.onResume();
-
 	}
 
 	@Override
@@ -95,6 +94,13 @@ public class MainActivity extends AbstractNetworkActivity
 		((ViewGroup) findViewById(R.id.fragment_container)).removeAllViews();
 		findViewById(R.id.show_view_pager_indicator).setVisibility(View.VISIBLE);
 		findViewById(R.id.show_swipe_list_view).setVisibility(View.VISIBLE);
+	}
+
+	@Override
+	protected void onSaveInstanceState(Bundle outState)
+	{
+		super.onSaveInstanceState(outState);
+		outState.putString("aaa", "aaa");
 	}
 
 }

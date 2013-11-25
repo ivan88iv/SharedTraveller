@@ -19,6 +19,12 @@ import android.view.ViewGroup;
 import com.fortysevendeg.swipelistview.BaseSwipeListViewListener;
 import com.fortysevendeg.swipelistview.SwipeListView;
 
+/**
+ * The fragment integrates swipe list view library.
+ * 
+ * @author AlexanderIvanov
+ * 
+ */
 public class AnnouncementsSwipeListFragment extends Fragment
 {
 
@@ -41,7 +47,6 @@ public class AnnouncementsSwipeListFragment extends Fragment
 		View fragment = inflater.inflate(R.layout.swipe_list_view_fragment, container, false);
 
 		swipeListView = (SwipeListView) fragment.findViewById(R.id.example_lv_list);
-
 		swipeListView.setSwipeListViewListener(new BaseSwipeListViewListener()
 		{
 			@Override
@@ -91,6 +96,11 @@ public class AnnouncementsSwipeListFragment extends Fragment
 		});
 
 		swipeListView.setAdapter(adapter);
+
+		if (savedInstanceState != null && savedInstanceState.containsKey("key"))
+		{
+			swipeListView.smoothScrollToPosition(savedInstanceState.getInt("key"));
+		}
 
 		reload();
 
