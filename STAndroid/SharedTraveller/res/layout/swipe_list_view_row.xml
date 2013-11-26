@@ -36,6 +36,8 @@
     <RelativeLayout
         android:id="@+id/front"
         style="@style/ListFrontContent"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
         android:orientation="vertical"
         android:tag="front" >
 
@@ -49,29 +51,42 @@
 
             <TextView
                 android:id="@+id/from"
-                android:layout_width="wrap_content"
+                android:layout_width="0px"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical"
+                android:layout_weight="1"
+                android:gravity="center"
                 android:minHeight="?android:attr/listPreferredItemHeight"
                 android:paddingLeft="6dip"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:textSize="12sp" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="@android:color/background_dark" />
 
             <TextView
                 android:id="@+id/to"
-                android:layout_width="wrap_content"
+                android:layout_width="0px"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical"
+                android:layout_weight="1"
+                android:gravity="center"
                 android:minHeight="?android:attr/listPreferredItemHeight"
                 android:paddingLeft="6dip"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:textSize="12sp" />
 
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="@android:color/background_dark" />
+
             <TextView
                 android:id="@+id/date"
-                android:layout_width="wrap_content"
+                android:layout_width="0px"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical"
+                android:layout_weight="1"
+                android:gravity="center"
                 android:minHeight="?android:attr/listPreferredItemHeight"
                 android:paddingLeft="6dip"
                 android:textAppearance="?android:attr/textAppearanceLarge"
