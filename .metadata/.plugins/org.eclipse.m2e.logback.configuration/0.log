@@ -2337,3 +2337,16 @@ java.lang.NullPointerException: null
 2013-11-24 19:04:59,126 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 1 resource
 2013-11-24 19:04:59,139 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
 2013-11-24 19:04:59,140 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory D:\u4ebnici i lekcii\lekcii\Graduation Work\SharedTraveller\STServer\src\test\resources
+2013-11-24 22:21:01,827 [Worker-3] INFO  o.e.m.c.i.l.LifecycleMappingFactory - Using org.eclipse.m2e.jdt.JarLifecycleMapping lifecycle mapping for MavenProject: org.shared.traveller:STRestModel:0.0.1 @ D:\u4ebnici i lekcii\lekcii\Graduation Work\SharedTraveller\STRestModel\pom.xml.
+2013-11-24 22:21:03,163 [Worker-3] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2013-11-24 22:21:03,163 [Worker-3] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory D:\u4ebnici i lekcii\lekcii\Graduation Work\SharedTraveller\STRestModel\src\main\resources
+2013-11-24 22:21:03,167 [Worker-3] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2013-11-24 22:21:03,168 [Worker-3] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory D:\u4ebnici i lekcii\lekcii\Graduation Work\SharedTraveller\STRestModel\src\test\resources
+2013-11-24 22:22:10,256 [Worker-3] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2013-11-24 22:22:10,992 [Worker-3] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 1 resource
+2013-11-24 22:22:11,072 [Worker-3] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2013-11-24 22:22:11,073 [Worker-3] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory D:\u4ebnici i lekcii\lekcii\Graduation Work\SharedTraveller\STServer\src\test\resources
+2013-11-25 16:36:54,881 [Worker-6] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2013-11-25 16:36:55,700 [Worker-6] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 1 resource
+2013-11-25 16:36:55,717 [Worker-6] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2013-11-25 16:36:55,718 [Worker-6] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory D:\u4ebnici i lekcii\lekcii\Graduation Work\SharedTraveller\STServer\src\test\resources
