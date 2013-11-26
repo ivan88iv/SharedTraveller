@@ -7,8 +7,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.ai.shared.traveller.exceptions.IllegalUrlException;
 import org.ai.shared.traveller.exceptions.ParseException;
 import org.ai.shared.traveller.exceptions.ServiceConnectionException;
+import org.ai.shared.traveller.network.connection.path.resolver.PathResolver;
 import org.ai.shared.traveller.network.connection.response.ServerResponse;
 import org.ai.shared.traveller.network.connection.response.ServerResponseParser;
 import org.ai.shared.traveller.network.connection.rest.client.AbstractRestClient;
@@ -19,7 +21,6 @@ import org.shared.traveller.rest.domain.Announcement;
 import org.shared.traveller.rest.domain.AnnouncementsList;
 import org.shared.traveller.rest.domain.ErrorResponse;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -31,10 +32,18 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.commonsware.cwac.endless.EndlessAdapter;
 import com.fortysevendeg.swipelistview.SwipeListView;
 
+/**
+ * Lazy loading announcement adapter. Loads 50 items chunks only if already
+ * loaded items end is reached.
+ * 
+ * @author AlexanderIvanov
+ * 
+ */
 public class AnnouncementLazyLoadingAdapter extends EndlessAdapter
 {
 
@@ -49,7 +58,7 @@ public class AnnouncementLazyLoadingAdapter extends EndlessAdapter
 		Button bAction3;
 	}
 
-	private static final String URL = "http://192.168.1.5:8080/stserver/dummy/getAnouncments/{0}/{1}";
+	private static final String URL = "stserver/dummy/getAnouncments/{0}/{1}";
 	private static final int FETCH_SIZE = 50;
 	private static final String UNABLE_TO_PARSE_RESULT = "Unable to parse result from a service call";
 
@@ -60,6 +69,7 @@ public class AnnouncementLazyLoadingAdapter extends EndlessAdapter
 
 	private AtomicInteger count = new AtomicInteger(-1);
 	private List<Announcement> chunk = new ArrayList<Announcement>();
+	private ErrorResponse errorResponse;
 	private final AbstractRestClient restClient;
 	private final ServerResponseParser<AnnouncementsList> parser = new ServerResponseParser<AnnouncementsList>(AnnouncementsList.class);
 
@@ -127,16 +137,42 @@ public class AnnouncementLazyLoadingAdapter extends EndlessAdapter
 	protected boolean onException(View pendingView, Exception e)
 	{
 		// TODO create user notification for exception
-		return super.onException(pendingView, e);
+		if (errorResponse != null)
+		{
+			Toast.makeText(getContext(), errorResponse.getMessage(), Toast.LENGTH_SHORT).show();
+		}
+		return true;
 	}
 
 	@Override
-	@SuppressLint("DefaultLocale")
-	protected boolean executeInBackground(int position)
+	protected boolean executeInBackground(int position) throws ServiceConnectionException, ParseException
+	{
+		ServerResponse<AnnouncementsList> response = executeRestRequest(position);
+
+		// if exception is throws the response will be null. ResponseError will
+		// be handled in onException() method
+		if (response != null)
+		{
+			count.set(response.getResponseBody().getCount());
+			chunk = response.getResponseBody().getList();
+		}
+		else
+		{
+			// If the response is null exceptional condition has occurred. The
+			// collection containing the last retrieved chunk is cleared to
+			// be avoided data duplication
+			resetAdapterData();
+		}
+
+		return getWrappedAdapter().getCount() < count.get();
+	}
+
+	//TODO almost identical code as AbstractNetworkTask.doInBackground() method.
+	private ServerResponse<AnnouncementsList> executeRestRequest(int position) throws ParseException, ServiceConnectionException
 	{
 		ServerResponse<AnnouncementsList> response = null;
-		String url = MessageFormat.format(URL, position, FETCH_SIZE);
-
+		PathResolver pathResolver = new PathResolver();
+		String url = MessageFormat.format(pathResolver.resolvePath(URL), position, FETCH_SIZE);
 		try
 		{
 			try
@@ -145,28 +181,31 @@ public class AnnouncementLazyLoadingAdapter extends EndlessAdapter
 			}
 			catch (MalformedURLException e)
 			{
-				e.printStackTrace();
+				throw new IllegalUrlException(url, e);
 			}
 
 		}
 		catch (final ParseException pe)
 		{
 			Log.d("AbstractNetwTask", UNABLE_TO_PARSE_RESULT, pe);
-			final ErrorResponse content = new ErrorResponse();
-			content.setMessage(UNABLE_TO_PARSE_RESULT);
-			response = new ServerResponse<AnnouncementsList>(400, content);
+			errorResponse = new ErrorResponse();
+			errorResponse.setMessage(UNABLE_TO_PARSE_RESULT);
+			throw pe;
 		}
 		catch (final ServiceConnectionException sce)
 		{
 			Log.d("AbstractNetwTask", MessageFormat.format(UNABLE_TO_CONNECT, url), sce);
-			final ErrorResponse content = new ErrorResponse();
-			content.setMessage(MessageFormat.format(UNABLE_TO_CONNECT, url));
-			response = new ServerResponse<AnnouncementsList>(400, content);
+			errorResponse = new ErrorResponse();
+			errorResponse.setMessage(MessageFormat.format(UNABLE_TO_CONNECT, url));
+			throw sce;
 		}
+		return response;
+	}
 
-		count.set(response.getResponseBody().getCount());
-		chunk = response.getResponseBody().getList();
-		return getWrappedAdapter().getCount() < count.get();
+	private void resetAdapterData()
+	{
+		count.set(-1);
+		chunk = new ArrayList<Announcement>();
 	}
 
 	@Override
