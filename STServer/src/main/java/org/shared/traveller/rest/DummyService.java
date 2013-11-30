@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -27,7 +28,7 @@ public class DummyService
 	{
 		for (int i = 0; i < 500; i++)
 		{
-			staticAnounsments.add(new Announcement("from", "to", new Date()));
+			staticAnounsments.add(new Announcement("from" + i, "to" + i, new Date()));
 		}
 	}
 
@@ -37,22 +38,24 @@ public class DummyService
 		return new ResponseEntity<DummyRequest>(order, HttpStatus.CREATED);
 	}
 
-//	@RequestMapping(value = "/{dummyId}", method = RequestMethod.GET)
-//	@ResponseBody
-//	public ResponseEntity<DummyRequest> getOrder(@PathVariable String dummyId, UriComponentsBuilder builder)
-//	{
-//		DummyRequest req = new DummyRequest();
-//		req.setName(dummyId);
-//		return new ResponseEntity<DummyRequest>(req, HttpStatus.OK);
-//	}
-
-	@RequestMapping(value = "/getAnouncments/{start}/{count}", method = RequestMethod.GET)
+	@RequestMapping(value = "/{dummyId}", method = RequestMethod.GET)
 	@ResponseBody
-	public ResponseEntity<AnnouncementsList> getAnouncements(@PathVariable Integer start, @PathVariable Integer count,
+	public ResponseEntity<DummyRequest> getOrder(@PathVariable String dummyId, UriComponentsBuilder builder)
+	{
+		DummyRequest req = new DummyRequest();
+		req.setName(dummyId);
+		return new ResponseEntity<DummyRequest>(req, HttpStatus.OK);
+	}
+
+	@RequestMapping(value = "/getAnouncments", method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseEntity<AnnouncementsList> getAnouncements(@RequestParam(value = "start") Integer start,
+			@RequestParam(value = "count") Integer count, @RequestParam(required = false, value = "from") String from,
 			UriComponentsBuilder builder)
 	{
 		AnnouncementsList result = new AnnouncementsList(staticAnounsments.size(), staticAnounsments.subList(start,
 				start + count));
+		System.out.println(start);
 		return new ResponseEntity<AnnouncementsList>(result, HttpStatus.OK);
 	}
 }
