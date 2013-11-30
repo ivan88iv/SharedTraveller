@@ -12,4 +12,16 @@
     <string name="details">Details</string>
     <string name="request">Request</string>
 
+    <!-- Swipe list view buttons constants -->
+    <string name="btn_map">Map</string>
+    <string name="btn_detils">Details</string>
+    <string name="btn_request">Request</string>
+    <string name="btn_accept">Accept</string>
+    <string name="btn_rate">Rate</string>
+    <string name="btn_call">Call</string>
+    <string name="btn_edit">Edit</string>
+    <string name="btn_cancel">Cancel</string>
+    <string name="btn_decline">Decline</string>
+    <string name="btn_hidden">Hidden</string>
+
 </resources>
