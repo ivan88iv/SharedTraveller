@@ -1,23 +1,16 @@
 package org.ai.shared.traveller.announcement.adapter;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.ai.shared.traveller.announcement.adapter.button.ButtonComposer;
+import org.ai.shared.traveller.announcement.adapter.http.IAdapterHttpTask;
 import org.ai.shared.traveller.announcement.adapter.type.SwipeListViewType;
-import org.ai.shared.traveller.exceptions.IllegalUrlException;
 import org.ai.shared.traveller.exceptions.ParseException;
 import org.ai.shared.traveller.exceptions.ServiceConnectionException;
-import org.ai.shared.traveller.network.connection.path.resolver.PathResolver;
 import org.ai.shared.traveller.network.connection.response.ServerResponse;
-import org.ai.shared.traveller.network.connection.response.ServerResponseParser;
-import org.ai.shared.traveller.network.connection.rest.client.AbstractRestClient;
-import org.ai.shared.traveller.network.connection.rest.client.RequestTypes;
-import org.ai.shared.traveller.network.connection.rest.client.SimpleClient;
 import org.ai.sharedtraveller.R;
 import org.shared.traveller.rest.domain.Announcement;
 import org.shared.traveller.rest.domain.AnnouncementsList;
@@ -46,7 +39,9 @@ import com.fortysevendeg.swipelistview.SwipeListView;
  * @author AlexanderIvanov
  * 
  */
-public class AnnouncementLazyLoadingAdapter extends EndlessAdapter
+// TODO extract base adapter functionality and allow different row data type
+// Make generic
+public class LazyLoadingAdapter extends EndlessAdapter
 {
 
 	static class ViewHolder
@@ -60,29 +55,27 @@ public class AnnouncementLazyLoadingAdapter extends EndlessAdapter
 		Button bAction3;
 	}
 
-	private static final String URL = "stserver/dummy/getAnouncments/{0}/{1}";
-	private static final int FETCH_SIZE = 50;
-	private static final String UNABLE_TO_PARSE_RESULT = "Unable to parse result from a service call";
-
-	private static final String UNABLE_TO_CONNECT = "Could not connect to service {0}.";
+	protected static final int FETCH_SIZE = 50;
+	protected static final String UNABLE_TO_PARSE_RESULT = "Unable to parse result from a service call";
+	protected static final String UNABLE_TO_CONNECT = "Could not connect to service {0}.";
 
 	private RotateAnimation rotate = null;
 	private View pendingView = null;
 
-	private AtomicInteger count = new AtomicInteger(-1);
+	private AtomicInteger count = new AtomicInteger(0);
 	private List<Announcement> chunk = new ArrayList<Announcement>();
-	private ErrorResponse errorResponse;
-	private final AbstractRestClient restClient;
-	private final ServerResponseParser<AnnouncementsList> parser = new ServerResponseParser<AnnouncementsList>(AnnouncementsList.class);
+	protected ErrorResponse errorResponse;
 
-	public AnnouncementLazyLoadingAdapter(Context ctxt, ArrayList<Announcement> list)
+	protected IAdapterHttpTask<ServerResponse<AnnouncementsList>> httpTask;
+
+	public LazyLoadingAdapter(Context ctxt, ArrayList<Announcement> list, IAdapterHttpTask<ServerResponse<AnnouncementsList>> httpTask)
 	{
 		super(ctxt, new ArrayAdapter<Announcement>(ctxt, R.layout.swipe_list_view_row, android.R.id.text1, list));
-		rotate = new RotateAnimation(0f, 360f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-		rotate.setDuration(600);
-		rotate.setRepeatMode(Animation.RESTART);
-		rotate.setRepeatCount(Animation.INFINITE);
-		restClient = new SimpleClient(RequestTypes.GET);
+		this.rotate = new RotateAnimation(0f, 360f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+		this.rotate.setDuration(600);
+		this.rotate.setRepeatMode(Animation.RESTART);
+		this.rotate.setRepeatCount(Animation.INFINITE);
+		this.httpTask = httpTask;
 	}
 
 	@Override
@@ -150,7 +143,7 @@ public class AnnouncementLazyLoadingAdapter extends EndlessAdapter
 		{
 			Toast.makeText(getContext(), errorResponse.getMessage(), Toast.LENGTH_SHORT).show();
 		}
-		return true;
+		return false;
 	}
 
 	@Override
@@ -181,19 +174,9 @@ public class AnnouncementLazyLoadingAdapter extends EndlessAdapter
 	private ServerResponse<AnnouncementsList> executeRestRequest(int position) throws ParseException, ServiceConnectionException
 	{
 		ServerResponse<AnnouncementsList> response = null;
-		PathResolver pathResolver = new PathResolver();
-		String url = MessageFormat.format(pathResolver.resolvePath(URL), position, FETCH_SIZE);
 		try
 		{
-			try
-			{
-				response = restClient.callService(new URL(url), parser);
-			}
-			catch (MalformedURLException e)
-			{
-				throw new IllegalUrlException(url, e);
-			}
-
+			response = httpTask.execute(FETCH_SIZE, position);
 		}
 		catch (final ParseException pe)
 		{
@@ -204,9 +187,9 @@ public class AnnouncementLazyLoadingAdapter extends EndlessAdapter
 		}
 		catch (final ServiceConnectionException sce)
 		{
-			Log.d("AbstractNetwTask", MessageFormat.format(UNABLE_TO_CONNECT, url), sce);
+			Log.d("AbstractNetwTask", MessageFormat.format(UNABLE_TO_CONNECT, httpTask.getUrl()), sce);
 			errorResponse = new ErrorResponse();
-			errorResponse.setMessage(MessageFormat.format(UNABLE_TO_CONNECT, url));
+			errorResponse.setMessage(MessageFormat.format(UNABLE_TO_CONNECT, httpTask.getUrl()));
 			throw sce;
 		}
 		return response;

@@ -24,4 +24,9 @@
     <string name="btn_decline">Decline</string>
     <string name="btn_hidden">Hidden</string>
 
+    <!-- Swipe list view header constants -->
+    <string name="header_from">From</string>
+    <string name="header_to">To</string>
+    <string name="header_date">Date</string>
+
 </resources>

@@ -7,7 +7,7 @@ public class PathResolver
     public PathResolver()
     {
         // TODO take the server url from preferences
-        serverUrl = "http://78.90.86.3:8080/";
+        serverUrl = "http://192.168.1.5:8080/";
     }
 
     public PathResolver(final String inServerUrl)
