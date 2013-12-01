@@ -3,11 +3,9 @@
 
     <item
         android:id="@+id/sort_order_from"
-        android:icon="@drawable/sort_asc"
         android:title="@string/sort_order_menu_from"/>
     <item
         android:id="@+id/sort_order_to"
-        android:icon="@drawable/sort_asc"
         android:title="@string/sort_order_menu_to"/>
 
 </menu>
