@@ -2,8 +2,8 @@ package org.shared.traveller.rest.param;
 
 public class ParamNames
 {
-	private static final String = "from";
-	private static final String = "to";
-	private static final String = "date";
-	private static final String = "sortOrder";
+	public static final String FROM = "from";
+	public static final String TO = "to";
+	public static final String DATE = "date";
+	public static final String SORT_ORDER = "sortOrder";
 }
