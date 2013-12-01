@@ -1,7 +1,0 @@
-INDEX VERSION 1.3+D:\u4ebnici i lekcii\lekcii\Graduation Work\SharedTraveller\.metadata\.plugins\org.eclipse.wst.jsdt.core\indexes
-2141716627.index
-1178025790.index
-1881521241.index
-3076785263.index
-2455760430.index
-4181901633.index

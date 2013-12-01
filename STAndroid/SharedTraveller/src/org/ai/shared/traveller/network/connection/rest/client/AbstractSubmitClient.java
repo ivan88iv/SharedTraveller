@@ -32,6 +32,7 @@ public abstract class AbstractSubmitClient extends AbstractRestClient
             throws ServiceConnectionException
     {
         inConnection.setDoOutput(true);
+        inConnection.setRequestProperty("Content-Type", "application/json");
 
         try
         {

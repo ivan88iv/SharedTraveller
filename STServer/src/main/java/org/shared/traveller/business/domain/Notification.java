@@ -32,7 +32,7 @@ public class Notification extends AbstractEntity
 
 	@ManyToOne
 	@JoinColumn(name = "anouncment_id")
-	private Anouncment anouncment;
+	private AnnouncementEntity anouncment;
 
 	@Column(name = "type")
 	@Enumerated(EnumType.ORDINAL)
@@ -58,12 +58,12 @@ public class Notification extends AbstractEntity
 		this.traveller = traveller;
 	}
 
-	public Anouncment getAnouncment()
+	public AnnouncementEntity getAnouncment()
 	{
 		return anouncment;
 	}
 
-	public void setAnouncment(Anouncment anouncment)
+	public void setAnouncment(AnnouncementEntity anouncment)
 	{
 		this.anouncment = anouncment;
 	}
