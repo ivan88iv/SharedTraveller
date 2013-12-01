@@ -5,9 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.ai.shared.traveller.announcement.adapter.button.ButtonComposer;
+import org.ai.shared.traveller.announcement.adapter.button.RowButtonComposer;
 import org.ai.shared.traveller.announcement.adapter.http.IAdapterHttpTask;
-import org.ai.shared.traveller.announcement.adapter.type.SwipeListViewType;
+import org.ai.shared.traveller.announcement.adapter.type.SwipeListViewContext;
 import org.ai.shared.traveller.exceptions.ParseException;
 import org.ai.shared.traveller.exceptions.ServiceConnectionException;
 import org.ai.shared.traveller.network.connection.response.ServerResponse;
@@ -126,7 +126,7 @@ public class LazyLoadingAdapter extends EndlessAdapter
 
 			// SwipeListViewType.ANNOUNCEMENT must be passes as parameter
 			// from the view that creates the adapter
-			ButtonComposer composer = new ButtonComposer(SwipeListViewType.ANNOUNCEMENT, item, getContext());
+			RowButtonComposer composer = new RowButtonComposer(SwipeListViewContext.ANNOUNCEMENT, item, getContext());
 			composer.configFirstButton(holder.bAction1);
 			composer.configSecondButton(holder.bAction2);
 			composer.configThirdButton(holder.bAction3);

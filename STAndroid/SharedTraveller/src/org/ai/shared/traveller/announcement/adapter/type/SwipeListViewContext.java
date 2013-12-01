@@ -6,7 +6,7 @@ package org.ai.shared.traveller.announcement.adapter.type;
  * @author AlexanderIvanov
  * 
  */
-public enum SwipeListViewType
+public enum SwipeListViewContext
 {
 	ANNOUNCEMENT, MY_TRAVELS_TRAVELLER, MY_TRAVELS_DRIVER
 }

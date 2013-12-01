@@ -2,7 +2,7 @@ package org.ai.shared.traveller.announcement.adapter.button.factory;
 
 import org.ai.shared.traveller.announcement.adapter.button.row.AnnoReviewButtonRow;
 import org.ai.shared.traveller.announcement.adapter.button.row.IButtonRow;
-import org.ai.shared.traveller.announcement.adapter.type.SwipeListViewType;
+import org.ai.shared.traveller.announcement.adapter.type.SwipeListViewContext;
 
 /**
  * Creates specific button {@link IButtonRow row} configuration container
@@ -20,7 +20,7 @@ public class ButtonRowFactory
 
 	}
 
-	public static IButtonRow getButtonRow(SwipeListViewType type)
+	public static IButtonRow getButtonRow(SwipeListViewContext type)
 	{
 		IButtonRow row = null;
 		switch (type)

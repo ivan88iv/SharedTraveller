@@ -3,7 +3,7 @@ package org.ai.shared.traveller.announcement.adapter.button;
 import org.ai.shared.traveller.announcement.adapter.button.config.IButtonConfig;
 import org.ai.shared.traveller.announcement.adapter.button.factory.ButtonRowFactory;
 import org.ai.shared.traveller.announcement.adapter.button.row.IButtonRow;
-import org.ai.shared.traveller.announcement.adapter.type.SwipeListViewType;
+import org.ai.shared.traveller.announcement.adapter.type.SwipeListViewContext;
 import org.shared.traveller.rest.domain.Announcement;
 
 import android.content.Context;
@@ -18,7 +18,7 @@ import android.widget.Button;
  * @author AlexanderIvanov
  * 
  */
-public class ButtonComposer
+public class RowButtonComposer
 {
 
 	private IButtonRow row;
@@ -27,7 +27,7 @@ public class ButtonComposer
 
 	private Context cxt;
 
-	public ButtonComposer(SwipeListViewType type, Announcement anno, Context cxt)
+	public RowButtonComposer(SwipeListViewContext type, Announcement anno, Context cxt)
 	{
 		super();
 		this.cxt = cxt;

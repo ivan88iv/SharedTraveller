@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 import org.ai.shared.traveller.announcement.adapter.LazyLoadingAdapter;
 import org.ai.shared.traveller.announcement.adapter.http.AnnouncementListHttpTask;
+import org.ai.shared.traveller.announcement.date.DatePickerFragment;
+import org.ai.shared.traveller.announcement.date.IOnDateSetListener;
 import org.ai.sharedtraveller.R;
 import org.shared.traveller.rest.domain.Announcement;
 
@@ -11,6 +13,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -20,6 +23,7 @@ import android.view.View;
 import android.view.View.OnKeyListener;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.DatePicker;
 import android.widget.EditText;
 
 import com.fortysevendeg.swipelistview.BaseSwipeListViewListener;
@@ -33,12 +37,22 @@ import com.fortysevendeg.swipelistview.SwipeListView;
  */
 public class AnnouncementsSwipeListFragment extends Fragment implements OnKeyListener
 {
+	/**
+	 * Holder object for text views in list header.
+	 * 
+	 */
+	static class HeaderViewHolder
+	{
+		EditText from;
+		EditText to;
+		EditText date;
+	}
 
 	private SwipeListView swipeListView;
 
 	private LazyLoadingAdapter adapter;
 
-	private ViewHolder headerViewHolder;
+	private HeaderViewHolder headerViewHolder;
 
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	@Override
@@ -46,7 +60,7 @@ public class AnnouncementsSwipeListFragment extends Fragment implements OnKeyLis
 	{
 		super.onCreate(savedInstanceState);
 		adapter = new LazyLoadingAdapter(getActivity(), new ArrayList<Announcement>(), new AnnouncementListHttpTask());
-		headerViewHolder = new ViewHolder();
+		headerViewHolder = new HeaderViewHolder();
 	}
 
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
@@ -148,7 +162,35 @@ public class AnnouncementsSwipeListFragment extends Fragment implements OnKeyLis
 
 		headerViewHolder.from.setOnKeyListener(this);
 		headerViewHolder.to.setOnKeyListener(this);
-		headerViewHolder.date.setOnKeyListener(this);
+
+		// When date EditText gets the focus the date picker is displayed.
+		headerViewHolder.date.setOnFocusChangeListener(new View.OnFocusChangeListener()
+		{
+
+			@Override
+			public void onFocusChange(View v, boolean hasFocus)
+			{
+				if (hasFocus)
+				{
+					DialogFragment newFragment = new DatePickerFragment();
+					Bundle bundle = new Bundle();
+					bundle.putSerializable(DatePickerFragment.DATE_PICKER_LISTENER, new IOnDateSetListener()
+					{
+
+						private static final long serialVersionUID = 1L;
+
+						@Override
+						public void onDateSet(DatePicker view, int year, int month, int day)
+						{
+							updateDisplay(day, month, year);
+						}
+					});
+					newFragment.setArguments(bundle);
+					newFragment.show(getActivity().getSupportFragmentManager(), "timePicker");
+				}
+			}
+
+		});
 	}
 
 	@Override
@@ -156,12 +198,7 @@ public class AnnouncementsSwipeListFragment extends Fragment implements OnKeyLis
 	{
 		if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER))
 		{
-			String from = headerViewHolder.from.getText().toString();
-			String to = headerViewHolder.to.getText().toString();
-			String date = headerViewHolder.date.getText().toString();
-			adapter = new LazyLoadingAdapter(getActivity(), new ArrayList<Announcement>(), new AnnouncementListHttpTask(from, to, date));
-			swipeListView.setAdapter(adapter);
-			hideKeyboard();
+			applyFilters();
 		}
 		// Returning false allows other listeners to react to the press.
 		return false;
@@ -173,11 +210,25 @@ public class AnnouncementsSwipeListFragment extends Fragment implements OnKeyLis
 		inputManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 	}
 
-	static class ViewHolder
+	private void updateDisplay(int day, int month, int year)
 	{
-		EditText from;
-		EditText to;
-		EditText date;
+		StringBuilder builder = new StringBuilder();
+		// Month is 0 based so add 1
+		builder.append(day).append("-").append(month + 1).append("-").append(year);
+		headerViewHolder.date.setText(builder);
+		applyFilters();
+	}
+
+	// Extract values from list view filters and changes the adapter. This
+	// changed forces the list view to reload its data.
+	private void applyFilters()
+	{
+		String from = headerViewHolder.from.getText().toString();
+		String to = headerViewHolder.to.getText().toString();
+		String date = headerViewHolder.date.getText().toString();
+		adapter = new LazyLoadingAdapter(getActivity(), new ArrayList<Announcement>(), new AnnouncementListHttpTask(from, to, date));
+		swipeListView.setAdapter(adapter);
+		hideKeyboard();
 	}
 
 }
