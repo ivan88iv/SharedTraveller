@@ -7,6 +7,8 @@ import java.util.List;
 import org.shared.traveller.rest.domain.Announcement;
 import org.shared.traveller.rest.domain.AnnouncementsList;
 import org.shared.traveller.rest.domain.DummyRequest;
+import org.shared.traveller.rest.param.ParamNames;
+import org.shared.traveller.rest.param.SortOrder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -49,8 +51,10 @@ public class DummyService
 
 	@RequestMapping(value = "/getAnouncments", method = RequestMethod.GET)
 	@ResponseBody
-	public ResponseEntity<AnnouncementsList> getAnouncements(@RequestParam(value = "start") Integer start,
-			@RequestParam(value = "count") Integer count, @RequestParam(required = false, value = "from") String from,
+	public ResponseEntity<AnnouncementsList> getAnouncements(@RequestParam(value = ParamNames.START) Integer start,
+			@RequestParam(value = ParamNames.COUNT) Integer count,
+			@RequestParam(required = false, value = ParamNames.FROM) String from,
+			@RequestParam(required = false, value = ParamNames.SORT_ORDER) SortOrder sortOrder,
 			UriComponentsBuilder builder)
 	{
 		AnnouncementsList result = new AnnouncementsList(staticAnounsments.size(), staticAnounsments.subList(start,
