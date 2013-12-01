@@ -5,3 +5,13 @@
 /Environment
 /RemoteSystemsTempFiles
 /STAndroid/SharedTraveller/bin
+/STAndroid/swipelistview/.gitignore
+/STAndroid/ViewPagerIndicatorLibrary/.gitignore
+/STAndroid/EndlessAdapter/.gitignore
+
+/STAndroid/swipelistview/bin
+
+/STAndroid/swipelistview/bin
+
+/STAndroid/swipelistview/bin/jarlist.cache
+/STAndroid/swipelistview/bin

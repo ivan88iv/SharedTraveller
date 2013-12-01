@@ -8,6 +8,7 @@ import org.ai.shared.traveller.announcement.date.DatePickerFragment;
 import org.ai.shared.traveller.announcement.date.IOnDateSetListener;
 import org.ai.sharedtraveller.R;
 import org.shared.traveller.rest.domain.Announcement;
+import org.shared.traveller.rest.param.SortOrder;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -19,6 +20,9 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnKeyListener;
 import android.view.ViewGroup;
@@ -46,6 +50,9 @@ public class AnnouncementsSwipeListFragment extends Fragment implements OnKeyLis
 		EditText from;
 		EditText to;
 		EditText date;
+		// Keeps sort order. May be it is not good idea to be kept here.
+		SortOrder fromSortOrder = SortOrder.FROM_ASC;
+		SortOrder toSortOrder = SortOrder.TO_ASC;
 	}
 
 	private SwipeListView swipeListView;
@@ -61,6 +68,7 @@ public class AnnouncementsSwipeListFragment extends Fragment implements OnKeyLis
 		super.onCreate(savedInstanceState);
 		adapter = new LazyLoadingAdapter(getActivity(), new ArrayList<Announcement>(), new AnnouncementListHttpTask());
 		headerViewHolder = new HeaderViewHolder();
+		setHasOptionsMenu(true);
 	}
 
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
@@ -133,6 +141,46 @@ public class AnnouncementsSwipeListFragment extends Fragment implements OnKeyLis
 
 		return fragment;
 
+	}
+
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+	{
+		inflater.inflate(R.menu.sort_order_menu, menu);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item)
+	{
+		switch (item.getItemId())
+		{
+		case R.id.sort_order_from:
+			// Applies the sort order and changes current sort order.
+			applySortOrder(headerViewHolder.fromSortOrder);
+			if (headerViewHolder.fromSortOrder == SortOrder.FROM_ASC)
+			{
+				headerViewHolder.fromSortOrder = SortOrder.FROM_DESC;
+			}
+			else
+			{
+				headerViewHolder.fromSortOrder = SortOrder.FROM_ASC;
+			}
+			return true;
+		case R.id.sort_order_to:
+			// Applies the sort order and changes current sort order.
+			applySortOrder(headerViewHolder.fromSortOrder);
+			if (headerViewHolder.toSortOrder == SortOrder.TO_ASC)
+			{
+				headerViewHolder.toSortOrder = SortOrder.TO_DESC;
+			}
+			else
+			{
+				headerViewHolder.toSortOrder = SortOrder.TO_ASC;
+			}
+			return true;
+
+		}
+		return super.onOptionsItemSelected(item);
 	}
 
 	private void reload()
@@ -223,12 +271,23 @@ public class AnnouncementsSwipeListFragment extends Fragment implements OnKeyLis
 	// changed forces the list view to reload its data.
 	private void applyFilters()
 	{
+		adapter = cerateAdapter(null);
+		swipeListView.setAdapter(adapter);
+		hideKeyboard();
+	}
+
+	private void applySortOrder(SortOrder sortOrder)
+	{
+		adapter = cerateAdapter(sortOrder);
+		swipeListView.setAdapter(adapter);
+	}
+
+	private LazyLoadingAdapter cerateAdapter(SortOrder sortOrder)
+	{
 		String from = headerViewHolder.from.getText().toString();
 		String to = headerViewHolder.to.getText().toString();
 		String date = headerViewHolder.date.getText().toString();
-		adapter = new LazyLoadingAdapter(getActivity(), new ArrayList<Announcement>(), new AnnouncementListHttpTask(from, to, date));
-		swipeListView.setAdapter(adapter);
-		hideKeyboard();
+		return new LazyLoadingAdapter(getActivity(), new ArrayList<Announcement>(), new AnnouncementListHttpTask(from, to, date, sortOrder));
 	}
 
 }

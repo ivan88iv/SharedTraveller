@@ -13,11 +13,14 @@ import org.ai.shared.traveller.network.connection.rest.client.AbstractRestClient
 import org.ai.shared.traveller.network.connection.rest.client.RequestTypes;
 import org.ai.shared.traveller.network.connection.rest.client.SimpleClient;
 import org.shared.traveller.rest.domain.AnnouncementsList;
+import org.shared.traveller.rest.param.ParamNames;
+import org.shared.traveller.rest.param.SortOrder;
 
 public class AnnouncementListHttpTask implements IAdapterHttpTask<ServerResponse<AnnouncementsList>>
 {
 
 	private static final String URL_AMPERSAND_SEPARATOR = "&";
+	private static final String URL_EQUALS_SEPARATOR = "=";
 	private static final String URL = "stserver/dummy/getAnouncments?";
 
 	private final ServerResponseParser<AnnouncementsList> parser = new ServerResponseParser<AnnouncementsList>(AnnouncementsList.class);
@@ -32,6 +35,8 @@ public class AnnouncementListHttpTask implements IAdapterHttpTask<ServerResponse
 
 	private String url;
 
+	private SortOrder sortOrder;
+
 	public AnnouncementListHttpTask()
 	{
 		super();
@@ -44,6 +49,15 @@ public class AnnouncementListHttpTask implements IAdapterHttpTask<ServerResponse
 		this.from = from;
 		this.to = to;
 		this.date = date;
+	}
+
+	public AnnouncementListHttpTask(String from, String to, String date, SortOrder sortOrder)
+	{
+		this();
+		this.from = from;
+		this.to = to;
+		this.date = date;
+		this.sortOrder = sortOrder;
 	}
 
 	@Override
@@ -73,18 +87,22 @@ public class AnnouncementListHttpTask implements IAdapterHttpTask<ServerResponse
 	private String appednFilter(String url, int fetchSize, int position)
 	{
 		StringBuilder builder = new StringBuilder(url);
-		builder.append("start=" + position).append(URL_AMPERSAND_SEPARATOR).append("count=" + fetchSize);
+		builder.append(ParamNames.START).append(URL_EQUALS_SEPARATOR).append(position).append(URL_AMPERSAND_SEPARATOR).append(ParamNames.COUNT).append(URL_EQUALS_SEPARATOR).append(fetchSize);
 		if (from != null && from.length() > 0)
 		{
-			builder.append(URL_AMPERSAND_SEPARATOR).append("from=" + from);
+			builder.append(URL_AMPERSAND_SEPARATOR).append(ParamNames.FROM).append(URL_EQUALS_SEPARATOR).append(from);
 		}
 		if (to != null && to.length() > 0)
 		{
-			builder.append(URL_AMPERSAND_SEPARATOR).append("to=" + to);
+			builder.append(URL_AMPERSAND_SEPARATOR).append(ParamNames.TO).append(URL_EQUALS_SEPARATOR).append(to);
 		}
 		if (date != null && date.length() > 0)
 		{
-			builder.append(URL_AMPERSAND_SEPARATOR).append("date=" + date);
+			builder.append(URL_AMPERSAND_SEPARATOR).append(ParamNames.DATE).append(URL_EQUALS_SEPARATOR).append(date);
+		}
+		if (sortOrder != null)
+		{
+			builder.append(URL_AMPERSAND_SEPARATOR).append(ParamNames.SORT_ORDER).append(URL_EQUALS_SEPARATOR).append(sortOrder);
 		}
 		return builder.toString();
 	}
