@@ -2,18 +2,18 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-	  <groupId>org.shared.traveller</groupId>
-	  <artifactId>STParent</artifactId>
-	  <version>0.0.1</version>
-	  <relativePath>../STParent</relativePath>
+		<groupId>org.shared.traveller</groupId>
+		<artifactId>STParent</artifactId>
+		<version>0.0.1</version>
+		<relativePath>../STParent</relativePath>
 	</parent>
-	
+
 	<artifactId>STServer</artifactId>
 	<packaging>war</packaging>
 
 	<name>SharedTraveller Maven Webapp</name>
 	<url>http://maven.apache.org</url>
-	
+
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
@@ -108,6 +108,21 @@
 			<version>3.2.5.RELEASE</version>
 			<scope>test</scope>
 		</dependency>
+		<!-- JDBC Data Access Library (depends on spring-core, spring-beans, spring-context, 
+			spring-tx) Define this if you use Spring's JdbcTemplate API (org.springframework.jdbc.*) -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jdbc</artifactId>
+			<version>3.2.5.RELEASE</version>
+		</dependency>
+		<!-- Object-to-Relation-Mapping (ORM) integration with Hibernate, JPA, 
+			and iBatis. (depends on spring-core, spring-beans, spring-context, spring-tx) 
+			Define this if you need ORM (org.springframework.orm.*) -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-orm</artifactId>
+			<version>3.2.5.RELEASE</version>
+		</dependency>
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-all</artifactId>
@@ -120,7 +135,7 @@
 			<version>2.5</version>
 			<scope>test</scope>
 		</dependency>
-		
+
 		<!-- REST Model -->
 		<dependency>
 			<groupId>org.shared.traveller</groupId>
