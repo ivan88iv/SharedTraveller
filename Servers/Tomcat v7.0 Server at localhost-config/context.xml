@@ -29,5 +29,6 @@
     <!--
     <Valve className="org.apache.catalina.valves.CometConnectionManagerValve" />
     -->
-
+	<ResourceLink global="jdbc/SharedTravellerDB" name="jdbc/SharedTravellerDB"
+		type="javax.sql.DataSource" />
 </Context>
