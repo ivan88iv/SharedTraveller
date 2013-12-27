@@ -7,7 +7,9 @@ import javax.persistence.TypedQuery;
 import org.shared.traveller.business.dao.IVehicleDAO;
 import org.shared.traveller.business.domain.IPersistentVehicle;
 import org.shared.traveller.business.domain.jpa.VehicleEntity;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public class VehicleDAO extends AbstractDAO<IPersistentVehicle>
 		implements IVehicleDAO
 {

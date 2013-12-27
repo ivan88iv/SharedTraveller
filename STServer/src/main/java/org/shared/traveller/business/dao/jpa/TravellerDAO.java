@@ -7,7 +7,9 @@ import javax.persistence.TypedQuery;
 import org.shared.traveller.business.dao.ITravellerDAO;
 import org.shared.traveller.business.domain.IPersistentTraveller;
 import org.shared.traveller.business.domain.jpa.TravellerEntity;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public class TravellerDAO extends AbstractDAO<IPersistentTraveller>
 		implements ITravellerDAO
 {

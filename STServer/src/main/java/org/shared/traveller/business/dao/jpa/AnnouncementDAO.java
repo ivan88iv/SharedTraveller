@@ -2,7 +2,9 @@ package org.shared.traveller.business.dao.jpa;
 
 import org.shared.traveller.business.dao.IAnnouncementDAO;
 import org.shared.traveller.business.domain.IPersistentAnnouncement;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public class AnnouncementDAO extends AbstractDAO<IPersistentAnnouncement>
 		implements IAnnouncementDAO
 {

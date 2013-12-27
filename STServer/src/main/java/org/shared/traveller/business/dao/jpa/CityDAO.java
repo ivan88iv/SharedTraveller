@@ -7,7 +7,9 @@ import javax.persistence.TypedQuery;
 import org.shared.traveller.business.dao.ICityDAO;
 import org.shared.traveller.business.domain.IPersistentCity;
 import org.shared.traveller.business.domain.jpa.CityEntity;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public class CityDAO extends AbstractDAO<IPersistentCity> implements ICityDAO
 {
 

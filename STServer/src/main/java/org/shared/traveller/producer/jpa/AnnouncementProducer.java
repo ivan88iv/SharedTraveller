@@ -19,7 +19,9 @@ import org.shared.traveller.client.domain.IAnnouncement;
 import org.shared.traveller.producer.IPersistentAnnouncementProducer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
 
+@Component
 public class AnnouncementProducer implements
 		IPersistentAnnouncementProducer,
 		Serializable
