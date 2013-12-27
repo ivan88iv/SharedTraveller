@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/secondary_tab_layout"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" 
+    style="@style/announcement_tab_content">
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <TextView
+            style="@style/required_field"
+            android:layout_height="fill_parent"
+            android:text="@string/required_str"
+            android:visibility="invisible" />
+
+        <TextView
+            style="@style/announcement_label"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:text="@string/announcement_departure_address" />
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/departure_address"
+        style="@style/announcement_info_holder"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="#FFFFFF"
+        android:inputType="textMultiLine" />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <TextView
+            style="@style/required_field"
+            android:layout_height="fill_parent"
+            android:text="@string/required_str"
+            android:visibility="invisible" />
+
+        <TextView
+            style="@style/announcement_label"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="3"
+            android:text="@string/announcement_vehicle" />
+
+        <Spinner
+            android:id="@+id/vehicles"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="2" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <TextView
+            style="@style/required_field"
+            android:layout_height="fill_parent"
+            android:text="@string/required_str"
+            android:visibility="invisible" />
+
+        <TextView
+            style="@style/announcement_label"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="2"
+            android:text="@string/announcement_intermediate_pts" />
+
+        <Button
+            android:id="@+id/new_intermediate_pt_btn"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:text="@string/new_intermediate_point" />
+    </LinearLayout>
+</LinearLayout>

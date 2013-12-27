@@ -15,7 +15,7 @@ import org.ai.shared.traveller.network.connection.rest.client.RequestTypes;
 import org.ai.shared.traveller.network.connection.rest.client.SimpleClient;
 import org.ai.sharedtraveller.R;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.shared.traveller.rest.domain.Announcement;
+import org.shared.traveller.client.domain.rest.Announcement;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;

@@ -2,6 +2,8 @@ package org.shared.traveller.rest.domain;
 
 import java.util.List;
 
+import org.shared.traveller.client.domain.rest.Announcement;
+
 public class AnnouncementsList
 {
 

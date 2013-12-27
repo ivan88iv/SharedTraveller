@@ -4,17 +4,19 @@ import java.io.Serializable;
 
 public abstract class AbstractEntity implements Serializable
 {
+	/**
+	 * The serial version UID
+	 */
+	private static final long serialVersionUID = 1106335658717533124L;
 
-	private static final long serialVersionUID = 1L;
-
-	public abstract Integer getId();
+	public abstract long getId();
 
 	@Override
 	public int hashCode()
 	{
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((getId() == null) ? 0 : getId().hashCode());
+		result = prime * result + (int) (getId() ^ (getId() >>> 32));
 		return result;
 	}
 
@@ -23,16 +25,12 @@ public abstract class AbstractEntity implements Serializable
 	{
 		if (this == obj)
 			return true;
-		if (!super.equals(obj))
+		if (obj == null)
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
 		AbstractEntity other = (AbstractEntity) obj;
-		if (getId() == null)
-		{
-			if (other.getId() != null)
-				return false;
-		} else if (!getId().equals(other.getId()))
+		if (getId() != other.getId())
 			return false;
 		return true;
 	}

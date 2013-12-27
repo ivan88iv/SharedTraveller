@@ -7,7 +7,7 @@ import org.ai.shared.traveller.announcement.adapter.http.AnnouncementListHttpTas
 import org.ai.shared.traveller.dialog.pickers.AbstractDatePickerDisplayer;
 import org.ai.shared.traveller.dialog.pickers.AbstractPickerDisplayer;
 import org.ai.sharedtraveller.R;
-import org.shared.traveller.rest.domain.Announcement;
+import org.shared.traveller.client.domain.rest.Announcement;
 import org.shared.traveller.rest.param.SortOrder;
 
 import android.annotation.TargetApi;

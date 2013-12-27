@@ -1,6 +1,6 @@
 package org.ai.shared.traveller.announcement.adapter.button.action;
 
-import org.shared.traveller.rest.domain.Announcement;
+import org.shared.traveller.client.domain.rest.Announcement;
 
 import android.content.Context;
 import android.view.View;
@@ -17,5 +17,5 @@ import android.view.View;
  */
 public interface IButtonAction
 {
-	public void perform(Context cxt, Announcement announcement);
+    public void perform(Context cxt, Announcement announcement);
 }

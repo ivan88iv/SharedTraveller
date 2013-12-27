@@ -1,7 +1,7 @@
 package org.ai.shared.traveller.announcement.adapter.button.row;
 
 import org.ai.shared.traveller.announcement.adapter.button.config.IButtonConfig;
-import org.shared.traveller.rest.domain.Announcement;
+import org.shared.traveller.client.domain.rest.Announcement;
 
 /**
  * Represents contextual visualization of row in the swipe list view. The
@@ -16,27 +16,27 @@ import org.shared.traveller.rest.domain.Announcement;
  */
 public interface IButtonRow
 {
-	/**
-	 * Decide what button configuration will be needed for first button.
-	 * 
-	 * @param announcement
-	 * @return
-	 */
-	public IButtonConfig getFirstButton(Announcement announcement);
+    /**
+     * Decide what button configuration will be needed for first button.
+     * 
+     * @param announcement
+     * @return
+     */
+    public IButtonConfig getFirstButton(Announcement announcement);
 
-	/**
-	 * Decide what button configuration will be needed for second button.
-	 * 
-	 * @param announcement
-	 * @return
-	 */
-	public IButtonConfig getSecondButton(Announcement announcement);
+    /**
+     * Decide what button configuration will be needed for second button.
+     * 
+     * @param announcement
+     * @return
+     */
+    public IButtonConfig getSecondButton(Announcement announcement);
 
-	/**
-	 * Decide what button configuration will be needed for third button.
-	 * 
-	 * @param announcement
-	 * @return
-	 */
-	public IButtonConfig getThirdButton(Announcement announcement);
+    /**
+     * Decide what button configuration will be needed for third button.
+     * 
+     * @param announcement
+     * @return
+     */
+    public IButtonConfig getThirdButton(Announcement announcement);
 }
