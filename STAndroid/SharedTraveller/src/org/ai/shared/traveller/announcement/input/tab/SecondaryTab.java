@@ -5,8 +5,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.ai.shared.traveller.content.converter.ContentConverter;
+import org.ai.shared.traveller.data.providers.ICitiesProvider;
+import org.ai.shared.traveller.data.providers.IVehiclesProvider;
+import org.ai.shared.traveller.formatter.LabelsFormatter;
+import org.ai.shared.traveller.ui.preparator.ICityComponentsPreparator;
+import org.ai.shared.traveller.ui.preparator.IVehicleComponentsPreparator;
 import org.ai.sharedtraveller.R;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -29,12 +35,46 @@ public class SecondaryTab extends Fragment
 {
     private static int intermediatePtsCnt = 0;
 
+    private IVehiclesProvider vehiclesProvider;
+
+    private ICitiesProvider citiesProvider;
+
     private String selectedVehicle;
 
     private EditText departureAddress;
 
     private final Map<String, Spinner> intermediatePtsSpinners = new
             HashMap<String, Spinner>();
+
+    private final int[] labelIds =
+    {
+            R.id.ann_dep_address, R.id.ann_intermediate_pts_label,
+            R.id.ann_vehicle_label
+    };
+
+    @Override
+    public void onAttach(final Activity activity)
+    {
+        try
+        {
+            citiesProvider = (ICitiesProvider) activity;
+        } catch (final ClassCastException cce)
+        {
+            throw new ClassCastException(activity.toString()
+                    + " must implement the ICitiesProvider interface.");
+        }
+
+        try
+        {
+            vehiclesProvider = (IVehiclesProvider) activity;
+        } catch (final ClassCastException cce)
+        {
+            throw new ClassCastException(activity.toString()
+                    + " must implement the IVehiclesProvider interface.");
+        }
+
+        super.onAttach(activity);
+    }
 
     @Override
     public View onCreateView(final LayoutInflater inflater,
@@ -43,15 +83,23 @@ public class SecondaryTab extends Fragment
     {
         final View secondaryTab = inflater
                 .inflate(R.layout.announcement_secondary_tab, null);
+        final IVehicleComponentsPreparator preparator = new IVehicleComponentsPreparator()
+        {
+            @Override
+            public void prepareComponents(final String[] inVehicleNames)
+            {
+                final ArrayAdapter<CharSequence> vehiclesAdapter =
+                        new ArrayAdapter<CharSequence>(getActivity(),
+                                android.R.layout.simple_spinner_item,
+                                inVehicleNames);
+                vehiclesAdapter.setDropDownViewResource(
+                        android.R.layout.simple_spinner_dropdown_item);
+                prepareVehiclesSpinner(secondaryTab, vehiclesAdapter);
+            }
+        };
+        // TODO the username must come from somewhere
+        vehiclesProvider.provideVehicleNames("temp", preparator);
 
-        final ArrayAdapter<CharSequence> vehiclesAdapter =
-                ArrayAdapter.createFromResource(getActivity(),
-                        R.array.vehicles_array,
-                        android.R.layout.simple_spinner_item);
-        vehiclesAdapter.setDropDownViewResource(
-                android.R.layout.simple_spinner_dropdown_item);
-
-        prepareVehiclesSpinner(secondaryTab, vehiclesAdapter);
         final Button newIntermediatePtBtn = (Button) secondaryTab.findViewById(
                 R.id.new_intermediate_pt_btn);
         newIntermediatePtBtn.setOnClickListener(
@@ -59,6 +107,9 @@ public class SecondaryTab extends Fragment
 
         departureAddress = (EditText) secondaryTab
                 .findViewById(R.id.departure_address);
+
+        final LabelsFormatter formatter = new LabelsFormatter(secondaryTab);
+        formatter.format(labelIds);
 
         return secondaryTab;
     }
@@ -118,20 +169,33 @@ public class SecondaryTab extends Fragment
             final LinearLayout intermediatePtLayout =
                     (LinearLayout) getLayoutInflater(null).inflate(
                             R.layout.intermediate_point_template, null);
-            intermediatePtLayout.setTag(LAYOUT_TAG_TEMPLATE +
-                    intermediatePtsCnt);
             masterLayout.addView(intermediatePtLayout);
-            final Spinner spinner = (Spinner) intermediatePtLayout
-                    .getChildAt(1);
-            intermediatePtsSpinners.put(spinner.getTag().toString(),
-                    spinner);
-            final ArrayAdapter<CharSequence> intermediatePtsAdapter =
-                    ArrayAdapter.createFromResource(activity,
-                            R.array.towns_array,
-                            android.R.layout.simple_spinner_item);
-            intermediatePtsAdapter.setDropDownViewResource(
-                    android.R.layout.simple_spinner_dropdown_item);
-            spinner.setAdapter(intermediatePtsAdapter);
+            final String tag = LAYOUT_TAG_TEMPLATE + intermediatePtsCnt;
+            intermediatePtLayout.setTag(tag);
+            final ICityComponentsPreparator preparator = new ICityComponentsPreparator()
+            {
+                @Override
+                public void prepareComponents(final String[] inCityNames)
+                {
+                    final Spinner spinner = (Spinner) intermediatePtLayout
+                            .getChildAt(1);
+                    System.out
+                            .println("===================================================");
+                    System.out.println("inter pts: " + intermediatePtsSpinners);
+                    System.out
+                            .println("===================================================");
+
+                    intermediatePtsSpinners.put(tag, spinner);
+                    final ArrayAdapter<CharSequence> intermediatePtsAdapter =
+                            new ArrayAdapter<CharSequence>(activity,
+                                    android.R.layout.simple_spinner_item,
+                                    inCityNames);
+                    intermediatePtsAdapter.setDropDownViewResource(
+                            android.R.layout.simple_spinner_dropdown_item);
+                    spinner.setAdapter(intermediatePtsAdapter);
+                }
+            };
+            citiesProvider.provideCityNames(preparator);
 
             final ImageButton eraseBtn = (ImageButton) intermediatePtLayout
                     .getChildAt(2);
@@ -146,9 +210,9 @@ public class SecondaryTab extends Fragment
         {
             final LinearLayout masterLayout = (LinearLayout) getActivity()
                     .findViewById(R.id.secondary_tab_layout);
-            final Spinner spinner = (Spinner) masterLayout.getChildAt(1);
-            intermediatePtsSpinners.remove(spinner.getTag().toString());
-            masterLayout.removeView((LinearLayout) v.getParent());
+            final LinearLayout layoutToRemove = (LinearLayout) v.getParent();
+            intermediatePtsSpinners.remove(layoutToRemove.getTag().toString());
+            masterLayout.removeView(layoutToRemove);
             intermediatePtsCnt--;
         }
     }

@@ -20,7 +20,7 @@ public abstract class AbstractDatePickerDisplayer extends
                     final int inMonthOfYear,
                     final int inDayOfMonth)
             {
-                onDateSelecion(inView, inDayOfMonth, inMonthOfYear, inYear);
+                onDateSelecion(inView, inYear, inMonthOfYear, inDayOfMonth);
             }
         });
 

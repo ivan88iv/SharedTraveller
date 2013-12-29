@@ -5,12 +5,16 @@ import java.util.Calendar;
 import java.util.Date;
 
 import org.ai.shared.traveller.content.converter.ContentConverter;
+import org.ai.shared.traveller.data.providers.ICitiesProvider;
 import org.ai.shared.traveller.dialog.pickers.AbstractDatePickerDisplayer;
 import org.ai.shared.traveller.dialog.pickers.AbstractPickerDisplayer;
 import org.ai.shared.traveller.dialog.pickers.AbstractTimePickerDisplayer;
+import org.ai.shared.traveller.formatter.LabelsFormatter;
 import org.ai.shared.traveller.msg.reader.LocalizedMsgReader;
+import org.ai.shared.traveller.ui.preparator.ICityComponentsPreparator;
 import org.ai.sharedtraveller.R;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -28,6 +32,8 @@ import android.widget.TimePicker;
 
 public class PrimaryTab extends Fragment
 {
+    private ICitiesProvider citiesProvider;
+
     private boolean disablePrimaryFields;
 
     private boolean showRequiredFields;
@@ -36,17 +42,38 @@ public class PrimaryTab extends Fragment
 
     private String toPoint;
 
-    private final Calendar departureDate = Calendar.getInstance();
+    private Calendar departureDate;
 
-    private final Calendar depeartureTime = Calendar.getInstance();
+    private Calendar depeartureTime;
 
     private EditText priceHolder;
 
     private EditText seats;
 
+    private final int[] labelIds =
+    {
+            R.id.ann_start_pt_label, R.id.ann_end_pt_label,
+            R.id.ann_date_label, R.id.ann_time_label,
+            R.id.ann_seats_label, R.id.ann_price_label
+    };
+
     public PrimaryTab()
     {
         super();
+    }
+
+    @Override
+    public void onAttach(final Activity activity)
+    {
+        try
+        {
+            citiesProvider = (ICitiesProvider) activity;
+        } catch (final ClassCastException cce)
+        {
+            throw new ClassCastException(activity.toString()
+                    + " must implement the ICitiesProvider interface.");
+        }
+        super.onAttach(activity);
     }
 
     public static PrimaryTab newInstance(final boolean inDisablePrimaryFields,
@@ -92,12 +119,12 @@ public class PrimaryTab extends Fragment
 
     public Date getDepartureDate()
     {
-        return departureDate.getTime();
+        return getTime(departureDate);
     }
 
     public Date getDepartureTime()
     {
-        return depeartureTime.getTime();
+        return getTime(depeartureTime);
     }
 
     public BigDecimal getPrice()
@@ -105,21 +132,29 @@ public class PrimaryTab extends Fragment
         return ContentConverter.toBigDecimal(priceHolder);
     }
 
-    public short getSeats()
+    public Short getSeats()
     {
         return ContentConverter.toShort(seats);
     }
 
     private void loadViews(final View inPrimaryTab)
     {
-        final ArrayAdapter<CharSequence> townsAdapter =
-                ArrayAdapter.createFromResource(getActivity(),
-                        R.array.towns_array,
-                        android.R.layout.simple_spinner_item);
-        townsAdapter.setDropDownViewResource(
-                android.R.layout.simple_spinner_dropdown_item);
-        prepareStartSpinner(inPrimaryTab, townsAdapter);
-        prepareEndSpinner(inPrimaryTab, townsAdapter);
+        final ICityComponentsPreparator preparator = new ICityComponentsPreparator()
+        {
+            @Override
+            public void prepareComponents(final String[] inCityNames)
+            {
+                final ArrayAdapter<CharSequence> townsAdapter =
+                        new ArrayAdapter<CharSequence>(getActivity(),
+                                android.R.layout.simple_spinner_item,
+                                inCityNames);
+                townsAdapter.setDropDownViewResource(
+                        android.R.layout.simple_spinner_dropdown_item);
+                prepareStartSpinner(inPrimaryTab, townsAdapter);
+                prepareEndSpinner(inPrimaryTab, townsAdapter);
+            }
+        };
+        citiesProvider.provideCityNames(preparator);
 
         final EditText dateHolder = (EditText) inPrimaryTab
                 .findViewById(R.id.announcement_date);
@@ -130,7 +165,7 @@ public class PrimaryTab extends Fragment
                     final int inMonthOfYear,
                     final int inDayOfMonth)
             {
-                updateDate(dateHolder, inDayOfMonth, inMonthOfYear, inYear);
+                updateDate(dateHolder, inYear, inMonthOfYear, inDayOfMonth);
             }
         };
         dateDisplayer.display(getActivity().getSupportFragmentManager(),
@@ -154,6 +189,9 @@ public class PrimaryTab extends Fragment
         priceHolder = (EditText) inPrimaryTab.findViewById(
                 R.id.announcement_price);
         seats = (EditText) inPrimaryTab.findViewById(R.id.announcement_seats);
+
+        final LabelsFormatter formatter = new LabelsFormatter(inPrimaryTab);
+        formatter.format(labelIds);
     }
 
     private void updateTime(final EditText inTimeHolder,
@@ -161,17 +199,19 @@ public class PrimaryTab extends Fragment
     {
         final LocalizedMsgReader msgReader = new LocalizedMsgReader(
                 getActivity());
+        depeartureTime = Calendar.getInstance();
         depeartureTime.set(Calendar.HOUR_OF_DAY, inHourOfDay);
         depeartureTime.set(Calendar.MINUTE, inMinute);
         inTimeHolder.setText(msgReader.getMessage(R.string.time_picker_format,
                 inHourOfDay, inMinute));
     }
 
-    private void updateDate(final EditText inDateHolder, final int inDay,
-            final int inMonth, final int inYear)
+    private void updateDate(final EditText inDateHolder, final int inYear,
+            final int inMonth, final int inDay)
     {
         final LocalizedMsgReader msgReader = new LocalizedMsgReader(
                 getActivity());
+        departureDate = Calendar.getInstance();
         departureDate.set(inYear, inMonth, inDay);
         inDateHolder.setText(msgReader.getMessage(R.string.date_picker_format,
                 inDay, inMonth, inYear));
@@ -251,5 +291,17 @@ public class PrimaryTab extends Fragment
     {
         final View fieldToHide = inTab.findViewById(inFieldId);
         fieldToHide.setVisibility(View.INVISIBLE);
+    }
+
+    private Date getTime(final Calendar inCal)
+    {
+        Date result = null;
+
+        if (null != inCal)
+        {
+            result = inCal.getTime();
+        }
+
+        return result;
     }
 }

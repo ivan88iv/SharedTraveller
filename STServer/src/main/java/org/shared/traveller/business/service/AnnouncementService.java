@@ -5,9 +5,9 @@ import java.io.Serializable;
 import org.shared.traveller.business.dao.IAnnouncementDAO;
 import org.shared.traveller.business.domain.IPersistentAnnouncement;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component
+@Service
 public class AnnouncementService implements Serializable
 {
 	/**

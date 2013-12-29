@@ -8,11 +8,14 @@ import org.ai.shared.traveller.announcement.input.save.ISaveAnnouncementCommand;
 import org.ai.shared.traveller.announcement.input.tab.PrimaryTab;
 import org.ai.shared.traveller.announcement.input.tab.SecondaryTab;
 import org.ai.shared.traveller.announcement.input.tab.adapter.AnnouncementTabsAdapter;
+import org.ai.shared.traveller.validator.IScreenValidator;
+import org.ai.shared.traveller.validator.required.ScreenRequiredFieldValidator;
 import org.ai.sharedtraveller.R;
 import org.shared.traveller.client.domain.rest.Announcement;
 import org.shared.traveller.client.domain.rest.Announcement.AnnouncementBuilder;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -90,36 +93,27 @@ public class InputAnnouncementFragment extends Fragment
         {
             final PrimaryTab primaryTabInfo = adapter.getPrimaryTab();
             final SecondaryTab secondaryTabInfo = adapter.getSecondaryTab();
+            final Context context = getActivity();
+            final Resources resources = context.getResources();
+            final IScreenValidator validator = new ScreenRequiredFieldValidator(
+                    context);
+            final boolean isScreenCorrect = validator
+                    .validate(primaryTabInfo.getDepartureDate(),
+                            resources.getString(R.string.announcement_date))
+                    .validate(primaryTabInfo.getSeats(),
+                            resources.getString(R.string.announcement_seats))
+                    .validate(primaryTabInfo.getFromPoint(),
+                            resources.getString(R.string.announcement_start_pt))
+                    .validate(primaryTabInfo.getToPoint(),
+                            resources.getString(R.string.announcement_end_pt))
+                    .getResult();
 
-            // TODO THE USERNAME MUST COME FROM SOMEWHERE
-            final AnnouncementBuilder builder = new AnnouncementBuilder(
-                    primaryTabInfo.getFromPoint(),
-                    primaryTabInfo.getToPoint(),
-                    primaryTabInfo.getDepartureDate(),
-                    primaryTabInfo.getSeats(),
-                    "temp");
-            builder.depAddress(secondaryTabInfo.getDepartureAddress())
-                    .depTime(primaryTabInfo.getDepartureTime())
-                    .price(primaryTabInfo.getPrice())
-                    .vehicleName(secondaryTabInfo.getSelectedVehicleName());
-            List<String> intermediatePoints = null;
-
-            final Map<String, Spinner> intermediateSpinners = secondaryTabInfo
-                    .getIntermediatePtsSpinners();
-            if (null != intermediateSpinners)
+            if (isScreenCorrect)
             {
-                intermediatePoints = new ArrayList<String>();
-                for (final Map.Entry<String, Spinner> intermEntry : intermediateSpinners
-                        .entrySet())
-                {
-                    final Spinner currentSpinner = intermEntry.getValue();
-                    intermediatePoints.add(currentSpinner.getSelectedItem()
-                            .toString());
-                }
+                final Announcement announcement = buildNewAnnouncement(
+                        primaryTabInfo, secondaryTabInfo);
+                saveCommand.saveAnnouncement(announcement);
             }
-            final Announcement announcement =
-                    builder.intermediatePoints(intermediatePoints).build();
-            saveCommand.saveAnnouncement(announcement);
         }
 
         return super.onOptionsItemSelected(item);
@@ -130,5 +124,39 @@ public class InputAnnouncementFragment extends Fragment
     {
         inflater.inflate(R.menu.save_action_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    private Announcement buildNewAnnouncement(
+            final PrimaryTab inPrimaryTabInfo,
+            final SecondaryTab inSecondaryTabInfo)
+    {
+        // TODO THE USERNAME MUST COME FROM SOMEWHERE
+        final AnnouncementBuilder builder = new AnnouncementBuilder(
+                inPrimaryTabInfo.getFromPoint(),
+                inPrimaryTabInfo.getToPoint(),
+                inPrimaryTabInfo.getDepartureDate(),
+                inPrimaryTabInfo.getSeats(),
+                "temp");
+        builder.depAddress(inSecondaryTabInfo.getDepartureAddress())
+                .depTime(inPrimaryTabInfo.getDepartureTime())
+                .price(inPrimaryTabInfo.getPrice())
+                .vehicleName(inSecondaryTabInfo.getSelectedVehicleName());
+        List<String> intermediatePoints = null;
+
+        final Map<String, Spinner> intermediateSpinners = inSecondaryTabInfo
+                .getIntermediatePtsSpinners();
+        if (null != intermediateSpinners)
+        {
+            intermediatePoints = new ArrayList<String>();
+            for (final Map.Entry<String, Spinner> intermEntry : intermediateSpinners
+                    .entrySet())
+            {
+                final Spinner currentSpinner = intermEntry.getValue();
+                intermediatePoints.add(currentSpinner.getSelectedItem()
+                        .toString());
+            }
+        }
+
+        return builder.intermediatePoints(intermediatePoints).build();
     }
 }

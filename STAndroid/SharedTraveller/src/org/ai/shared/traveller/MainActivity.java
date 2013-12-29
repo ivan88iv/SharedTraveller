@@ -6,13 +6,19 @@ import java.text.MessageFormat;
 
 import org.ai.shared.traveller.announcement.AnnouncementsSwipeListFragment;
 import org.ai.shared.traveller.announcement.input.InputAnnouncementFragment;
-import org.ai.shared.traveller.announcement.input.NewAnnouncementTask;
 import org.ai.shared.traveller.announcement.input.save.ISaveAnnouncementCommand;
+import org.ai.shared.traveller.data.providers.ICitiesProvider;
+import org.ai.shared.traveller.data.providers.IVehiclesProvider;
 import org.ai.shared.traveller.exceptions.ServiceConnectionException;
 import org.ai.shared.traveller.network.connection.AbstractNetworkActivity;
 import org.ai.shared.traveller.network.connection.rest.client.AbstractPutClient;
 import org.ai.shared.traveller.network.connection.rest.client.RequestTypes;
 import org.ai.shared.traveller.network.connection.rest.client.SimpleClient;
+import org.ai.shared.traveller.task.AllCitiesTask;
+import org.ai.shared.traveller.task.UserVehiclesTask;
+import org.ai.shared.traveller.task.announcement.NewAnnouncementTask;
+import org.ai.shared.traveller.ui.preparator.ICityComponentsPreparator;
+import org.ai.shared.traveller.ui.preparator.IVehicleComponentsPreparator;
 import org.ai.sharedtraveller.R;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.shared.traveller.client.domain.rest.Announcement;
@@ -26,9 +32,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 public class MainActivity extends AbstractNetworkActivity implements
-        ISaveAnnouncementCommand
+        ISaveAnnouncementCommand, ICitiesProvider, IVehiclesProvider
 {
-
     private static final String UNSUCCESSFUL_ANNOUNCEMENT_SUBMIT =
             "Could not submit the announcement {0}.";
 
@@ -46,9 +51,9 @@ public class MainActivity extends AbstractNetworkActivity implements
     @Override
     protected void attachTasks()
     {
-        final SimpleClient sc = new SimpleClient(RequestTypes.GET);
-        addTask("DUMMY_TASK", new DummyTaskGet(sc));
-        executeTasks();
+        final SimpleClient getClient = new SimpleClient(RequestTypes.GET);
+        addTask("DUMMY_TASK", new DummyTaskGet(getClient));
+        executeTask("DUMMY_TASK");
     }
 
     @Override
@@ -64,7 +69,6 @@ public class MainActivity extends AbstractNetworkActivity implements
 
         showViewPagerIndicator.setOnClickListener(new View.OnClickListener()
         {
-
             @Override
             public void onClick(final View v)
             {
@@ -158,7 +162,28 @@ public class MainActivity extends AbstractNetworkActivity implements
                     }
                 };
         addTask(CREATION_ANNOUNCEMNT_TASK_KEY, new NewAnnouncementTask(
-                newAnnouncementClient));
+                newAnnouncementClient, this));
         executeTask(CREATION_ANNOUNCEMNT_TASK_KEY);
+    }
+
+    @Override
+    public void provideCityNames(final ICityComponentsPreparator inPreparator)
+    {
+        final SimpleClient getClient = new SimpleClient(RequestTypes.GET);
+        final AllCitiesTask citiesTask = new AllCitiesTask(getClient,
+                inPreparator);
+        addTask("CITIES_TASK", citiesTask);
+        executeTask("CITIES_TASK");
+    }
+
+    @Override
+    public void provideVehicleNames(final String inUsername,
+            final IVehicleComponentsPreparator inPreparator)
+    {
+        final SimpleClient getClient = new SimpleClient(RequestTypes.GET);
+        final UserVehiclesTask vehicleTask = new UserVehiclesTask(
+                getClient, inUsername, inPreparator);
+        addTask("VEHICLE_TASK", vehicleTask);
+        executeTask("VEHICLE_TASK");
     }
 }

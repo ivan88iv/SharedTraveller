@@ -1,5 +1,6 @@
 package org.shared.traveller.business.dao.jpa;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.TypedQuery;
@@ -18,6 +19,9 @@ public class VehicleDAO extends AbstractDAO<IPersistentVehicle>
 	 */
 	private static final long serialVersionUID = 1839402074564229621L;
 
+	private static final String NULL_USERNAME =
+			"The username of the driver cannot be null.";
+
 	@Override
 	public VehicleEntity findByDisplayName(String inName)
 	{
@@ -32,5 +36,22 @@ public class VehicleDAO extends AbstractDAO<IPersistentVehicle>
 		}
 
 		return vehicle;
+	}
+
+	@Override
+	public List<String> getVehicleNames(String inUsername)
+	{
+		assert null != inUsername : NULL_USERNAME;
+
+		final TypedQuery<String> query = entityManager.createNamedQuery(
+				"VehicleEntity.getVehiclesForUser", String.class);
+		query.setParameter("username", inUsername);
+		List<String> names = query.getResultList();
+		if (null == names)
+		{
+			names = new ArrayList<String>();
+		}
+
+		return names;
 	}
 }

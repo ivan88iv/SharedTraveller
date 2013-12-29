@@ -11,6 +11,7 @@ import org.ai.shared.traveller.network.connection.path.resolver.PathResolver;
 import org.ai.shared.traveller.network.connection.response.ServerResponse;
 import org.ai.shared.traveller.network.connection.response.ServerResponseParser;
 import org.ai.shared.traveller.network.connection.rest.client.AbstractRestClient;
+import org.codehaus.jackson.type.TypeReference;
 import org.shared.traveller.rest.domain.ErrorResponse;
 
 import android.os.AsyncTask;
@@ -20,7 +21,7 @@ import android.util.Log;
  * The class represents the common functionality used for all tasks that perform
  * REST server calls
  * 
- * @author Ivan
+ * @author "Ivan Ivanov"
  * 
  * @param <Result>
  *            the type of the body contained in the server response that is
@@ -58,15 +59,28 @@ public abstract class AbstractNetworkTask<Result> extends
     {
         super();
 
-        try
-        {
-            parser = new ServerResponseParser<Result>(inClass);
-            requestAddress = new URL(resolver.resolvePath(inServerPath));
-        } catch (final MalformedURLException murle)
-        {
-            throw new IllegalUrlException(inServerPath, murle);
-        }
+        parser = new ServerResponseParser<Result>(inClass);
+        requestAddress = createRequestURL(inServerPath);
+        restClient = inClient;
+    }
 
+    /**
+     * The constructor creates a new abstract network task
+     * 
+     * @param inServerPath
+     *            the path in the server
+     * @param inClient
+     *            the client used to make the REST service calls
+     * @param inClass
+     *            the reference of the server response body type
+     */
+    public AbstractNetworkTask(final String inServerPath,
+            final AbstractRestClient inClient, final TypeReference<Result> inRef)
+    {
+        super();
+
+        parser = new ServerResponseParser<Result>(inRef);
+        requestAddress = createRequestURL(inServerPath);
         restClient = inClient;
     }
 
@@ -117,7 +131,7 @@ public abstract class AbstractNetworkTask<Result> extends
             response = new ServerResponse<Result>(400, content);
         } catch (final ServiceConnectionException sce)
         {
-            Log.d("AbstractNetwTask",
+            Log.d("AbstractNetworkTask",
                     MessageFormat.format(UNABLE_TO_CONNECT, requestAddress),
                     sce);
             final ErrorResponse content = new ErrorResponse();
@@ -143,5 +157,26 @@ public abstract class AbstractNetworkTask<Result> extends
                 onError(result.getStatusCode(), result.getErrorResponse());
             }
         }
+    }
+
+    /**
+     * Creates the request URL that corresponds to the given server path
+     * 
+     * @param inServerPath
+     *            the server path that determines the request URL
+     * @return the formed request URL
+     */
+    private URL createRequestURL(final String inServerPath)
+    {
+        URL requestUrl = null;
+        try
+        {
+            requestUrl = new URL(resolver.resolvePath(inServerPath));
+        } catch (final MalformedURLException murle)
+        {
+            throw new IllegalUrlException(inServerPath, murle);
+        }
+
+        return requestUrl;
     }
 }

@@ -25,7 +25,7 @@ import org.shared.traveller.business.domain.NotificationEntity;
 import org.shared.traveller.utility.DeepCopier;
 
 @Entity(name = "announcement")
-@Table(name = "announcment")
+@Table(name = "announcement")
 public class AnnouncementEntity extends AbstractEntity implements
 		IPersistentAnnouncement
 {
@@ -37,9 +37,7 @@ public class AnnouncementEntity extends AbstractEntity implements
 	public enum Status {
 		ACTIVE,
 
-		APPROVED,
-
-		REJECTED,
+		COMPLETED,
 
 		CANCELLED;
 	}

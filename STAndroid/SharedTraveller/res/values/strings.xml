@@ -31,40 +31,22 @@
     
     <!-- Announcement's Tabs -->
     <string name="required_str">*</string>
-    <string name="announcement_start_pt">Start Point:</string>
-    <string name="announcement_end_pt">End Point:</string>
-    <string name="announcement_date">Date:</string>
-    <string name="announcement_time">Time:</string>
-    <string name="announcement_price">Price:</string>
-    <string name="announcement_seats">Seats:</string>
-    <string name="announcement_departure_address">Departure Address:</string>
-    <string name="announcement_vehicle">Vehicle:</string>
-    <string name="announcement_intermediate_pts">Intermediate Points:</string>
+    <string name="announcement_start_pt">Start Point</string>
+    <string name="announcement_end_pt">End Point</string>
+    <string name="announcement_date">Date</string>
+    <string name="announcement_time">Time</string>
+    <string name="announcement_price">Price</string>
+    <string name="announcement_seats">Seats</string>
+    <string name="announcement_departure_address">Departure Address</string>
+    <string name="announcement_vehicle">Vehicle</string>
+    <string name="announcement_intermediate_pts">Intermediate Points</string>
     <string name="new_intermediate_point">Add New Point</string>
     <string name="delete_intermediate_pt_btn">A button for deleting an intermediate point.</string>
     <string name="primary_announcemnt_tab">Primary</string>
     <string name="secondary_announcement_tab">Secondary</string>
     <string name="save_action">Save</string>
-	<string-array name="towns_array">
-	    <item>Sofia</item>
-	    <item>Melnik</item>
-	    <item>Bansko</item>
-	    <item>Blagoevgrad</item>
-	    <item>Stara Zagora</item>
-	    <item>Veliko Tyrnovo</item>
-	    <item>Pazardzhik</item>
-	    <item>Plovdiv</item>
-	    <item>Burgas</item>
-	</string-array>
-	<string-array name="vehicles_array">
-	    <item>Moskvich</item>
-	    <item>Lada</item>
-	    <item>Pugeot</item>
-	    <item>Citroen</item>
-	    <item>Audi</item>
-	    <item>VW</item>
-	</string-array>
-
+    <string name="labels_format">{0}:</string>
+	
 	<!-- Swipe list view soer order header -->
     <string name="sort_order_menu_from">Sort by "From"</string>
     <string name="sort_order_menu_to">Sort by "To"</string>
@@ -72,4 +54,8 @@
     <!-- Localization Formats -->
     <string name="date_picker_format">{0,number,#}.{1,number,#}.{2,number,#}</string>
     <string name="time_picker_format">{0,number,#}:{1,number,#}</string>
+    
+    <!-- Validation -->
+    <string name="required_validator_template">The following fields do not have any value specified: {0}</string>
+    <string name="field_names_separator">, </string>
 </resources>

@@ -5,9 +5,9 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.shared.traveller.business.dao.jpa.CityDAO;
-import org.shared.traveller.business.dao.jpa.TravellerDAO;
-import org.shared.traveller.business.dao.jpa.VehicleDAO;
+import org.shared.traveller.business.dao.ICityDAO;
+import org.shared.traveller.business.dao.ITravellerDAO;
+import org.shared.traveller.business.dao.IVehicleDAO;
 import org.shared.traveller.business.domain.IPersistentAnnouncement;
 import org.shared.traveller.business.domain.jpa.AnnouncementEntity.BusinessAnnouncementBuilder;
 import org.shared.traveller.business.domain.jpa.AnnouncementEntity.Status;
@@ -46,18 +46,18 @@ public class AnnouncementProducer implements
 	private IPersistentAnnouncement persistentAnnouncement;
 
 	@Autowired
-	private CityDAO cityDao;
+	private ICityDAO cityDao;
 
 	@Autowired
-	private VehicleDAO vehicleDao;
+	private IVehicleDAO vehicleDao;
 
 	@Autowired
-	private TravellerDAO travellerDao;
+	private ITravellerDAO travellerDao;
 
 	private CityEntity extractCity(final String inCityName,
 			final String inErrorMsg)
 	{
-		final CityEntity city = cityDao.findCityByName(inCityName);
+		final CityEntity city = (CityEntity) cityDao.findCityByName(inCityName);
 		if (null == city)
 		{
 			throw new IncorrectInputException(MessageFormat.format(
@@ -69,13 +69,13 @@ public class AnnouncementProducer implements
 
 	private VehicleEntity extractVehicle(final String inVehicleName)
 	{
-		return vehicleDao.findByDisplayName(inVehicleName);
+		return (VehicleEntity) vehicleDao.findByDisplayName(inVehicleName);
 	}
 
 	private TravellerEntity extractDriver(final String inDriverUsername,
 			final String inErrorMsg)
 	{
-		final TravellerEntity driver = travellerDao
+		final TravellerEntity driver = (TravellerEntity) travellerDao
 				.findByUsername(inDriverUsername);
 
 		if (null == driver)
@@ -119,7 +119,7 @@ public class AnnouncementProducer implements
 			for (final String cityName : intermediateCityNames)
 			{
 				final CityEntity currCity =
-						cityDao.findCityByName(cityName);
+						(CityEntity) cityDao.findCityByName(cityName);
 				intermediateCities.add(currCity);
 			}
 
