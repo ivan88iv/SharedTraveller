@@ -2,21 +2,21 @@ package org.shared.traveller.rest.domain;
 
 import java.util.List;
 
-import org.shared.traveller.client.domain.rest.Announcement;
+import org.shared.traveller.client.domain.IAnnouncement;
 
 public class AnnouncementsList
 {
 
 	private Integer count;
 
-	private List<Announcement> list;
+	private List<IAnnouncement> list;
 
 	public AnnouncementsList()
 	{
 		super();
 	}
 
-	public AnnouncementsList(Integer count, List<Announcement> list)
+	public AnnouncementsList(Integer count, List<IAnnouncement> list)
 	{
 		super();
 		this.count = count;
@@ -33,12 +33,12 @@ public class AnnouncementsList
 		this.count = count;
 	}
 
-	public List<Announcement> getList()
+	public List<IAnnouncement> getList()
 	{
 		return list;
 	}
 
-	public void setList(List<Announcement> list)
+	public void setList(List<IAnnouncement> list)
 	{
 		this.list = list;
 	}
