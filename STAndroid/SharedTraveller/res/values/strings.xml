@@ -40,6 +40,7 @@
     <string name="announcement_departure_address">Departure Address:</string>
     <string name="announcement_vehicle">Vehicle:</string>
     <string name="announcement_intermediate_pts">Intermediate Points:</string>
+    <string name="announcement_status">Status:</string>
     <string name="new_intermediate_point">Add New Point</string>
     <string name="delete_intermediate_pt_btn">A button for deleting an intermediate point.</string>
     <string name="primary_announcemnt_tab">Primary</string>
