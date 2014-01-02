@@ -30,11 +30,19 @@ public final class ContentConverter
      * @param inComponent
      *            the component which content is extracted. The component may
      *            not be null.
-     * @return the extracted and converted content of the component
+     * @return the extracted and converted content of the component or null if
+     *         the content is empty
      */
-    public static short toShort(final EditText inComponent)
+    public static Short toShort(final EditText inComponent)
     {
-        return Short.valueOf(getContent(inComponent)).shortValue();
+        Short result = null;
+        final String content = getContent(inComponent);
+        if (!"".equals(content))
+        {
+            result = Short.valueOf(content);
+        }
+
+        return result;
     }
 
     /**
@@ -44,11 +52,19 @@ public final class ContentConverter
      * @param inComponent
      *            the component which content is extracted. The component may
      *            not be null.
-     * @return the extracted and converted content
+     * @return the extracted and converted content or null if the content is
+     *         empty
      */
     public static BigDecimal toBigDecimal(final EditText inComponent)
     {
-        return new BigDecimal(getContent(inComponent));
+        BigDecimal result = null;
+        final String content = getContent(inComponent);
+        if (!"".equals(content))
+        {
+            result = new BigDecimal(content);
+        }
+
+        return result;
     }
 
     /**

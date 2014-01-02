@@ -19,7 +19,9 @@ import org.shared.traveller.business.domain.IPersistentCity;
 @NamedQueries(
 {
 		@NamedQuery(name = "CityEntity.findCityByName",
-				query = "SELECT c FROM city c WHERE c.name = :name")
+				query = "SELECT c FROM city c WHERE c.name = :name"),
+		@NamedQuery(name = "CityEntity.getCityNames",
+				query = "SELECT c.name FROM city c")
 })
 public class CityEntity extends AbstractEntity implements IPersistentCity
 {
@@ -51,6 +53,7 @@ public class CityEntity extends AbstractEntity implements IPersistentCity
 		this.id = id;
 	}
 
+	@Override
 	public String getName()
 	{
 		return name;
@@ -61,6 +64,7 @@ public class CityEntity extends AbstractEntity implements IPersistentCity
 		this.name = name;
 	}
 
+	@Override
 	public CountryEntity getCountry()
 	{
 		return country;

@@ -1,5 +1,6 @@
 package org.shared.traveller.business.dao.jpa;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.TypedQuery;
@@ -42,6 +43,15 @@ public class CityDAO extends AbstractDAO<IPersistentCity> implements ICityDAO
 	@Override
 	public List<String> findCityNames()
 	{
-		return null;
+		final TypedQuery<String> query = entityManager.createNamedQuery(
+				"CityEntity.getCityNames",
+				String.class);
+		List<String> names = query.getResultList();
+		if (names == null)
+		{
+			names = new ArrayList<String>();
+		}
+
+		return names;
 	}
 }

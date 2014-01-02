@@ -11,213 +11,200 @@ import org.shared.traveller.utility.DeepCopier;
 
 public class Announcement implements IAnnouncement
 {
-	/**
-	 * The serial version UID
-	 */
-	private static final long serialVersionUID = 2386542644705690994L;
+    /**
+     * The serial version UID
+     */
+    private static final long serialVersionUID = 2386542644705690994L;
 
-	private static final String NULL_VISITOR = "Visitor cannot be null!";
+    private static final String NULL_VISITOR = "Visitor cannot be null!";
 
-	private String from;
+    protected Announcement()
+    {
 
-	private String to;
+    }
 
-	private Date departureDate;
+    private String from;
 
-	private Date departureTime;
+    private String to;
 
-	private BigDecimal price;
+    private Date departureDate;
 
-	private short seats;
+    private Date departureTime;
 
-	private String depAddress;
+    private BigDecimal price;
 
-	private String vehicleName;
+    private short seats;
 
-	private String driverUsername;
+    private String depAddress;
 
-	private String status;
+    private String vehicleName;
 
-	private List<String> intermediatePts;
+    private String driverUsername;
 
-	public static class AnnouncementBuilder
-	{
-		private static final String NULL_FROM_POINT = "Start point cannot be null.";
+    private List<String> intermediatePts;
 
-		private static final String NULL_TO_POINT = "End point cannot be null.";
+    public static class AnnouncementBuilder
+    {
+        private static final String NULL_FROM_POINT = "Start point cannot be null.";
 
-		private static final String NULL_DEP_DATE = "Departure date cannot be null.";
+        private static final String NULL_TO_POINT = "End point cannot be null.";
 
-		private static final String NULL_USERNAME = "The driver's username cannot be null.";
+        private static final String NULL_DEP_DATE = "Departure date cannot be null.";
 
-		private String fromField;
+        private static final String NULL_USERNAME =
+                "The driver's username cannot be null.";
 
-		private String toField;
+        private final String fromField;
 
-		private Date depDateField;
+        private final String toField;
 
-		private Date depTimeField;
+        private final Date depDateField;
 
-		private BigDecimal priceField;
+        private Date depTimeField;
 
-		private short seatsField;
+        private BigDecimal priceField;
 
-		private String depAddressField;
+        private final short seatsField;
 
-		private String vehicleNameField;
+        private String depAddressField;
 
-		private String driverUsernameField;
+        private String vehicleNameField;
 
-		private String statusField;
+        private final String driverUsernameField;
 
-		private List<String> intermediatePtsField;
+        private List<String> intermediatePtsField;
 
-		public AnnouncementBuilder(final String inFrom, final String inTo, final Date inDepDate, final short inSeats, final String inDriverUsername)
-		{
-			assert null != inFrom : NULL_FROM_POINT;
-			assert null != inTo : NULL_TO_POINT;
-			assert null != inDepDate : NULL_DEP_DATE;
-			assert null != inDriverUsername : NULL_USERNAME;
+        public AnnouncementBuilder(final String inFrom, final String inTo,
+                final Date inDepDate, final short inSeats,
+                final String inDriverUsername)
+        {
+            assert null != inFrom : NULL_FROM_POINT;
+            assert null != inTo : NULL_TO_POINT;
+            assert null != inDepDate : NULL_DEP_DATE;
+            assert null != inDriverUsername : NULL_USERNAME;
 
-			fromField = inFrom;
-			toField = inTo;
-			depDateField = DeepCopier.copy(inDepDate);
-			seatsField = inSeats;
-			driverUsernameField = inDriverUsername;
-		}
+            fromField = inFrom;
+            toField = inTo;
+            depDateField = DeepCopier.copy(inDepDate);
+            seatsField = inSeats;
+            driverUsernameField = inDriverUsername;
+        }
 
-		public AnnouncementBuilder depTime(final Date inDepTime)
-		{
-			depTimeField = DeepCopier.copy(inDepTime);
-			return this;
-		}
+        public AnnouncementBuilder depTime(final Date inDepTime)
+        {
+            depTimeField = DeepCopier.copy(inDepTime);
+            return this;
+        }
 
-		public AnnouncementBuilder price(final BigDecimal inPrice)
-		{
-			priceField = DeepCopier.copy(inPrice);
-			return this;
-		}
+        public AnnouncementBuilder price(final BigDecimal inPrice)
+        {
+            priceField = DeepCopier.copy(inPrice);
+            return this;
+        }
 
-		public AnnouncementBuilder depAddress(final String inDepAddress)
-		{
-			depAddressField = inDepAddress;
-			return this;
-		}
+        public AnnouncementBuilder depAddress(final String inDepAddress)
+        {
+            depAddressField = inDepAddress;
+            return this;
+        }
 
-		public AnnouncementBuilder vehicleName(final String inVehName)
-		{
-			vehicleNameField = inVehName;
-			return this;
-		}
+        public AnnouncementBuilder vehicleName(final String inVehName)
+        {
+            vehicleNameField = inVehName;
+            return this;
+        }
 
-		public AnnouncementBuilder status(final String inStatus)
-		{
-			statusField = inStatus;
-			return this;
-		}
+        public AnnouncementBuilder intermediatePoints(
+                final List<String> inIntermediatePts)
+        {
+            intermediatePtsField = new ArrayList<String>(inIntermediatePts);
+            return this;
+        }
 
-		public AnnouncementBuilder intermediatePoints(final List<String> inIntermediatePts)
-		{
-			intermediatePtsField = new ArrayList<String>(inIntermediatePts);
-			return this;
-		}
+        public Announcement build()
+        {
+            return new Announcement(this);
+        }
+    }
 
-		public Announcement build()
-		{
-			return new Announcement(this);
-		}
-	}
+    private Announcement(final AnnouncementBuilder inBuilder)
+    {
+        from = inBuilder.fromField;
+        to = inBuilder.toField;
+        departureDate = DeepCopier.copy(inBuilder.depDateField);
+        departureTime = DeepCopier.copy(inBuilder.depTimeField);
+        price = DeepCopier.copy(inBuilder.priceField);
+        seats = inBuilder.seatsField;
+        depAddress = inBuilder.depAddressField;
+        vehicleName = inBuilder.vehicleNameField;
+        driverUsername = inBuilder.driverUsernameField;
+        intermediatePts = DeepCopier.copy(inBuilder.intermediatePtsField);
+    }
 
-	public Announcement()
-	{
+    @Override
+    public String getFrom()
+    {
+        return from;
+    }
 
-	}
+    @Override
+    public String getTo()
+    {
+        return to;
+    }
 
-	private Announcement(final AnnouncementBuilder inBuilder)
-	{
-		from = inBuilder.fromField;
-		to = inBuilder.toField;
-		departureDate = DeepCopier.copy(inBuilder.depDateField);
-		departureTime = DeepCopier.copy(inBuilder.depTimeField);
-		price = DeepCopier.copy(inBuilder.priceField);
-		seats = inBuilder.seatsField;
-		depAddress = inBuilder.depAddressField;
-		vehicleName = inBuilder.vehicleNameField;
-		driverUsername = inBuilder.driverUsernameField;
-		status = inBuilder.statusField;
-		intermediatePts = DeepCopier.copy(inBuilder.intermediatePtsField);
-	}
+    @Override
+    public Date getDepartureDate()
+    {
+        return DeepCopier.copy(departureDate);
+    }
 
-	@Override
-	public String getFrom()
-	{
-		return from;
-	}
+    @Override
+    public Date getDepartureTime()
+    {
+        return DeepCopier.copy(departureTime);
+    }
 
-	@Override
-	public String getTo()
-	{
-		return to;
-	}
+    @Override
+    public BigDecimal getPrice()
+    {
+        return DeepCopier.copy(price);
+    }
 
-	@Override
-	public Date getDepartureDate()
-	{
-		return DeepCopier.copy(departureDate);
-	}
+    @Override
+    public short getSeats()
+    {
+        return seats;
+    }
 
-	@Override
-	public Date getDepartureTime()
-	{
-		return DeepCopier.copy(departureTime);
-	}
+    @Override
+    public String getDepAddress()
+    {
+        return depAddress;
+    }
 
-	@Override
-	public BigDecimal getPrice()
-	{
-		return DeepCopier.copy(price);
-	}
+    @Override
+    public List<String> getIntermediatePts()
+    {
+        return DeepCopier.copy(intermediatePts);
+    }
 
-	@Override
-	public short getSeats()
-	{
-		return seats;
-	}
+    @Override
+    public void accept(final IAnnouncementVisitor inVisitor)
+    {
+        assert null != inVisitor : NULL_VISITOR;
+        inVisitor.visit(this);
+    }
 
-	@Override
-	public String getDepAddress()
-	{
-		return depAddress;
-	}
+    @Override
+    public String getVehicleName()
+    {
+        return vehicleName;
+    }
 
-	@Override
-	public List<String> getIntermediatePts()
-	{
-		return DeepCopier.copy(intermediatePts);
-	}
-
-	@Override
-	public void accept(final IAnnouncementVisitor inVisitor)
-	{
-		assert null != inVisitor : NULL_VISITOR;
-		inVisitor.visit(this);
-	}
-
-	@Override
-	public String getVehicleName()
-	{
-		return vehicleName;
-	}
-
-	@Override
-	public String getDriverUsername()
-	{
-		return driverUsername;
-	}
-
-	@Override
-	public String getStatus()
-	{
-		return status;
-	}
+    @Override
+    public String getDriverUsername()
+    {
+        return driverUsername;
+    }
 }

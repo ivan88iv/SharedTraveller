@@ -22,7 +22,10 @@ import org.shared.traveller.business.domain.IPersistentVehicle;
 @NamedQueries(
 {
 		@NamedQuery(name = "VehicleEntity.findByName",
-				query = "SELECT v FROM vehicle v WHERE v.displayName = :name")
+				query = "SELECT v FROM vehicle v WHERE v.displayName = :name"),
+		@NamedQuery(name = "VehicleEntity.getVehiclesForUser",
+				query = "SELECT v.displayName FROM vehicle " + ""
+						+ "v JOIN v.owner o WHERE o.username = :username")
 })
 public class VehicleEntity extends AbstractEntity implements IPersistentVehicle
 {
@@ -83,11 +86,13 @@ public class VehicleEntity extends AbstractEntity implements IPersistentVehicle
 		this.id = id;
 	}
 
+	@Override
 	public String getDisplayName()
 	{
 		return displayName;
 	}
 
+	@Override
 	public String getMake()
 	{
 		return make;
@@ -98,6 +103,7 @@ public class VehicleEntity extends AbstractEntity implements IPersistentVehicle
 		this.make = make;
 	}
 
+	@Override
 	public String getModel()
 	{
 		return model;
@@ -108,6 +114,7 @@ public class VehicleEntity extends AbstractEntity implements IPersistentVehicle
 		this.model = model;
 	}
 
+	@Override
 	public Date getYearOfProduction()
 	{
 		return yearOfProduction;
@@ -118,6 +125,7 @@ public class VehicleEntity extends AbstractEntity implements IPersistentVehicle
 		this.yearOfProduction = yearOfProduction;
 	}
 
+	@Override
 	public String getRegNumber()
 	{
 		return regNumber;
@@ -128,6 +136,7 @@ public class VehicleEntity extends AbstractEntity implements IPersistentVehicle
 		this.regNumber = regNumber;
 	}
 
+	@Override
 	public String getColor()
 	{
 		return color;
@@ -138,6 +147,7 @@ public class VehicleEntity extends AbstractEntity implements IPersistentVehicle
 		this.color = color;
 	}
 
+	@Override
 	public Short getSeats()
 	{
 		return seats;
@@ -148,6 +158,7 @@ public class VehicleEntity extends AbstractEntity implements IPersistentVehicle
 		this.seats = seats;
 	}
 
+	@Override
 	public String getDesc()
 	{
 		return desc;
@@ -158,6 +169,7 @@ public class VehicleEntity extends AbstractEntity implements IPersistentVehicle
 		this.desc = desc;
 	}
 
+	@Override
 	public Boolean getCcu()
 	{
 		return ccu;
@@ -168,6 +180,7 @@ public class VehicleEntity extends AbstractEntity implements IPersistentVehicle
 		this.ccu = ccu;
 	}
 
+	@Override
 	public Boolean getAirbag()
 	{
 		return airbag;
@@ -178,6 +191,7 @@ public class VehicleEntity extends AbstractEntity implements IPersistentVehicle
 		this.airbag = airbag;
 	}
 
+	@Override
 	public TravellerEntity getOwner()
 	{
 		return owner;
