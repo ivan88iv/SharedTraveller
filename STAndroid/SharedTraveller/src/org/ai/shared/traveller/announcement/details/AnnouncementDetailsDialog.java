@@ -42,7 +42,7 @@ public class AnnouncementDetailsDialog extends SimpleDialogFragment
 
 		View dialogView = LayoutInflater.from(getActivity()).inflate(R.layout.announcement_details_dialog, null);
 		setViewContent(dialogView, anno);
-		builder.setView(LayoutInflater.from(getActivity()).inflate(R.layout.announcement_details_dialog, null));
+		builder.setView(dialogView);
 		builder.setPositiveButton(DIALOG_BUTTON_TEST, new View.OnClickListener()
 		{
 			@Override
@@ -71,12 +71,26 @@ public class AnnouncementDetailsDialog extends SimpleDialogFragment
 		depDate.setText(DATE_FORMATTER.format(anno.getDepartureDate()));
 
 		TextView depTime = (TextView) dialogView.findViewById(R.id.departure_time);
-		depTime.setText(TIME_FORMATTER.format(anno.getDepartureDate()));
+		depTime.setText(TIME_FORMATTER.format(anno.getDepartureTime()));
 
 		TextView freeSeats = (TextView) dialogView.findViewById(R.id.free_seats);
 		freeSeats.setText(Integer.toString(anno.getSeats()));
 
 		TextView status = (TextView) dialogView.findViewById(R.id.status);
 		status.setText(anno.getStatus());
+
+		if (isUserLogged())
+		{
+			View view = dialogView.findViewById(R.id.address_container);
+			view.setVisibility(View.VISIBLE);
+
+			TextView address = (TextView) dialogView.findViewById(R.id.address);
+			address.setText(anno.getDepAddress());
+		}
+	}
+
+	private boolean isUserLogged()
+	{
+		return true;
 	}
 }
