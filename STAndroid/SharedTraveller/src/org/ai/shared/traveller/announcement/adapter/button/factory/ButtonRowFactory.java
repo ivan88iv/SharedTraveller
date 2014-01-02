@@ -1,6 +1,6 @@
 package org.ai.shared.traveller.announcement.adapter.button.factory;
 
-import org.ai.shared.traveller.announcement.adapter.button.row.AnnoReviewButtonRow;
+import org.ai.shared.traveller.announcement.adapter.button.row.AllAnnouncementsButtonRow;
 import org.ai.shared.traveller.announcement.adapter.button.row.IButtonRow;
 import org.ai.shared.traveller.announcement.adapter.type.SwipeListViewContext;
 
@@ -43,6 +43,6 @@ public class ButtonRowFactory
 
 	private static IButtonRow getAnnoiuncementRow()
 	{
-		return new AnnoReviewButtonRow();
+		return new AllAnnouncementsButtonRow();
 	}
 }
