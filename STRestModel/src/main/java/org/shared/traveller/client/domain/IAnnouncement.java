@@ -30,4 +30,6 @@ public interface IAnnouncement extends Serializable
 	List<String> getIntermediatePts();
 
 	void accept(final IAnnouncementVisitor inVisitor);
+
+	String getStatus();
 }

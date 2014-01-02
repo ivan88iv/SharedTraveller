@@ -18,25 +18,27 @@ public class Announcement implements IAnnouncement
 
 	private static final String NULL_VISITOR = "Visitor cannot be null!";
 
-	private final String from;
+	private String from;
 
-	private final String to;
+	private String to;
 
-	private final Date depDate;
+	private Date departureDate;
 
-	private final Date depTime;
+	private Date departureTime;
 
-	private final BigDecimal price;
+	private BigDecimal price;
 
-	private final short seats;
+	private short seats;
 
-	private final String depAddress;
+	private String depAddress;
 
-	private final String vehicleName;
+	private String vehicleName;
 
-	private final String driverUsername;
+	private String driverUsername;
 
-	private final List<String> intermediatePts;
+	private String status;
+
+	private List<String> intermediatePts;
 
 	public static class AnnouncementBuilder
 	{
@@ -46,32 +48,31 @@ public class Announcement implements IAnnouncement
 
 		private static final String NULL_DEP_DATE = "Departure date cannot be null.";
 
-		private static final String NULL_USERNAME =
-				"The driver's username cannot be null.";
+		private static final String NULL_USERNAME = "The driver's username cannot be null.";
 
-		private final String fromField;
+		private String fromField;
 
-		private final String toField;
+		private String toField;
 
-		private final Date depDateField;
+		private Date depDateField;
 
 		private Date depTimeField;
 
 		private BigDecimal priceField;
 
-		private final short seatsField;
+		private short seatsField;
 
 		private String depAddressField;
 
 		private String vehicleNameField;
 
-		private final String driverUsernameField;
+		private String driverUsernameField;
+
+		private String statusField;
 
 		private List<String> intermediatePtsField;
 
-		public AnnouncementBuilder(final String inFrom, final String inTo,
-				final Date inDepDate, final short inSeats,
-				final String inDriverUsername)
+		public AnnouncementBuilder(final String inFrom, final String inTo, final Date inDepDate, final short inSeats, final String inDriverUsername)
 		{
 			assert null != inFrom : NULL_FROM_POINT;
 			assert null != inTo : NULL_TO_POINT;
@@ -109,8 +110,13 @@ public class Announcement implements IAnnouncement
 			return this;
 		}
 
-		public AnnouncementBuilder intermediatePoints(
-				final List<String> inIntermediatePts)
+		public AnnouncementBuilder status(final String inStatus)
+		{
+			statusField = inStatus;
+			return this;
+		}
+
+		public AnnouncementBuilder intermediatePoints(final List<String> inIntermediatePts)
 		{
 			intermediatePtsField = new ArrayList<String>(inIntermediatePts);
 			return this;
@@ -122,17 +128,23 @@ public class Announcement implements IAnnouncement
 		}
 	}
 
+	public Announcement()
+	{
+
+	}
+
 	private Announcement(final AnnouncementBuilder inBuilder)
 	{
 		from = inBuilder.fromField;
 		to = inBuilder.toField;
-		depDate = DeepCopier.copy(inBuilder.depDateField);
-		depTime = DeepCopier.copy(inBuilder.depTimeField);
+		departureDate = DeepCopier.copy(inBuilder.depDateField);
+		departureTime = DeepCopier.copy(inBuilder.depTimeField);
 		price = DeepCopier.copy(inBuilder.priceField);
 		seats = inBuilder.seatsField;
 		depAddress = inBuilder.depAddressField;
 		vehicleName = inBuilder.vehicleNameField;
 		driverUsername = inBuilder.driverUsernameField;
+		status = inBuilder.statusField;
 		intermediatePts = DeepCopier.copy(inBuilder.intermediatePtsField);
 	}
 
@@ -151,13 +163,13 @@ public class Announcement implements IAnnouncement
 	@Override
 	public Date getDepartureDate()
 	{
-		return DeepCopier.copy(depDate);
+		return DeepCopier.copy(departureDate);
 	}
 
 	@Override
 	public Date getDepartureTime()
 	{
-		return DeepCopier.copy(depTime);
+		return DeepCopier.copy(departureTime);
 	}
 
 	@Override
@@ -201,5 +213,11 @@ public class Announcement implements IAnnouncement
 	public String getDriverUsername()
 	{
 		return driverUsername;
+	}
+
+	@Override
+	public String getStatus()
+	{
+		return status;
 	}
 }
