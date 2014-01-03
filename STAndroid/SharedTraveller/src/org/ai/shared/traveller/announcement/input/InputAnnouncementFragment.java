@@ -14,11 +14,14 @@ import org.ai.sharedtraveller.R;
 import org.shared.traveller.client.domain.rest.Announcement;
 import org.shared.traveller.client.domain.rest.Announcement.AnnouncementBuilder;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.view.ActionMode;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -41,6 +44,10 @@ public class InputAnnouncementFragment extends Fragment
 
     private ISaveAnnouncementCommand saveCommand;
 
+    private ActionMode actionMode;
+
+    private ActionBarActivity activity;
+
     public InputAnnouncementFragment()
     {
         super();
@@ -53,6 +60,13 @@ public class InputAnnouncementFragment extends Fragment
                 new InputAnnouncementFragment();
         fragment.saveCommand = inSaveCommand;
         return fragment;
+    }
+
+    @Override
+    public void onAttach(final Activity inActivity)
+    {
+        activity = (ActionBarActivity) inActivity;
+        super.onAttach(inActivity);
     }
 
     @Override
@@ -76,54 +90,9 @@ public class InputAnnouncementFragment extends Fragment
                 .findViewById(R.id.indicator);
         indicator.setViewPager(pager);
 
+        startActionMode();
+
         return inputFragment;
-    }
-
-    @Override
-    public void onCreate(final Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(final MenuItem item)
-    {
-        if (saveCommand != null && item.getItemId() == R.id.save_action)
-        {
-            final PrimaryTab primaryTabInfo = adapter.getPrimaryTab();
-            final SecondaryTab secondaryTabInfo = adapter.getSecondaryTab();
-            final Context context = getActivity();
-            final Resources resources = context.getResources();
-            final IScreenValidator validator = new ScreenRequiredFieldValidator(
-                    context);
-            final boolean isScreenCorrect = validator
-                    .validate(primaryTabInfo.getDepartureDate(),
-                            resources.getString(R.string.announcement_date))
-                    .validate(primaryTabInfo.getSeats(),
-                            resources.getString(R.string.announcement_seats))
-                    .validate(primaryTabInfo.getFromPoint(),
-                            resources.getString(R.string.announcement_start_pt))
-                    .validate(primaryTabInfo.getToPoint(),
-                            resources.getString(R.string.announcement_end_pt))
-                    .getResult();
-
-            if (isScreenCorrect)
-            {
-                final Announcement announcement = buildNewAnnouncement(
-                        primaryTabInfo, secondaryTabInfo);
-                saveCommand.saveAnnouncement(announcement);
-            }
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onCreateOptionsMenu(final Menu menu, final MenuInflater inflater)
-    {
-        inflater.inflate(R.menu.save_action_menu, menu);
-        super.onCreateOptionsMenu(menu, inflater);
     }
 
     private Announcement buildNewAnnouncement(
@@ -158,5 +127,87 @@ public class InputAnnouncementFragment extends Fragment
         }
 
         return builder.intermediatePoints(intermediatePoints).build();
+    }
+
+    private void startActionMode()
+    {
+        if (actionMode == null)
+        {
+            final ActionMode.Callback actionModeCallback = prepareActionModeCallback();
+            actionMode = activity.startSupportActionMode(actionModeCallback);
+        }
+    }
+
+    private ActionMode.Callback prepareActionModeCallback()
+    {
+        return new ActionMode.Callback()
+        {
+            @Override
+            public boolean onPrepareActionMode(final ActionMode inMode,
+                    final Menu inMenu)
+            {
+                return false;
+            }
+
+            @Override
+            public void onDestroyActionMode(final ActionMode inMode)
+            {
+                actionMode = null;
+            }
+
+            @Override
+            public boolean onCreateActionMode(final ActionMode inMode,
+                    final Menu inMenu)
+            {
+                final MenuInflater inflater = inMode.getMenuInflater();
+                inflater.inflate(R.menu.save_action_menu, inMenu);
+                return true;
+            }
+
+            @Override
+            public boolean onActionItemClicked(final ActionMode inMode,
+                    final MenuItem inItem)
+            {
+                if (saveCommand != null
+                        && inItem.getItemId() == R.id.save_action)
+                {
+                    final PrimaryTab primaryTabInfo = adapter.getPrimaryTab();
+                    final SecondaryTab secondaryTabInfo = adapter
+                            .getSecondaryTab();
+                    final Resources resources = activity.getResources();
+                    final IScreenValidator validator = new ScreenRequiredFieldValidator(
+                            activity);
+                    final boolean isScreenValidated = validator
+                            .validate(
+                                    primaryTabInfo.getDepartureDate(),
+                                    resources
+                                            .getString(R.string.announcement_date))
+                            .validate(
+                                    primaryTabInfo.getSeats(),
+                                    resources
+                                            .getString(R.string.announcement_seats))
+                            .validate(
+                                    primaryTabInfo.getFromPoint(),
+                                    resources
+                                            .getString(R.string.announcement_start_pt))
+                            .validate(
+                                    primaryTabInfo.getToPoint(),
+                                    resources
+                                            .getString(R.string.announcement_end_pt))
+                            .getResult();
+
+                    if (isScreenValidated)
+                    {
+                        final Announcement announcement = buildNewAnnouncement(
+                                primaryTabInfo, secondaryTabInfo);
+                        saveCommand.saveAnnouncement(announcement);
+                    }
+
+                    return true;
+                }
+
+                return false;
+            }
+        };
     }
 }
