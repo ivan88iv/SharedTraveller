@@ -2,23 +2,38 @@ package org.ai.shared.traveller.announcement.input.tab.adapter;
 
 import org.ai.shared.traveller.announcement.input.tab.PrimaryTab;
 import org.ai.shared.traveller.announcement.input.tab.SecondaryTab;
+import org.ai.sharedtraveller.R;
 
+import android.content.res.Resources;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 public class AnnouncementTabsAdapter extends FragmentPagerAdapter
 {
+    private static final String NULL_RESOURCES = "The resources may not be null.";
+
+    private static final String TWO_TABS = "There must be exactly two tab labels.";
+
     private final PrimaryTab primaryTab;
 
     private final SecondaryTab secondaryTab;
 
-    public AnnouncementTabsAdapter(final FragmentManager inManager)
+    private final String[] tabTitles;
+
+    public AnnouncementTabsAdapter(final FragmentManager inManager,
+            final Resources inResources)
     {
         super(inManager);
 
+        assert null != inResources : NULL_RESOURCES;
+
         primaryTab = PrimaryTab.newInstance(false, true);
         secondaryTab = new SecondaryTab();
+        tabTitles = inResources
+                .getStringArray(R.array.announcement_tab_titles);
+
+        assert tabTitles != null && tabTitles.length == 2 : TWO_TABS;
     }
 
     @Override
@@ -51,10 +66,10 @@ public class AnnouncementTabsAdapter extends FragmentPagerAdapter
         switch (position)
         {
         case 0:
-            title = "Primary";
+            title = tabTitles[0];
             break;
         case 1:
-            title = "Secondary";
+            title = tabTitles[1];
             break;
         }
         return title;

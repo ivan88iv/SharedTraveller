@@ -74,7 +74,7 @@ public class InputAnnouncementFragment extends Fragment
             final ViewGroup container, final Bundle savedInstanceState)
     {
         final Context contextThemeWrapper = new ContextThemeWrapper(
-                getActivity(), R.style.announcement_tab);
+                activity, R.style.announcement_tab);
         final LayoutInflater themedInflater =
                 inflater.cloneInContext(contextThemeWrapper);
         final View inputFragment = themedInflater.inflate(
@@ -82,7 +82,8 @@ public class InputAnnouncementFragment extends Fragment
                 container, false);
 
         adapter = new AnnouncementTabsAdapter(
-                getActivity().getSupportFragmentManager());
+                activity.getSupportFragmentManager(),
+                activity.getResources());
         pager = (ViewPager) inputFragment.findViewById(R.id.pager);
         pager.setAdapter(adapter);
 
