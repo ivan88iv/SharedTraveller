@@ -31,159 +31,141 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-public class MainActivity extends AbstractNetworkActivity implements
-        ISaveAnnouncementCommand, ICitiesProvider, IVehiclesProvider
+public class MainActivity extends AbstractNetworkActivity implements ISaveAnnouncementCommand, ICitiesProvider, IVehiclesProvider
 {
-    private static final String UNSUCCESSFUL_ANNOUNCEMENT_SUBMIT =
-            "Could not submit the announcement {0}.";
+	private static final String UNSUCCESSFUL_ANNOUNCEMENT_SUBMIT = "Could not submit the announcement {0}.";
 
-    private static final String CREATION_ANNOUNCEMNT_TASK_KEY =
-            "newAnnouncementTask";
+	private static final String CREATION_ANNOUNCEMNT_TASK_KEY = "newAnnouncementTask";
 
-    @Override
-    public boolean onCreateOptionsMenu(final Menu menu)
-    {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
+	@Override
+	public boolean onCreateOptionsMenu(final Menu menu)
+	{
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.main, menu);
+		return true;
+	}
 
-    @Override
-    protected void attachTasks()
-    {
-        final SimpleClient getClient = new SimpleClient(RequestTypes.GET);
-        addTask("DUMMY_TASK", new DummyTaskGet(getClient));
-        executeTask("DUMMY_TASK");
-    }
+	@Override
+	protected void attachTasks()
+	{
+		final SimpleClient getClient = new SimpleClient(RequestTypes.GET);
+		addTask("DUMMY_TASK", new DummyTaskGet(getClient));
+		executeTask("DUMMY_TASK");
+	}
 
-    @Override
-    protected void onCreate(final Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+	@Override
+	protected void onCreate(final Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
 
-        final Button showViewPagerIndicator = (Button) findViewById(R.id.show_view_pager_indicator);
-        final Button showSwipeView = (Button) findViewById(R.id.show_swipe_list_view);
+		final Button showViewPagerIndicator = (Button) findViewById(R.id.show_view_pager_indicator);
+		final Button showSwipeView = (Button) findViewById(R.id.show_swipe_list_view);
 
-        final ISaveAnnouncementCommand saveAnnouncementListener = this;
+		final ISaveAnnouncementCommand saveAnnouncementListener = this;
 
-        showViewPagerIndicator.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(final View v)
-            {
-                findViewById(R.id.fragment_container).setVisibility(
-                        View.VISIBLE);
-                final FragmentManager fragmentManager = getSupportFragmentManager();
-                final FragmentTransaction fragmentTransaction = fragmentManager
-                        .beginTransaction();
-                fragmentTransaction.add(R.id.fragment_container,
-                        InputAnnouncementFragment
-                                .newInstance(saveAnnouncementListener));
-                fragmentTransaction.addToBackStack("viewPagerIndicator");
-                fragmentTransaction.commit();
+		showViewPagerIndicator.setOnClickListener(new View.OnClickListener()
+		{
+			@Override
+			public void onClick(final View v)
+			{
+				findViewById(R.id.fragment_container).setVisibility(View.VISIBLE);
+				final FragmentManager fragmentManager = getSupportFragmentManager();
+				final FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+				fragmentTransaction.add(R.id.fragment_container, InputAnnouncementFragment.newInstance(saveAnnouncementListener));
+				fragmentTransaction.addToBackStack("viewPagerIndicator");
+				fragmentTransaction.commit();
 
-                showViewPagerIndicator.setVisibility(View.GONE);
-                showSwipeView.setVisibility(View.GONE);
-            }
-        });
+				showViewPagerIndicator.setVisibility(View.GONE);
+				showSwipeView.setVisibility(View.GONE);
 
-        showSwipeView.setOnClickListener(new View.OnClickListener()
-        {
+			}
+		});
 
-            @Override
-            public void onClick(final View v)
-            {
-                findViewById(R.id.fragment_container).setVisibility(
-                        View.VISIBLE);
-                final FragmentManager fragmentManager = getSupportFragmentManager();
-                final FragmentTransaction fragmentTransaction = fragmentManager
-                        .beginTransaction();
-                fragmentTransaction.add(R.id.fragment_container,
-                        new AnnouncementsSwipeListFragment(), "swipe");
-                fragmentTransaction.addToBackStack("swipeListView");
-                fragmentTransaction.commit();
+		showSwipeView.setOnClickListener(new View.OnClickListener()
+		{
 
-                showViewPagerIndicator.setVisibility(View.GONE);
-                showSwipeView.setVisibility(View.GONE);
+			@Override
+			public void onClick(final View v)
+			{
+				findViewById(R.id.fragment_container).setVisibility(View.VISIBLE);
+				final FragmentManager fragmentManager = getSupportFragmentManager();
+				final FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+				fragmentTransaction.add(R.id.fragment_container, new AnnouncementsSwipeListFragment(), "swipe");
+				fragmentTransaction.addToBackStack("swipeListView");
+				fragmentTransaction.commit();
 
-            }
-        });
+				showViewPagerIndicator.setVisibility(View.GONE);
+				showSwipeView.setVisibility(View.GONE);
 
-    }
+			}
+		});
 
-    @Override
-    protected void onResume()
-    {
-        super.onResume();
-    }
+	}
 
-    @Override
-    public void onBackPressed()
-    {
-        findViewById(R.id.fragment_container).setVisibility(View.GONE);
-        ((ViewGroup) findViewById(R.id.fragment_container)).removeAllViews();
-        findViewById(R.id.show_view_pager_indicator)
-                .setVisibility(View.VISIBLE);
-        findViewById(R.id.show_swipe_list_view).setVisibility(View.VISIBLE);
-    }
+	@Override
+	protected void onResume()
+	{
+		super.onResume();
+	}
 
-    @Override
-    protected void onSaveInstanceState(final Bundle outState)
-    {
-        super.onSaveInstanceState(outState);
-        outState.putString("aaa", "aaa");
-    }
+	@Override
+	public void onBackPressed()
+	{
+		findViewById(R.id.fragment_container).setVisibility(View.GONE);
+		((ViewGroup) findViewById(R.id.fragment_container)).removeAllViews();
+		findViewById(R.id.show_view_pager_indicator).setVisibility(View.VISIBLE);
+		findViewById(R.id.show_swipe_list_view).setVisibility(View.VISIBLE);
+	}
 
-    @Override
-    public void saveAnnouncement(final Announcement inAnnouncement)
-    {
-        final AbstractPutClient newAnnouncementClient =
-                new AbstractPutClient()
-                {
-                    @Override
-                    protected void submitData(final OutputStream inOutStream)
-                            throws ServiceConnectionException
-                    {
-                        final ObjectMapper writer = new ObjectMapper();
+	@Override
+	protected void onSaveInstanceState(final Bundle outState)
+	{
+		super.onSaveInstanceState(outState);
+		outState.putString("aaa", "aaa");
+	}
 
-                        try
-                        {
-                            writer.writeValue(inOutStream, inAnnouncement);
-                        } catch (final IOException ioe)
-                        {
-                            final String errorMsg = MessageFormat.format(
-                                    UNSUCCESSFUL_ANNOUNCEMENT_SUBMIT,
-                                    inAnnouncement);
+	@Override
+	public void saveAnnouncement(final Announcement inAnnouncement)
+	{
+		final AbstractPutClient newAnnouncementClient = new AbstractPutClient()
+		{
+			@Override
+			protected void submitData(final OutputStream inOutStream) throws ServiceConnectionException
+			{
+				final ObjectMapper writer = new ObjectMapper();
 
-                            throw new ServiceConnectionException(
-                                    errorMsg, ioe);
-                        }
-                    }
-                };
-        addTask(CREATION_ANNOUNCEMNT_TASK_KEY, new NewAnnouncementTask(
-                newAnnouncementClient, this));
-        executeTask(CREATION_ANNOUNCEMNT_TASK_KEY);
-    }
+				try
+				{
+					writer.writeValue(inOutStream, inAnnouncement);
+				}
+				catch (final IOException ioe)
+				{
+					final String errorMsg = MessageFormat.format(UNSUCCESSFUL_ANNOUNCEMENT_SUBMIT, inAnnouncement);
 
-    @Override
-    public void provideCityNames(final ICityComponentsPreparator inPreparator)
-    {
-        final SimpleClient getClient = new SimpleClient(RequestTypes.GET);
-        final AllCitiesTask citiesTask = new AllCitiesTask(getClient,
-                inPreparator);
-        addTask("CITIES_TASK", citiesTask);
-        executeTask("CITIES_TASK");
-    }
+					throw new ServiceConnectionException(errorMsg, ioe);
+				}
+			}
+		};
+		addTask(CREATION_ANNOUNCEMNT_TASK_KEY, new NewAnnouncementTask(newAnnouncementClient, this));
+		executeTask(CREATION_ANNOUNCEMNT_TASK_KEY);
+	}
 
-    @Override
-    public void provideVehicleNames(final String inUsername,
-            final IVehicleComponentsPreparator inPreparator)
-    {
-        final SimpleClient getClient = new SimpleClient(RequestTypes.GET);
-        final UserVehiclesTask vehicleTask = new UserVehiclesTask(
-                getClient, inUsername, inPreparator);
-        addTask("VEHICLE_TASK", vehicleTask);
-        executeTask("VEHICLE_TASK");
-    }
+	@Override
+	public void provideCityNames(final ICityComponentsPreparator inPreparator)
+	{
+		final SimpleClient getClient = new SimpleClient(RequestTypes.GET);
+		final AllCitiesTask citiesTask = new AllCitiesTask(getClient, inPreparator);
+		addTask("CITIES_TASK", citiesTask);
+		executeTask("CITIES_TASK");
+	}
+
+	@Override
+	public void provideVehicleNames(final String inUsername, final IVehicleComponentsPreparator inPreparator)
+	{
+		final SimpleClient getClient = new SimpleClient(RequestTypes.GET);
+		final UserVehiclesTask vehicleTask = new UserVehiclesTask(getClient, inUsername, inPreparator);
+		addTask("VEHICLE_TASK", vehicleTask);
+		executeTask("VEHICLE_TASK");
+	}
 }
