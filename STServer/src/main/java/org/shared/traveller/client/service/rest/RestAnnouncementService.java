@@ -79,8 +79,7 @@ public class RestAnnouncementService
 					.getName(), anno.getDepartureDate(), anno.getFreeSeats(), anno.getDriver().getFirstName() + " "
 					+ anno.getDriver().getLastName());
 			builder.depTime(anno.getDepartureTime()).price(anno.getPrice()).depAddress(anno.getAddress())
-					.intermediatePoints(getInterPoints(anno.getIntermediatePoints()))
-					.status(capitalizeFirstLetter(anno.getStatus().toString()));
+					.intermediatePoints(getInterPoints(anno.getIntermediatePoints()));
 
 			if (anno.getVehicle() != null)
 			{
@@ -99,19 +98,6 @@ public class RestAnnouncementService
 			interPoints.add(interPoint.getName());
 		}
 		return interPoints;
-	}
-
-	private String capitalizeFirstLetter(String original)
-	{
-		String capitalizedString = null;
-		if (original == null || original.length() == 0)
-		{
-			capitalizedString = original;
-		} else
-		{
-			capitalizedString = original.substring(0, 1).toUpperCase() + original.substring(1).toLowerCase();
-		}
-		return capitalizedString;
 	}
 
 }

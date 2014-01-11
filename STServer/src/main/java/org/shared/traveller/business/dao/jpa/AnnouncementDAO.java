@@ -87,7 +87,8 @@ public class AnnouncementDAO extends AbstractDAO<IPersistentAnnouncement> implem
 		if (request.getTo() != null && request.getTo().length() > 0)
 		{
 			Join<AnnouncementEntity, CityEntity> fromJoin = c.join(AnnouncementEntity_.endPoint);
-			Predicate p = cb.like(cb.lower(fromJoin.get(CityEntity_.name)), "%" + request.getTo().toLowerCase() + "%");
+			Predicate p = cb
+					.like(cb.lower(fromJoin.get(CityEntity_.name)), "%" + request.getFrom().toLowerCase() + "%");
 			q.where(p);
 		}
 	}

@@ -26,7 +26,8 @@ import org.shared.traveller.utility.DeepCopier;
 
 @Entity(name = "announcement")
 @Table(name = "announcement")
-public class AnnouncementEntity extends AbstractEntity implements IPersistentAnnouncement
+public class AnnouncementEntity extends AbstractEntity implements
+		IPersistentAnnouncement
 {
 	/**
 	 * The serial version UID
@@ -44,7 +45,7 @@ public class AnnouncementEntity extends AbstractEntity implements IPersistentAnn
 	@Id
 	@GeneratedValue
 	@Column(name = "ID", updatable = false)
-	private Long id;
+	private long id;
 
 	@OneToOne
 	@JoinColumn(name = "START_POINT_ID")
@@ -119,8 +120,12 @@ public class AnnouncementEntity extends AbstractEntity implements IPersistentAnn
 
 		private List<CityEntity> interPtsField;
 
-		public BusinessAnnouncementBuilder(final CityEntity inStartPt, final CityEntity inEndPt, final Date inDepDate,
-				final Short inSeats, final Status inStatus, final TravellerEntity inDriver)
+		public BusinessAnnouncementBuilder(final CityEntity inStartPt,
+				final CityEntity inEndPt,
+				final Date inDepDate,
+				final Short inSeats,
+				final Status inStatus,
+				final TravellerEntity inDriver)
 		{
 			assert null != inStartPt;
 			assert null != inEndPt;
@@ -164,20 +169,23 @@ public class AnnouncementEntity extends AbstractEntity implements IPersistentAnn
 			return this;
 		}
 
-		public BusinessAnnouncementBuilder vehicle(final VehicleEntity inVehicle)
+		public BusinessAnnouncementBuilder vehicle(
+				final VehicleEntity inVehicle)
 		{
 			// TODO Deep copy
 			vehicleField = inVehicle;
 			return this;
 		}
 
-		public BusinessAnnouncementBuilder notifications(final List<NotificationEntity> inNotifications)
+		public BusinessAnnouncementBuilder notifications(
+				final List<NotificationEntity> inNotifications)
 		{
 			notificationsField = DeepCopier.copy(inNotifications);
 			return this;
 		}
 
-		public BusinessAnnouncementBuilder intermediatePoints(final List<CityEntity> inPoints)
+		public BusinessAnnouncementBuilder intermediatePoints(
+				final List<CityEntity> inPoints)
 		{
 			interPtsField = DeepCopier.copy(inPoints);
 			return this;
