@@ -8,17 +8,19 @@ import org.ai.shared.traveller.ui.preparator.IVehicleComponentsPreparator;
 import org.codehaus.jackson.type.TypeReference;
 import org.shared.traveller.rest.domain.ErrorResponse;
 
+import android.app.Activity;
 import android.util.Log;
 
 public class UserVehiclesTask extends AbstractNetworkTask<List<String>>
 {
     private final IVehicleComponentsPreparator preparator;
 
-    public UserVehiclesTask(final AbstractRestClient inClient,
+    public UserVehiclesTask(final Activity inActivity,
+            final AbstractRestClient inClient,
             final String inUsername,
             final IVehicleComponentsPreparator inPreparator)
     {
-        super("stserver/vehicles/" + inUsername, inClient,
+        super(inActivity, "stserver/vehicles/" + inUsername, inClient,
                 new TypeReference<List<String>>()
                 {
                 });

@@ -2,7 +2,6 @@ package org.ai.shared.traveller.announcement;
 
 import java.util.ArrayList;
 
-
 import org.ai.shared.traveller.announcement.adapter.LazyLoadingAdapter;
 import org.ai.shared.traveller.announcement.adapter.http.AnnouncementListHttpTask;
 import org.ai.shared.traveller.dialog.pickers.AbstractDatePickerDisplayer;
@@ -68,7 +67,8 @@ public class AnnouncementsSwipeListFragment extends Fragment implements
     {
         super.onCreate(savedInstanceState);
         adapter = new LazyLoadingAdapter(getActivity(),
-                new ArrayList<Announcement>(), new AnnouncementListHttpTask());
+                new ArrayList<Announcement>(), new AnnouncementListHttpTask(
+                        getActivity()));
         headerViewHolder = new HeaderViewHolder();
         setHasOptionsMenu(true);
     }
@@ -225,38 +225,6 @@ public class AnnouncementsSwipeListFragment extends Fragment implements
         headerViewHolder.from.setOnKeyListener(this);
         headerViewHolder.to.setOnKeyListener(this);
 
-        // When date EditText gets the focus the date picker is displayed.
-        // headerViewHolder.date.setOnFocusChangeListener(new
-        // View.OnFocusChangeListener()
-        // {
-        //
-        // @Override
-        // public void onFocusChange(View v, boolean hasFocus)
-        // {
-        // if (hasFocus)
-        // {
-        // DialogFragment newFragment = new DatePickerFragment();
-        // Bundle bundle = new Bundle();
-        // bundle.putSerializable(DatePickerFragment.DATE_PICKER_LISTENER, new
-        // IOnDateSetListener()
-        // {
-        //
-        // private static final long serialVersionUID = 1L;
-        //
-        // @Override
-        // public void onDateSet(DatePicker view, int year, int month, int day)
-        // {
-        // updateDisplay(day, month, year);
-        // }
-        // });
-        // newFragment.setArguments(bundle);
-        // newFragment.show(getActivity().getSupportFragmentManager(),
-        // "timePicker");
-        // }
-        // }
-        //
-        // });
-
         final AbstractPickerDisplayer dateDisplayer = new AbstractDatePickerDisplayer()
         {
             @Override
@@ -324,7 +292,7 @@ public class AnnouncementsSwipeListFragment extends Fragment implements
         final String date = headerViewHolder.date.getText().toString();
         return new LazyLoadingAdapter(getActivity(),
                 new ArrayList<Announcement>(), new AnnouncementListHttpTask(
-                        from, to, date, sortOrder));
+                        getActivity(), from, to, date, sortOrder));
     }
 
 }

@@ -14,6 +14,7 @@ import org.ai.shared.traveller.network.connection.AbstractNetworkActivity;
 import org.ai.shared.traveller.network.connection.rest.client.AbstractPutClient;
 import org.ai.shared.traveller.network.connection.rest.client.RequestTypes;
 import org.ai.shared.traveller.network.connection.rest.client.SimpleClient;
+import org.ai.shared.traveller.settings.SettingsActivity;
 import org.ai.shared.traveller.task.AllCitiesTask;
 import org.ai.shared.traveller.task.UserVehiclesTask;
 import org.ai.shared.traveller.task.announcement.NewAnnouncementTask;
@@ -23,10 +24,12 @@ import org.ai.sharedtraveller.R;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.shared.traveller.client.domain.rest.Announcement;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -49,10 +52,21 @@ public class MainActivity extends AbstractNetworkActivity implements
     }
 
     @Override
+    public boolean onOptionsItemSelected(final MenuItem item)
+    {
+        if (R.id.action_settings == item.getItemId())
+        {
+            startActivity(new Intent(this, SettingsActivity.class));
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     protected void attachTasks()
     {
         final SimpleClient getClient = new SimpleClient(RequestTypes.GET);
-        addTask("DUMMY_TASK", new DummyTaskGet(getClient));
+        addTask("DUMMY_TASK", new DummyTaskGet(this, getClient));
         executeTask("DUMMY_TASK");
     }
 
@@ -161,8 +175,8 @@ public class MainActivity extends AbstractNetworkActivity implements
                         }
                     }
                 };
-        addTask(CREATION_ANNOUNCEMNT_TASK_KEY, new NewAnnouncementTask(
-                newAnnouncementClient, this));
+        addTask(CREATION_ANNOUNCEMNT_TASK_KEY, new NewAnnouncementTask(this,
+                newAnnouncementClient));
         executeTask(CREATION_ANNOUNCEMNT_TASK_KEY);
     }
 
@@ -170,7 +184,7 @@ public class MainActivity extends AbstractNetworkActivity implements
     public void provideCityNames(final ICityComponentsPreparator inPreparator)
     {
         final SimpleClient getClient = new SimpleClient(RequestTypes.GET);
-        final AllCitiesTask citiesTask = new AllCitiesTask(getClient,
+        final AllCitiesTask citiesTask = new AllCitiesTask(this, getClient,
                 inPreparator);
         addTask("CITIES_TASK", citiesTask);
         executeTask("CITIES_TASK");
@@ -181,7 +195,7 @@ public class MainActivity extends AbstractNetworkActivity implements
             final IVehicleComponentsPreparator inPreparator)
     {
         final SimpleClient getClient = new SimpleClient(RequestTypes.GET);
-        final UserVehiclesTask vehicleTask = new UserVehiclesTask(
+        final UserVehiclesTask vehicleTask = new UserVehiclesTask(this,
                 getClient, inUsername, inPreparator);
         addTask("VEHICLE_TASK", vehicleTask);
         executeTask("VEHICLE_TASK");

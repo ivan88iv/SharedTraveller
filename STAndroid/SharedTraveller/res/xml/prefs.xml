@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+    <EditTextPreference android:key="server_url"
+        android:title="@string/server_url"
+        android:defaultValue="http://10.60.83.146:8080"/>
+</PreferenceScreen>

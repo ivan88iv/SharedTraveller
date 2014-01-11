@@ -26,7 +26,8 @@ import org.shared.traveller.utility.DeepCopier;
 
 @Entity(name = "announcement")
 @Table(name = "announcement")
-public class AnnouncementEntity extends AbstractEntity implements IPersistentAnnouncement
+public class AnnouncementEntity extends AbstractEntity implements
+		IPersistentAnnouncement
 {
 	/**
 	 * The serial version UID
@@ -93,7 +94,7 @@ public class AnnouncementEntity extends AbstractEntity implements IPersistentAnn
 
 	public static class BusinessAnnouncementBuilder
 	{
-		private long idField;
+		private Long idField;
 
 		private final CityEntity startPtField;
 
@@ -119,8 +120,10 @@ public class AnnouncementEntity extends AbstractEntity implements IPersistentAnn
 
 		private List<CityEntity> interPtsField;
 
-		public BusinessAnnouncementBuilder(final CityEntity inStartPt, final CityEntity inEndPt, final Date inDepDate,
-				final Short inSeats, final Status inStatus, final TravellerEntity inDriver)
+		public BusinessAnnouncementBuilder(final CityEntity inStartPt,
+				final CityEntity inEndPt, final Date inDepDate,
+				final Short inSeats, final Status inStatus,
+				final TravellerEntity inDriver)
 		{
 			assert null != inStartPt;
 			assert null != inEndPt;
@@ -140,7 +143,7 @@ public class AnnouncementEntity extends AbstractEntity implements IPersistentAnn
 			driverField = inDriver;
 		}
 
-		public BusinessAnnouncementBuilder id(final long inId)
+		public BusinessAnnouncementBuilder id(final Long inId)
 		{
 			idField = inId;
 			return this;
@@ -171,13 +174,15 @@ public class AnnouncementEntity extends AbstractEntity implements IPersistentAnn
 			return this;
 		}
 
-		public BusinessAnnouncementBuilder notifications(final List<NotificationEntity> inNotifications)
+		public BusinessAnnouncementBuilder notifications(
+				final List<NotificationEntity> inNotifications)
 		{
 			notificationsField = DeepCopier.copy(inNotifications);
 			return this;
 		}
 
-		public BusinessAnnouncementBuilder intermediatePoints(final List<CityEntity> inPoints)
+		public BusinessAnnouncementBuilder intermediatePoints(
+				final List<CityEntity> inPoints)
 		{
 			interPtsField = DeepCopier.copy(inPoints);
 			return this;

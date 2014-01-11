@@ -5,14 +5,16 @@ import org.ai.shared.traveller.network.connection.task.AbstractNetworkTask;
 import org.shared.traveller.rest.domain.DummyRequest;
 import org.shared.traveller.rest.domain.ErrorResponse;
 
+import android.app.Activity;
 import android.util.Log;
 
 public class DummyTaskGet extends AbstractNetworkTask<DummyRequest>
 {
 
-    public DummyTaskGet(final AbstractRestClient inClient)
+    public DummyTaskGet(final Activity inActivity,
+            final AbstractRestClient inClient)
     {
-        super("stserver/dummy/asdadsad", inClient,
+        super(inActivity, "stserver/dummy/asdadsad", inClient,
                 DummyRequest.class);
     }
 

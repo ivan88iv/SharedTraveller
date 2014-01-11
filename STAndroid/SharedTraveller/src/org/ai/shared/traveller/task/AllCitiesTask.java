@@ -8,16 +8,18 @@ import org.ai.shared.traveller.ui.preparator.ICityComponentsPreparator;
 import org.codehaus.jackson.type.TypeReference;
 import org.shared.traveller.rest.domain.ErrorResponse;
 
+import android.app.Activity;
 import android.util.Log;
 
 public class AllCitiesTask extends AbstractNetworkTask<List<String>>
 {
     private final ICityComponentsPreparator preparator;
 
-    public AllCitiesTask(final AbstractRestClient inClient,
+    public AllCitiesTask(final Activity inActivity,
+            final AbstractRestClient inClient,
             final ICityComponentsPreparator inPreparator)
     {
-        super("stserver/cities/all", inClient,
+        super(inActivity, "stserver/cities/all", inClient,
                 new TypeReference<List<String>>()
                 {
                 });
