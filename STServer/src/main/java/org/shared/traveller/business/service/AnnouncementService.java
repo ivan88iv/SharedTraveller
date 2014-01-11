@@ -1,7 +1,6 @@
 package org.shared.traveller.business.service;
 
 import java.io.Serializable;
-
 import java.util.List;
 
 import org.shared.traveller.business.dao.IAnnouncementDAO;
@@ -23,7 +22,14 @@ public class AnnouncementService implements Serializable
 
 	public void createNewAnnouncement(IPersistentAnnouncement inAnnouncement)
 	{
-		announcementDAO.persist(inAnnouncement);
+		try
+		{
+			announcementDAO.persist(inAnnouncement);
+
+		} catch (Exception e)
+		{
+			System.out.println(e.getMessage());
+		}
 	}
 
 	public long getAllAnnouncementsCount(GetAllAnnouncementsRequest request)
@@ -31,7 +37,8 @@ public class AnnouncementService implements Serializable
 		return announcementDAO.getAllCount(request);
 	}
 
-	public List<? extends IPersistentAnnouncement> getAllAnnouncements(GetAllAnnouncementsRequest request)
+	public List<? extends IPersistentAnnouncement> getAllAnnouncements(
+			GetAllAnnouncementsRequest request)
 	{
 		return announcementDAO.getAll(request);
 	}

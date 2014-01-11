@@ -45,7 +45,7 @@ public class AnnouncementEntity extends AbstractEntity implements
 	@Id
 	@GeneratedValue
 	@Column(name = "ID", updatable = false)
-	private long id;
+	private Long id;
 
 	@OneToOne
 	@JoinColumn(name = "START_POINT_ID")
@@ -94,7 +94,7 @@ public class AnnouncementEntity extends AbstractEntity implements
 
 	public static class BusinessAnnouncementBuilder
 	{
-		private long idField;
+		private Long idField;
 
 		private final CityEntity startPtField;
 
@@ -121,10 +121,8 @@ public class AnnouncementEntity extends AbstractEntity implements
 		private List<CityEntity> interPtsField;
 
 		public BusinessAnnouncementBuilder(final CityEntity inStartPt,
-				final CityEntity inEndPt,
-				final Date inDepDate,
-				final Short inSeats,
-				final Status inStatus,
+				final CityEntity inEndPt, final Date inDepDate,
+				final Short inSeats, final Status inStatus,
 				final TravellerEntity inDriver)
 		{
 			assert null != inStartPt;
@@ -145,7 +143,7 @@ public class AnnouncementEntity extends AbstractEntity implements
 			driverField = inDriver;
 		}
 
-		public BusinessAnnouncementBuilder id(final long inId)
+		public BusinessAnnouncementBuilder id(final Long inId)
 		{
 			idField = inId;
 			return this;
@@ -169,8 +167,7 @@ public class AnnouncementEntity extends AbstractEntity implements
 			return this;
 		}
 
-		public BusinessAnnouncementBuilder vehicle(
-				final VehicleEntity inVehicle)
+		public BusinessAnnouncementBuilder vehicle(final VehicleEntity inVehicle)
 		{
 			// TODO Deep copy
 			vehicleField = inVehicle;
