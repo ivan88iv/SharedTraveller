@@ -57,7 +57,7 @@
         <item>Primary</item>
         <item>Secondary</item>
     </string-array>
-    
+
     <!-- Swipe list view soer order header -->
     <string name="sort_order_menu_from">Sort by "From"</string>
     <string name="sort_order_menu_to">Sort by "To"</string>
@@ -69,5 +69,12 @@
     <!-- Validation -->
     <string name="required_validator_template">The following fields do not have any value specified: {0}</string>
     <string name="field_names_separator">, </string>
+
+    <!-- Done bar strings -->
+    <string name="done">Done</string>
+    <string name="cancel">Cancel</string>
+    <string name="donebaractivity_description">In this presentation, a done bar replaces the action bar entirely, providing
+            two direct actions to persist or dismiss changes. This is suitable for cases where no
+            additional view details or actions are needed in the action bar.</string>
 
 </resources>
