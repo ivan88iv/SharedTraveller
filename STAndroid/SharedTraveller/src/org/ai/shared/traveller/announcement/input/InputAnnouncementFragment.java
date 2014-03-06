@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.ai.shared.traveller.announcement.input.save.ISaveAnnouncementCommand;
 import org.ai.shared.traveller.announcement.input.tab.PrimaryTab;
 import org.ai.shared.traveller.announcement.input.tab.SecondaryTab;
 import org.ai.shared.traveller.announcement.input.tab.adapter.AnnouncementTabsAdapter;
+import org.ai.shared.traveller.command.save.announcement.ISaveAnnouncementCommand;
 import org.ai.shared.traveller.validator.IScreenValidator;
 import org.ai.shared.traveller.validator.required.ScreenRequiredFieldValidator;
 import org.ai.sharedtraveller.R;

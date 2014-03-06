@@ -2,10 +2,10 @@ package org.shared.traveller.business.domain;
 
 import java.util.List;
 
+import org.shared.traveller.business.domain.jpa.NotificationEntity;
+
 public interface IPersistentTraveller
 {
-	long getId();
-
 	String getUsername();
 
 	String getPassword();

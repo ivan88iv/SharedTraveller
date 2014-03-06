@@ -9,7 +9,7 @@ public abstract class AbstractEntity implements Serializable
 	 */
 	private static final long serialVersionUID = 1106335658717533124L;
 
-	public abstract long getId();
+	public abstract Long getId();
 
 	@Override
 	public int hashCode()

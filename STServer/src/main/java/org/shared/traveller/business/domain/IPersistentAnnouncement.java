@@ -8,8 +8,6 @@ import org.shared.traveller.business.domain.jpa.AnnouncementEntity.Status;
 
 public interface IPersistentAnnouncement
 {
-	long getId();
-
 	IPersistentCity getStartPoint();
 
 	IPersistentCity getEndPoint();
@@ -29,8 +27,6 @@ public interface IPersistentAnnouncement
 	Status getStatus();
 
 	IPersistentTraveller getDriver();
-
-	List<NotificationEntity> getNotifications();
 
 	List<? extends IPersistentCity> getIntermediatePoints();
 }

@@ -2,7 +2,7 @@ package org.shared.traveller.business.exception;
 
 import org.springframework.http.HttpStatus;
 
-public class IncorrectInputException extends ApplicationException
+public class IncorrectInputException extends RestServiceException
 {
 	/**
 	 * The serial version UID

@@ -22,7 +22,7 @@ public class TempPasswordEntity extends AbstractEntity
 	@Id
 	@GeneratedValue
 	@Column(name = "id", updatable = false)
-	private long id;
+	private Long id;
 
 	@Column(name = "temp_password")
 	private String tempPassword;
@@ -32,14 +32,9 @@ public class TempPasswordEntity extends AbstractEntity
 	private TravellerEntity owner;
 
 	@Override
-	public long getId()
+	public Long getId()
 	{
 		return id;
-	}
-
-	public void setId(Integer id)
-	{
-		this.id = id;
 	}
 
 	public String getTempPassword()

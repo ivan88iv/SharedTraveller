@@ -8,8 +8,23 @@ import android.app.Activity;
 import android.util.Log;
 import android.widget.Toast;
 
+/**
+ * The class represents a task used for sending REST requests for new
+ * announcement creation to the server
+ * 
+ * @author "Ivan Ivanov"
+ * 
+ */
 public class NewAnnouncementTask extends AbstractNetworkTask<Void>
 {
+    /**
+     * Instantiates a new task for creating announcement instances at the server
+     * 
+     * @param inActivity
+     *            the activity this task is connected to
+     * @param inClient
+     *            the REST client used to send the REST request to the server
+     */
     public NewAnnouncementTask(final Activity inActivity,
             final AbstractRestClient inClient)
     {

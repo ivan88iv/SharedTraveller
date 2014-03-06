@@ -54,4 +54,10 @@ public class VehicleDAO extends AbstractDAO<IPersistentVehicle>
 
 		return names;
 	}
+
+	@Override
+	protected Class<? extends IPersistentVehicle> getEntityClass()
+	{
+		return VehicleEntity.class;
+	}
 }

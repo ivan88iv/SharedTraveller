@@ -1,4 +1,4 @@
-package org.ai.shared.traveller.announcement.input.save;
+package org.ai.shared.traveller.command.save.announcement;
 
 import org.shared.traveller.client.domain.rest.Announcement;
 

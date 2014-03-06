@@ -3,12 +3,15 @@ package org.ai.shared.traveller;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.text.MessageFormat;
+import java.util.Date;
 
 import org.ai.shared.traveller.announcement.AnnouncementsSwipeListFragment;
 import org.ai.shared.traveller.announcement.input.InputAnnouncementFragment;
-import org.ai.shared.traveller.announcement.input.save.ISaveAnnouncementCommand;
+import org.ai.shared.traveller.command.request.INewRequestCommand;
+import org.ai.shared.traveller.command.save.announcement.ISaveAnnouncementCommand;
 import org.ai.shared.traveller.data.providers.ICitiesProvider;
 import org.ai.shared.traveller.data.providers.IVehiclesProvider;
+import org.ai.shared.traveller.dialog.request.NewRequestDialog;
 import org.ai.shared.traveller.exceptions.ServiceConnectionException;
 import org.ai.shared.traveller.network.connection.AbstractNetworkActivity;
 import org.ai.shared.traveller.network.connection.rest.client.AbstractPutClient;
@@ -18,11 +21,17 @@ import org.ai.shared.traveller.settings.SettingsActivity;
 import org.ai.shared.traveller.task.AllCitiesTask;
 import org.ai.shared.traveller.task.UserVehiclesTask;
 import org.ai.shared.traveller.task.announcement.NewAnnouncementTask;
+import org.ai.shared.traveller.task.request.NewRequestTask;
 import org.ai.shared.traveller.ui.preparator.ICityComponentsPreparator;
 import org.ai.shared.traveller.ui.preparator.IVehicleComponentsPreparator;
 import org.ai.sharedtraveller.R;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.shared.traveller.client.domain.IAnnouncement;
+import org.shared.traveller.client.domain.ITraveller;
 import org.shared.traveller.client.domain.rest.Announcement;
+import org.shared.traveller.client.domain.rest.Announcement.AnnouncementBuilder;
+import org.shared.traveller.client.domain.rest.Traveller;
+import org.shared.traveller.client.domain.rest.event.NewRequestEvent;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -33,15 +42,22 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import eu.inmite.android.lib.dialogs.ISimpleDialogListener;
 
 public class MainActivity extends AbstractNetworkActivity implements
-        ISaveAnnouncementCommand, ICitiesProvider, IVehiclesProvider
+        ISaveAnnouncementCommand, INewRequestCommand, ICitiesProvider,
+        IVehiclesProvider, ISimpleDialogListener
 {
     private static final String UNSUCCESSFUL_ANNOUNCEMENT_SUBMIT =
             "Could not submit the announcement {0}.";
 
+    private static final String NEW_REQUEST_FAILED =
+            "Could not send new request for {0}.";
+
     private static final String CREATION_ANNOUNCEMNT_TASK_KEY =
             "newAnnouncementTask";
+
+    private static final String NEW_REQUEST_TASK_KEY = "sendRequestTask";
 
     @Override
     public boolean onCreateOptionsMenu(final Menu menu)
@@ -78,8 +94,10 @@ public class MainActivity extends AbstractNetworkActivity implements
 
         final Button showViewPagerIndicator = (Button) findViewById(R.id.show_view_pager_indicator);
         final Button showSwipeView = (Button) findViewById(R.id.show_swipe_list_view);
+        final Button showNewRequestDialog = (Button) findViewById(
+                R.id.show_new_request_dialog);
 
-        final ISaveAnnouncementCommand saveAnnouncementListener = this;
+        final MainActivity activity = this;
 
         showViewPagerIndicator.setOnClickListener(new View.OnClickListener()
         {
@@ -93,7 +111,7 @@ public class MainActivity extends AbstractNetworkActivity implements
                         .beginTransaction();
                 fragmentTransaction.add(R.id.fragment_container,
                         InputAnnouncementFragment
-                                .newInstance(saveAnnouncementListener));
+                                .newInstance(activity));
                 fragmentTransaction.addToBackStack("viewPagerIndicator");
                 fragmentTransaction.commit();
 
@@ -104,7 +122,6 @@ public class MainActivity extends AbstractNetworkActivity implements
 
         showSwipeView.setOnClickListener(new View.OnClickListener()
         {
-
             @Override
             public void onClick(final View v)
             {
@@ -121,6 +138,15 @@ public class MainActivity extends AbstractNetworkActivity implements
                 showViewPagerIndicator.setVisibility(View.GONE);
                 showSwipeView.setVisibility(View.GONE);
 
+            }
+        });
+
+        showNewRequestDialog.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(final View v)
+            {
+                NewRequestDialog.show(activity);
             }
         });
 
@@ -181,6 +207,34 @@ public class MainActivity extends AbstractNetworkActivity implements
     }
 
     @Override
+    public void sendRequest(final NewRequestEvent inEvent)
+    {
+        final AbstractPutClient sendRequestClient = new AbstractPutClient()
+        {
+            @Override
+            protected void submitData(final OutputStream inOutStream)
+                    throws ServiceConnectionException
+            {
+                final ObjectMapper writer = new ObjectMapper();
+
+                try
+                {
+                    writer.writeValue(inOutStream, inEvent);
+                } catch (final IOException ioe)
+                {
+                    final String errorMsg = MessageFormat.format(
+                            NEW_REQUEST_FAILED, inEvent);
+
+                    throw new ServiceConnectionException(errorMsg, ioe);
+                }
+            }
+        };
+        addTask(NEW_REQUEST_TASK_KEY, new NewRequestTask(this,
+                sendRequestClient));
+        executeTask(NEW_REQUEST_TASK_KEY);
+    }
+
+    @Override
     public void provideCityNames(final ICityComponentsPreparator inPreparator)
     {
         final SimpleClient getClient = new SimpleClient(RequestTypes.GET);
@@ -199,5 +253,26 @@ public class MainActivity extends AbstractNetworkActivity implements
                 getClient, inUsername, inPreparator);
         addTask("VEHICLE_TASK", vehicleTask);
         executeTask("VEHICLE_TASK");
+    }
+
+    @Override
+    public void onPositiveButtonClicked(final int requestCode)
+    {
+        if (requestCode == 0)
+        {
+            final ITraveller sender = new Traveller("temp");
+            final IAnnouncement announcement =
+                    new AnnouncementBuilder("Bansko", "Sofia",
+                            new Date(114, 1, 9), (short) 5, "temp").build();
+            final NewRequestEvent event = new NewRequestEvent(sender,
+                    announcement);
+            sendRequest(event);
+        }
+    }
+
+    @Override
+    public void onNegativeButtonClicked(final int requestCode)
+    {
+        // TODO Auto-generated method stub
     }
 }

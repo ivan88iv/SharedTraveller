@@ -33,7 +33,7 @@ public class CityEntity extends AbstractEntity implements IPersistentCity
 	@Id
 	@GeneratedValue
 	@Column(name = "id", updatable = false)
-	private long id;
+	private Long id;
 
 	@Column(name = "name")
 	private String name;
@@ -43,14 +43,9 @@ public class CityEntity extends AbstractEntity implements IPersistentCity
 	private CountryEntity country;
 
 	@Override
-	public long getId()
+	public Long getId()
 	{
 		return id;
-	}
-
-	public void setId(Integer id)
-	{
-		this.id = id;
 	}
 
 	@Override
@@ -59,20 +54,9 @@ public class CityEntity extends AbstractEntity implements IPersistentCity
 		return name;
 	}
 
-	public void setName(String name)
-	{
-		this.name = name;
-	}
-
 	@Override
 	public CountryEntity getCountry()
 	{
 		return country;
 	}
-
-	public void setCountry(CountryEntity country)
-	{
-		this.country = country;
-	}
-
 }

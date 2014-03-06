@@ -13,7 +13,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -21,11 +22,18 @@ import javax.persistence.TemporalType;
 
 import org.shared.traveller.business.domain.AbstractEntity;
 import org.shared.traveller.business.domain.IPersistentAnnouncement;
-import org.shared.traveller.business.domain.NotificationEntity;
 import org.shared.traveller.utility.DeepCopier;
 
-@Entity(name = "announcement")
+@Entity(name = "Announcement")
 @Table(name = "announcement")
+@NamedQueries({
+	@NamedQuery(name = "Announcement.loadAnnouncement",
+			query = "SELECT ann FROM Announcement ann "
+				+ "WHERE ann.startPoint.name = :startPt AND "
+				+ "ann.endPoint.name = :endPt "
+				+ "AND ann.departureDate = :depDate AND "
+				+ "ann.driver.username = :driver")
+})
 public class AnnouncementEntity extends AbstractEntity implements
 		IPersistentAnnouncement
 {
@@ -83,9 +91,6 @@ public class AnnouncementEntity extends AbstractEntity implements
 	@JoinColumn(name = "DRIVER_ID")
 	private TravellerEntity driver;
 
-	@OneToMany(mappedBy = "announcment")
-	private List<NotificationEntity> notifications;
-
 	@ManyToMany
 	@JoinTable(name = "intermediate_point", joinColumns =
 	{ @JoinColumn(name = "anouncment_id") }, inverseJoinColumns =
@@ -115,8 +120,6 @@ public class AnnouncementEntity extends AbstractEntity implements
 		private final Status statusField;
 
 		private final TravellerEntity driverField;
-
-		private List<NotificationEntity> notificationsField;
 
 		private List<CityEntity> interPtsField;
 
@@ -174,13 +177,6 @@ public class AnnouncementEntity extends AbstractEntity implements
 			return this;
 		}
 
-		public BusinessAnnouncementBuilder notifications(
-				final List<NotificationEntity> inNotifications)
-		{
-			notificationsField = DeepCopier.copy(inNotifications);
-			return this;
-		}
-
 		public BusinessAnnouncementBuilder intermediatePoints(
 				final List<CityEntity> inPoints)
 		{
@@ -216,12 +212,11 @@ public class AnnouncementEntity extends AbstractEntity implements
 		status = inBuilder.statusField;
 		// TODO deep copy
 		driver = inBuilder.driverField;
-		notifications = DeepCopier.copy(inBuilder.notificationsField);
 		interPoints = DeepCopier.copy(inBuilder.interPtsField);
 	}
 
 	@Override
-	public long getId()
+	public Long getId()
 	{
 		return id;
 	}
@@ -288,12 +283,6 @@ public class AnnouncementEntity extends AbstractEntity implements
 	{
 		// TODO deep copy
 		return driver;
-	}
-
-	@Override
-	public List<NotificationEntity> getNotifications()
-	{
-		return DeepCopier.copy(notifications);
 	}
 
 	@Override

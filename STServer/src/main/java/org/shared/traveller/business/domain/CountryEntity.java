@@ -24,7 +24,7 @@ public class CountryEntity extends AbstractEntity
 	@Id
 	@GeneratedValue
 	@Column(name = "id", updatable = false)
-	private long id;
+	private Long id;
 
 	@Column(name = "name")
 	private String name;
@@ -33,14 +33,9 @@ public class CountryEntity extends AbstractEntity
 	private List<CityEntity> cities;
 
 	@Override
-	public long getId()
+	public Long getId()
 	{
 		return id;
-	}
-
-	public void setId(Integer id)
-	{
-		this.id = id;
 	}
 
 	public String getName()
@@ -48,19 +43,8 @@ public class CountryEntity extends AbstractEntity
 		return name;
 	}
 
-	public void setName(String name)
-	{
-		this.name = name;
-	}
-
 	public List<CityEntity> getCities()
 	{
 		return cities;
 	}
-
-	public void setCities(List<CityEntity> cities)
-	{
-		this.cities = cities;
-	}
-
 }

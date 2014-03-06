@@ -54,4 +54,10 @@ public class CityDAO extends AbstractDAO<IPersistentCity> implements ICityDAO
 
 		return names;
 	}
+
+	@Override
+	protected Class<? extends IPersistentCity> getEntityClass()
+	{
+		return CityEntity.class;
+	}
 }

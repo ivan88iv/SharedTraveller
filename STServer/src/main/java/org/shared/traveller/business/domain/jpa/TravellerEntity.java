@@ -14,7 +14,6 @@ import javax.persistence.Table;
 
 import org.shared.traveller.business.domain.AbstractEntity;
 import org.shared.traveller.business.domain.IPersistentTraveller;
-import org.shared.traveller.business.domain.NotificationEntity;
 
 @Entity(name = "traveller")
 @Table(name = "traveller")
@@ -34,7 +33,7 @@ public class TravellerEntity extends AbstractEntity implements
 	@Id
 	@GeneratedValue
 	@Column(name = "id", updatable = false)
-	private long id;
+	private Long id;
 
 	@Column(name = "username")
 	private String username;
@@ -73,14 +72,9 @@ public class TravellerEntity extends AbstractEntity implements
 	private List<NotificationEntity> notifications;
 
 	@Override
-	public long getId()
+	public Long getId()
 	{
 		return id;
-	}
-
-	public void setId(long id)
-	{
-		this.id = id;
 	}
 
 	@Override

@@ -38,7 +38,7 @@ public class VehicleEntity extends AbstractEntity implements IPersistentVehicle
 	@Id
 	@GeneratedValue
 	@Column(name = "id", updatable = false)
-	private long id;
+	private Long id;
 
 	@Column(name = "DISPLAY_NAME")
 	private String displayName;
@@ -76,14 +76,9 @@ public class VehicleEntity extends AbstractEntity implements IPersistentVehicle
 	private TravellerEntity owner;
 
 	@Override
-	public long getId()
+	public Long getId()
 	{
 		return id;
-	}
-
-	public void setId(long id)
-	{
-		this.id = id;
 	}
 
 	@Override

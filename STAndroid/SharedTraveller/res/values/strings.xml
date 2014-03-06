@@ -16,6 +16,7 @@
     <string name="details">Details</string>
     <string name="request">Request</string>
     <string name="announcements">Announcements</string>
+    <string name="newRequest">New Request</string>
 
     <!-- Swipe list view buttons constants -->
     <string name="btn_map">Map</string>
@@ -77,4 +78,11 @@
             two direct actions to persist or dismiss changes. This is suitable for cases where no
             additional view details or actions are needed in the action bar.</string>
 
+    <!-- New Request -->
+    <string name="new_request_title">Send Request</string>
+    <string name="new_request_confirmation_btn">OK</string>
+    <string name="new_request_rejection_btn">Cancel</string>
+    <string name="new_request_sub_title">Send additional notifications by:</string>
+    <string name="new_request_email">email:</string>
+    <string name="new_request_sms">sms:</string>
 </resources>

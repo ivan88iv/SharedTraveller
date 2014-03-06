@@ -12,6 +12,7 @@ import org.ai.shared.traveller.exceptions.ParseException;
 import org.ai.shared.traveller.exceptions.ServiceConnectionException;
 import org.ai.shared.traveller.network.connection.response.ServerResponse;
 import org.ai.sharedtraveller.R;
+import org.shared.traveller.client.domain.IAnnouncement;
 import org.shared.traveller.client.domain.rest.Announcement;
 import org.shared.traveller.rest.domain.AnnouncementsList;
 import org.shared.traveller.rest.domain.ErrorResponse;
@@ -63,7 +64,7 @@ public class LazyLoadingAdapter extends EndlessAdapter
     private View pendingView = null;
 
     private final AtomicInteger count = new AtomicInteger(0);
-    private List<Announcement> chunk = new ArrayList<Announcement>();
+    private List<IAnnouncement> chunk = new ArrayList<IAnnouncement>();
     protected ErrorResponse errorResponse;
 
     protected IAdapterHttpTask<ServerResponse<AnnouncementsList>> httpTask;
@@ -216,7 +217,7 @@ public class LazyLoadingAdapter extends EndlessAdapter
     private void resetAdapterData()
     {
         count.set(-1);
-        chunk = new ArrayList<Announcement>();
+        chunk = new ArrayList<IAnnouncement>();
     }
 
     @Override
@@ -225,9 +226,10 @@ public class LazyLoadingAdapter extends EndlessAdapter
         if (getWrappedAdapter().getCount() < count.get())
         {
             @SuppressWarnings("unchecked")
-            final ArrayAdapter<Announcement> a = (ArrayAdapter<Announcement>) getWrappedAdapter();
+            final ArrayAdapter<IAnnouncement> a =
+                    (ArrayAdapter<IAnnouncement>) getWrappedAdapter();
 
-            for (final Announcement an : chunk)
+            for (final IAnnouncement an : chunk)
             {
                 a.add(an);
             }

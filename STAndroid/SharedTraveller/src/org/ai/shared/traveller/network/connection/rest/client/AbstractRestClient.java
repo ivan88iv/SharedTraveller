@@ -10,6 +10,7 @@ import org.ai.shared.traveller.exceptions.ParseException;
 import org.ai.shared.traveller.exceptions.ServiceConnectionException;
 import org.ai.shared.traveller.network.connection.response.ServerResponse;
 import org.ai.shared.traveller.network.connection.response.ServerResponseParser;
+import org.shared.traveller.rest.domain.ErrorResponse;
 
 /**
  * The class contains the general functionality used to make a service call
@@ -53,7 +54,7 @@ public abstract class AbstractRestClient
      * @throws ParseException
      *             if a problem occurs while trying to parse the server result
      */
-	public <T> ServerResponse<T> callService(final URL inURL,
+    public <T> ServerResponse<T> callService(final URL inURL,
             final ServerResponseParser<T> inResponseParser)
             throws ServiceConnectionException, ParseException
     {
@@ -67,29 +68,26 @@ public abstract class AbstractRestClient
         {
             InputStream inputStream = null;
             int resposeCode = 200;
+            String responseMsg = null;
 
             try
             {
-                inputStream = connection.getInputStream();
                 resposeCode = connection.getResponseCode();
+                if (resposeCode < 400)
+                {
+                    inputStream = connection.getInputStream();
+                } else
+                {
+                    responseMsg = connection.getResponseMessage();
+                }
             } catch (final IOException ioe)
             {
                 throw new ServiceConnectionException(
                         "No result is returned from the service call.", ioe);
             }
 
-            ParseException parseException = null;
-            try
-            {
-                parsedResponse = inResponseParser.parseResponse(
-                        resposeCode, inputStream);
-            } catch (final ParseException pe)
-            {
-                parseException = pe;
-            } finally
-            {
-                closeResultStream(inputStream, parseException);
-            }
+            parsedResponse = parseServerResponse(inputStream,
+                    resposeCode, responseMsg, inResponseParser);
         } finally
         {
             connection.disconnect();
@@ -192,5 +190,57 @@ public abstract class AbstractRestClient
                         ioe);
             }
         }
+    }
+
+    /**
+     * The method produces the server response in an appropriate type
+     * 
+     * @param inInputStream
+     *            the input stream in which the server response is contained. If
+     *            it is null an error is considered to be received from the
+     *            server.
+     * @param inResponseCode
+     *            the response code coming from the server
+     * @param inResponseMsg
+     *            the response message coming from the server. It is included in
+     *            the parsed result only if an error response code is returned.
+     * @param inResponseParser
+     *            the parser used for the result generation process
+     * @return the parsed response coming from the server
+     * @throws ServiceConnectionException
+     *             if we cannot close the open input stream
+     * @throws ParseException
+     *             if an error occurs during server response parsing
+     */
+    private <T> ServerResponse<T> parseServerResponse(
+            final InputStream inInputStream,
+            final int inResponseCode,
+            final String inResponseMsg,
+            final ServerResponseParser<T> inResponseParser)
+            throws ServiceConnectionException
+    {
+        ServerResponse<T> parsedResponse = null;
+
+        if (null == inInputStream)
+        {
+            parsedResponse = new ServerResponse<T>(inResponseCode,
+                    new ErrorResponse(inResponseMsg));
+        } else
+        {
+            ParseException parseException = null;
+            try
+            {
+                parsedResponse = inResponseParser.parseResponse(
+                        inResponseCode, inInputStream);
+            } catch (final ParseException pe)
+            {
+                parseException = pe;
+            } finally
+            {
+                closeResultStream(inInputStream, parseException);
+            }
+        }
+
+        return parsedResponse;
     }
 }

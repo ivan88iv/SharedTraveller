@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.util.UriComponentsBuilder;
 
+// TODO remove this sevice when it is no longer needed
+// for a proof of concept
 @Controller
 @RequestMapping("/dummy")
 public class DummyService

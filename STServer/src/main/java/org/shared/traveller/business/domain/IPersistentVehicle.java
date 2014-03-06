@@ -4,8 +4,6 @@ import java.util.Date;
 
 public interface IPersistentVehicle
 {
-	long getId();
-
 	String getDisplayName();
 
 	String getMake();
