@@ -2,16 +2,14 @@
 
     <!--
         Base application theme, dependent on API level. This theme is replaced
-        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
-    -->
+        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.    -->
     <style name="AppBaseTheme" parent="Theme.AppCompat.Light">
         <!--
             Theme customizations available in newer API levels can go in
             res/values-vXX/styles.xml, while customizations related to
-            backward-compatibility can go here.
-        -->
+            backward-compatibility can go here.        -->
     </style>
-    
+
     <!-- Application theme. -->
     <style name="AppTheme" parent="AppBaseTheme">
         <!-- All customizations that are NOT specific to a particular 
@@ -43,26 +41,29 @@
     </style>
 
     <!-- Announcement Tabs -->
-    <style name="announcement_tab" parent="Theme.PageIndicatorDefaults">
+    <style name="announcement_tab" parent="Theme.PageIndicatorDefaults" >
         <item name="android:textColor">#FFFFFF</item>
         <item name="android:textSize">16sp</item>
         <item name="android:fadingEdge">horizontal</item>
         <item name="android:fadingEdgeLength">8dp</item>
-        <item name="android:gravity">center</item>
+		<item name="android:gravity">center</item>      
     </style>
-
+    
     <style name="tab_indicator">
         <item name="android:paddingTop">10dp</item>
         <item name="android:paddingBottom">10dp</item>
         <item name="android:background">#8A000000</item>
     </style>
-
+    
     <style name="announcement_tab_content">
         <item name="android:paddingLeft">5dp</item>
         <item name="android:paddingRight">5dp</item>
         <item name="android:background">#B6B7B8</item>
     </style>
-
+    
+    <style name="bottom_border">
+        <item name="android:background">@drawable/bottom_border</item>
+    </style>
     <style name="required_field">
         <item name="android:textColor">#F50000</item>
         <item name="android:gravity">center_vertical</item>
@@ -70,32 +71,14 @@
         <item name="android:textSize">16sp</item>
         <item name="android:layout_width">wrap_content</item>
     </style>
-
+    
     <style name="announcement_label" parent="dark_bottom_border">
         <item name="android:gravity">bottom</item>
         <item name="android:textSize">18sp</item>
         <item name="android:layout_marginBottom">8dp</item>
     </style>
-
-    <style name="announcement_details_label">
-        <item name="android:gravity">left</item>
-        <item name="android:textSize">18sp</item>
-        <item name="android:layout_marginBottom">8dp</item>
-    </style>
-
-    <style name="announcement_details_value">
-        <item name="android:gravity">right</item>
-        <item name="android:textSize">18sp</item>
-        <item name="android:layout_marginBottom">8dp</item>
-    </style>
-
-    <style name="announcement_details_address_value">
-        <item name="android:gravity">left</item>
-        <item name="android:textSize">18sp</item>
-        <item name="android:layout_marginBottom">8dp</item>
-    </style>
-
-    <style name="announcement_info_holder">
+    
+    <style name="announcement_info_holder" >
         <item name="android:gravity">center</item>
     </style>
     
@@ -189,5 +172,4 @@
         <item name="android:paddingLeft">10sp</item>
         <item name="android:textColor">#fff</item>
         <item name="android:layout_width">130dp</item>
-    </style>
-</resources>
+    </style></resources>

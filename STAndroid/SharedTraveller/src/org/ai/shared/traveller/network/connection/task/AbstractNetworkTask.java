@@ -188,6 +188,7 @@ public abstract class AbstractNetworkTask<Result> extends
     {
         if (null != result)
         {
+            // TODO put actual response code value here
             if (result.getStatusCode() < 400)
             {
                 onSuccess(result.getResponseBody());
