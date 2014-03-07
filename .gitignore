@@ -43,3 +43,14 @@
 /STAndroid/android-styled-dialogs/demo/src/eu/inmite/demo/dialogs/MyActivity.java
 /STAndroid/android-styled-dialogs/pom.xml
 /STAndroid/appcompat/.gitignore
+/STAndroid/android-styled-dialogs/library/.classpath
+/STAndroid/android-styled-dialogs/library/bin/AndroidManifest.xml
+/STAndroid/android-styled-dialogs/library/bin/R.txt
+/STAndroid/android-styled-dialogs/library/bin/jarlist.cache
+/STAndroid/android-styled-dialogs/library/bin/library.jar
+/STAndroid/android-styled-dialogs/library/bin/res/crunch/drawable-hdpi/sdl_background_dark.9.png
+/STAndroid/android-styled-dialogs/library/bin/res/crunch/drawable-hdpi/sdl_background_light.9.png
+/STAndroid/android-styled-dialogs/library/bin/res/crunch/drawable-mdpi/sdl_background_dark.9.png
+/STAndroid/android-styled-dialogs/library/bin/res/crunch/drawable-mdpi/sdl_background_light.9.png
+/STAndroid/android-styled-dialogs/library/bin/res/crunch/drawable-xhdpi/sdl_background_dark.9.png
+/STAndroid/android-styled-dialogs/library/bin/res/crunch/drawable-xhdpi/sdl_background_light.9.png
