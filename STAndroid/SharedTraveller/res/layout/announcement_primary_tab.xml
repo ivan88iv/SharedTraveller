@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/announcement_tab_content"
     android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical" 
-    style="@style/announcement_tab_content">
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
 
     <LinearLayout
         android:layout_width="fill_parent"
@@ -28,7 +28,8 @@
             android:id="@+id/start_town_spinner"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="2" />
+            android:layout_weight="2"
+            android:prompt="@string/announcement_start_pt" />
     </LinearLayout>
 
     <LinearLayout
@@ -82,6 +83,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="3"
+            android:hint="@string/announcement_date"
             android:inputType="date" />
     </LinearLayout>
 
@@ -166,6 +168,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="3"
+            android:hint="@string/announcement_seats"
             android:inputType="number" />
     </LinearLayout>
 

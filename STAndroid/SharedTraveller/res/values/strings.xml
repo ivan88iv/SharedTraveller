@@ -5,7 +5,7 @@
     <string name="action_settings">Settings</string>
     <string name="action_main">Main</string>
     <string name="hello_world">Hello world!</string>
-    
+
     <!-- Preferences -->
     <string name="server_url">Server Url:</string>
 
@@ -78,6 +78,10 @@
             two direct actions to persist or dismiss changes. This is suitable for cases where no
             additional view details or actions are needed in the action bar.</string>
 
+    <!-- Edit event action bar buttons -->
+    <string name="discard_label">Discard</string>
+    <string name="save_label">Save</string>
+
     <!-- New Request -->
     <string name="new_request_title">Send Request</string>
     <string name="new_request_confirmation_btn">OK</string>
@@ -85,4 +89,5 @@
     <string name="new_request_sub_title">Send additional notifications by:</string>
     <string name="new_request_email">email:</string>
     <string name="new_request_sms">sms:</string>
+
 </resources>

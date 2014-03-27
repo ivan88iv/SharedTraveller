@@ -9,7 +9,7 @@ public class PathResolver
     private static final String SERVER_URL_KEY = "server_url";
 
     private static final String DEFAULT_SERVER_URL =
-            "http://10.60.83.146:8080/";
+            "http://192.168.1.122:8080/";
 
     private String serverUrl;
 
