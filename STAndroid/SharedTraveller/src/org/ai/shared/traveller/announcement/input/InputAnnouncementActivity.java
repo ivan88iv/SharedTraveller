@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.text.MessageFormat;
 
+import org.ai.shared.traveller.announcement.input.tab.PrimaryTab;
 import org.ai.shared.traveller.command.save.announcement.ISaveAnnouncementCommand;
 import org.ai.shared.traveller.data.providers.ICitiesProvider;
 import org.ai.shared.traveller.data.providers.IVehiclesProvider;
@@ -44,13 +45,14 @@ public class InputAnnouncementActivity extends AbstractNetworkActivity
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.simple_fragment_container);
+
 		configureActionBarForCustomView();
 		final FragmentManager fragmentManager = getSupportFragmentManager();
 		final FragmentTransaction fragmentTransaction = fragmentManager
 				.beginTransaction();
 		fragmentTransaction.add(R.id.fragment_container,
-				InputAnnouncementFragment
-						.newInstance(this), FRAGMENT_TAG);
+				PrimaryTab
+						.newInstance(false, true, this), FRAGMENT_TAG);
 		fragmentTransaction.commit();
 
 	}

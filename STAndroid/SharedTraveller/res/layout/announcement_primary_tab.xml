@@ -1,90 +1,123 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/new_announcement_layout"
     style="@style/announcement_tab_content"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical" >
 
     <LinearLayout
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+        android:minHeight="64dip"
+        android:orientation="vertical" >
 
         <TextView
-            android:id="@+id/announcement_start_pt_required_char"
-            style="@style/required_field"
-            android:layout_height="fill_parent"
-            android:text="@string/required_str" />
-
-        <TextView
-            android:id="@+id/ann_start_pt_label"
-            style="@style/announcement_label"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_weight="3"
+            android:id="@+id/from_label"
+            style="@style/TextAppearance.EditEvent_LabelSmall"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:text="@string/announcement_start_pt" />
 
-        <Spinner
-            android:id="@+id/start_town_spinner"
-            android:layout_width="fill_parent"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:prompt="@string/announcement_start_pt" />
+            android:layout_marginTop="-6dip"
+            android:animateLayoutChanges="false"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/announcement_start_pt_required_char"
+                style="@style/required_field"
+                android:layout_height="fill_parent"
+                android:text="@string/required_str" />
+
+            <Spinner
+                android:id="@+id/start_town_spinner"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:prompt="@string/announcement_start_pt" />
+        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+        android:minHeight="64dip"
+        android:orientation="vertical" >
 
         <TextView
-            android:id="@+id/announcement_end_pt_required_char"
-            style="@style/required_field"
-            android:layout_height="fill_parent"
-            android:text="@string/required_str" />
-
-        <TextView
-            android:id="@+id/ann_end_pt_label"
-            style="@style/announcement_label"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_weight="3"
+            android:id="@+id/to_label"
+            style="@style/TextAppearance.EditEvent_LabelSmall"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:text="@string/announcement_end_pt" />
 
-        <Spinner
-            android:id="@+id/end_town_spinner"
-            android:layout_width="fill_parent"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="2" />
+            android:layout_marginTop="-6dip"
+            android:animateLayoutChanges="false"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/announcement_end_pt_required_char"
+                style="@style/required_field"
+                android:layout_height="fill_parent"
+                android:text="@string/required_str" />
+
+            <Spinner
+                android:id="@+id/end_town_spinner"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2" />
+        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+        android:minHeight="64dip"
+        android:orientation="vertical" >
 
         <TextView
-            android:id="@+id/announcement_date_required_char"
-            style="@style/required_field"
-            android:layout_height="fill_parent"
-            android:text="@string/required_str" />
-
-        <TextView
-            android:id="@+id/ann_date_label"
-            style="@style/announcement_label"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_weight="2"
+            style="@style/TextAppearance.EditEvent_LabelSmall"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:text="@string/announcement_date" />
 
-        <EditText
-            android:id="@+id/announcement_date"
-            style="@style/announcement_info_holder"
-            android:layout_width="fill_parent"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="3"
-            android:hint="@string/announcement_date"
-            android:inputType="date" />
+            android:layout_marginTop="-6dip"
+            android:animateLayoutChanges="false"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/announcement_date_required_char"
+                style="@style/required_field"
+                android:layout_height="wrap_content"
+                android:text="@string/required_str" />
+
+            <EditText
+                android:id="@+id/announcement_date"
+                style="@style/announcement_info_holder"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:hint="@string/announcement_date"
+                android:inputType="date" />
+
+            <EditText
+                android:id="@+id/announcement_time"
+                style="@style/announcement_info_holder"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:hint="@string/announcement_time"
+                android:inputType="time" />
+        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
@@ -97,42 +130,6 @@
             android:layout_height="fill_parent"
             android:text="@string/required_str"
             android:visibility="invisible" />
-
-        <TextView
-            android:id="@+id/ann_time_label"
-            style="@style/announcement_label"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_weight="2"
-            android:text="@string/announcement_time" />
-
-        <EditText
-            android:id="@+id/announcement_time"
-            style="@style/announcement_info_holder"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="3"
-            android:inputType="time" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal" >
-
-        <TextView
-            style="@style/required_field"
-            android:layout_height="fill_parent"
-            android:text="@string/required_str"
-            android:visibility="invisible" />
-
-        <TextView
-            android:id="@+id/ann_price_label"
-            style="@style/announcement_label"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_weight="2"
-            android:text="@string/announcement_price" />
 
         <EditText
             android:id="@+id/announcement_price"
@@ -140,27 +137,14 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="3"
+            android:hint="@string/announcement_price"
             android:inputType="text" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal" >
 
         <TextView
             android:id="@+id/announcement_seats_required_char"
             style="@style/required_field"
             android:layout_height="fill_parent"
             android:text="@string/required_str" />
-
-        <TextView
-            android:id="@+id/ann_seats_label"
-            style="@style/announcement_label"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_weight="2"
-            android:text="@string/announcement_seats" />
 
         <EditText
             android:id="@+id/announcement_seats"
@@ -170,6 +154,68 @@
             android:layout_weight="3"
             android:hint="@string/announcement_seats"
             android:inputType="number" />
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/departure_address"
+        style="@style/announcement_info_holder"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/announcement_departure_address" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="64dip"
+        android:orientation="vertical" >
+
+        <TextView
+            style="@style/TextAppearance.EditEvent_LabelSmall"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/announcement_vehicle" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="-6dip"
+            android:animateLayoutChanges="false"
+            android:orientation="horizontal" >
+
+            <Spinner
+                android:id="@+id/vehicles"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <TextView
+            style="@style/required_field"
+            android:layout_height="fill_parent"
+            android:text="@string/required_str"
+            android:visibility="invisible" />
+
+        <TextView
+            android:id="@+id/ann_intermediate_pts_label"
+            style="@style/announcement_label_without_underline"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="2"
+            android:text="@string/announcement_intermediate_pts" />
+
+        <TextView
+            android:id="@+id/new_intermediate_pt_btn"
+            style="@style/announcement_label_without_underline"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="2"
+            android:text="@string/new_intermediate_point" />
     </LinearLayout>
 
 </LinearLayout>

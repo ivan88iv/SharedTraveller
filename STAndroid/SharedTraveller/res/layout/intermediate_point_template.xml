@@ -3,20 +3,25 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal" >
-    <TextView android:text="@string/required_str" 
+
+    <TextView
         style="@style/required_field"
         android:layout_width="wrap_content"
         android:layout_height="fill_parent"
-        android:visibility="invisible"/>
+        android:text="@string/required_str"
+        android:visibility="invisible" />
+
     <Spinner
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"/>
-    
-    <ImageButton 
-        android:contentDescription="@string/delete_intermediate_pt_btn"
+        android:layout_weight="1" />
+
+    <ImageView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="4"
-        android:src="@drawable/delete"/>
+        android:layout_gravity="center_vertical"
+        android:layout_weight="6"
+        android:contentDescription="@string/delete_intermediate_pt_btn"
+        android:src="@drawable/ic_menu_cancel_holo_light" />
+
 </LinearLayout>

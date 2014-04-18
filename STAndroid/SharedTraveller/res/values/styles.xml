@@ -2,13 +2,13 @@
 
     <!--
         Base application theme, dependent on API level. This theme is replaced
-        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
+        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
     -->
     <style name="AppBaseTheme" parent="@style/Theme.AppCompat.Light">
         <!--
             Theme customizations available in newer API levels can go in
             res/values-vXX/styles.xml, while customizations related to
-            backward-compatibility can go here.
+            backward-compatibility can go here.
         -->
     </style>
 
@@ -17,7 +17,7 @@
 
         <!--
         All customizations that are NOT specific to a particular 
-        API-level can go here.
+        API-level can go here.
         -->
         <item name="sdlDialogStyle">@style/DialogStyleDark.Custom</item>
     </style>
@@ -79,6 +79,12 @@
         <item name="android:layout_marginBottom">8dp</item>
     </style>
 
+    <style name="announcement_label_without_underline">
+        <item name="android:gravity">bottom</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:layout_marginBottom">8dp</item>
+    </style>
+
     <style name="announcement_info_holder">
         <item name="android:gravity">center</item>
     </style>
@@ -132,7 +138,7 @@
     <!-- <item name="android:textSize">24sp</item> -->
     <!-- </style> -->
 
-    <style name="EditEventCustomActionButton" parent="android:style/Widget.Holo.Light.ActionButton">
+    <style name="EditEventCustomActionButton" parent="Widget.AppCompat.Light.ActionButton">
         <item name="android:layout_height">match_parent</item>
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_weight">1</item>
@@ -150,7 +156,7 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:textAppearance">?android:attr/actionMenuTextAppearance</item>
-        <item name="android:textColor">?android:attr/actionMenuTextColor</item>
+        <!-- <item name="android:textColor">?android:attr/actionMenuTextColor</item> -->
         <item name="android:orientation">horizontal</item>
         <item name="android:singleLine">true</item>
         <item name="android:ellipsize">none</item>
@@ -208,4 +214,22 @@
         <item name="android:background">?android:attr/listDivider</item>
     </style>
 
+    <style name="TextAppearance.EditEvent_LabelSmall" parent="TextAppearance.EditEvent_Small">
+        <item name="android:minHeight">24dip</item>
+        <item name="android:layout_width">144dip</item>
+        <item name="android:layout_marginLeft">2dip</item>
+        <item name="android:layout_marginRight">16dip</item>
+        <item name="android:paddingLeft">8dip</item>
+        <item name="android:paddingRight">8dip</item>
+        <item name="android:layout_marginBottom">-2dip</item>
+    </style>
+
+    <style name="TextAppearance.EditEvent_Small">
+        <item name="android:textAppearance">?android:attr/textAppearanceSmall</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">#FFAAAAAA</item>
+    </style>
+
+    <style name="TextAppearance" parent="android:TextAppearance">
+    </style>
 </resources>
