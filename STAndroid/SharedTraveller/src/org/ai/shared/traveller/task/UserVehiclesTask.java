@@ -11,16 +11,36 @@ import org.shared.traveller.rest.domain.ErrorResponse;
 import android.app.Activity;
 import android.util.Log;
 
+/**
+ * The class represents a task which is used to extract the vehicles for a
+ * specific customer
+ * 
+ * @author "Ivan Ivanov"
+ * 
+ */
 public class UserVehiclesTask extends AbstractNetworkTask<List<String>>
 {
     private final IVehicleComponentsPreparator preparator;
 
+    /**
+     * The constructor instantiates a new vehicles extraction task
+     * 
+     * @param inActivity
+     *            the activity to which the task belongs
+     * @param inClient
+     *            the REST client used for vehicles extraction
+     * @param inUsername
+     *            the user name of the customer whose vehicles are extracted
+     * @param inPreparator
+     *            the instance responsible for applying the extracted vehicles
+     *            to the UI components
+     */
     public UserVehiclesTask(final Activity inActivity,
             final AbstractRestClient inClient,
             final String inUsername,
             final IVehicleComponentsPreparator inPreparator)
     {
-        super(inActivity, "stserver/vehicles/" + inUsername, inClient,
+        super(inActivity, "vehicles/" + inUsername, inClient,
                 new TypeReference<List<String>>()
                 {
                 });

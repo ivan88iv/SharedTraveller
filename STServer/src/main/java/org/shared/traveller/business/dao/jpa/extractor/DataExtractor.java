@@ -33,7 +33,10 @@ public abstract class DataExtractor<T>
 	 * @param inClazz the type of the data to be extracted
 	 * @param inErrorMsg the error message thrown in case
 	 * of an error
-	 * @return a list of the extracted results
+	 * @return a non-null list of the extracted results
+	 *
+	 * @throws DataExtractionException if a problem occurs while
+	 * trying to extract the information
 	 */
 	public List<T> execute(final String inQueryName,
 			final EntityManager inEntityManager,

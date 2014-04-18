@@ -18,6 +18,17 @@ public class DataExtractionException extends PersistentException
 	/**
 	 * Creates a new data extraction exception
 	 *
+	 * @param inMessage a short description of the cause of the
+	 * exception
+	 */
+	public DataExtractionException(final String inMessage)
+	{
+		super(inMessage);
+	}
+
+	/**
+	 * Creates a new data extraction exception
+	 *
 	 * @param inMessage a short description of the
 	 * cause of the exception
 	 * @param cause the exception that caused the current exception to

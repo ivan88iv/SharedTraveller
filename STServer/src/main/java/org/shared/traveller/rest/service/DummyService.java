@@ -6,7 +6,6 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.QueryHint;
 
 import org.shared.traveller.client.domain.rest.Announcement;
 import org.shared.traveller.client.domain.rest.Announcement.AnnouncementBuilder;

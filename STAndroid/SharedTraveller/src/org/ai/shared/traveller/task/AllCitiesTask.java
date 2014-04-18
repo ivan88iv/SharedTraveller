@@ -11,15 +11,32 @@ import org.shared.traveller.rest.domain.ErrorResponse;
 import android.app.Activity;
 import android.util.Log;
 
+/**
+ * The class is used to extract all cities and apply them to UI components.
+ * 
+ * @author "Ivan Ivanov"
+ * 
+ */
 public class AllCitiesTask extends AbstractNetworkTask<List<String>>
 {
     private final ICityComponentsPreparator preparator;
 
+    /**
+     * The constructor instantiates a new task for cities extraction
+     * 
+     * @param inActivity
+     *            the activity to which the task is attached
+     * @param inClient
+     *            the REST client used for cities extraction
+     * @param inPreparator
+     *            the instance that is responsible for applying the extracted
+     *            city values to UI components
+     */
     public AllCitiesTask(final Activity inActivity,
             final AbstractRestClient inClient,
             final ICityComponentsPreparator inPreparator)
     {
-        super(inActivity, "stserver/cities/all", inClient,
+        super(inActivity, "cities/all", inClient,
                 new TypeReference<List<String>>()
                 {
                 });

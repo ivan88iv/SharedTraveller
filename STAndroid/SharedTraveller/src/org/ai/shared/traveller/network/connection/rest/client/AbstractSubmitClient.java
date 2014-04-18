@@ -10,11 +10,14 @@ import org.ai.shared.traveller.exceptions.ServiceConnectionException;
  * The class represents a service client that is used to make a service submit
  * call
  * 
- * @author Ivan
+ * @author "Ivan Ivanov"
  * 
  */
 public abstract class AbstractSubmitClient extends AbstractRestClient
 {
+    private static final String DEFAULT_CONTENT_TYPE =
+            "application/json";
+
     /**
      * The constructor creates a new submit client
      * 
@@ -26,13 +29,24 @@ public abstract class AbstractSubmitClient extends AbstractRestClient
         super(inType);
     }
 
+    /**
+     * The method specifies the Content-Type used for the current request
+     * 
+     * @return the Content-Type used for the current request
+     */
+    protected String specifyContentType()
+    {
+        return DEFAULT_CONTENT_TYPE;
+    }
+
     @Override
     protected void prepareCallSepcificSettings(
             final HttpURLConnection inConnection)
             throws ServiceConnectionException
     {
         inConnection.setDoOutput(true);
-        inConnection.setRequestProperty("Content-Type", "application/json");
+        inConnection.setRequestProperty("Content-Type", specifyContentType());
+        inConnection.setUseCaches(false);
 
         try
         {

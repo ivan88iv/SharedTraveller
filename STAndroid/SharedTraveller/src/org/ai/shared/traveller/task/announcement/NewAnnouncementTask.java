@@ -28,7 +28,7 @@ public class NewAnnouncementTask extends AbstractNetworkTask<Void>
     public NewAnnouncementTask(final Activity inActivity,
             final AbstractRestClient inClient)
     {
-        super(inActivity, "stserver/announcement/new", inClient, Void.class);
+        super(inActivity, "announcement/new", inClient, Void.class);
     }
 
     @Override

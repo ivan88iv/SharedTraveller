@@ -28,7 +28,7 @@ public class NewRequestTask extends AbstractNetworkTask<Void>
     public NewRequestTask(final Activity inActivity,
             final AbstractRestClient inClient)
     {
-        super(inActivity, "stserver/request/new", inClient, Void.class);
+        super(inActivity, "request/new", inClient, Void.class);
     }
 
     @Override

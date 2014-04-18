@@ -17,6 +17,7 @@ import org.ai.shared.traveller.network.connection.AbstractNetworkActivity;
 import org.ai.shared.traveller.network.connection.rest.client.AbstractPutClient;
 import org.ai.shared.traveller.network.connection.rest.client.RequestTypes;
 import org.ai.shared.traveller.network.connection.rest.client.SimpleClient;
+import org.ai.shared.traveller.request.AnnouncementRequestActivity;
 import org.ai.shared.traveller.settings.SettingsActivity;
 import org.ai.shared.traveller.task.AllCitiesTask;
 import org.ai.shared.traveller.task.UserVehiclesTask;
@@ -26,12 +27,9 @@ import org.ai.shared.traveller.ui.preparator.ICityComponentsPreparator;
 import org.ai.shared.traveller.ui.preparator.IVehicleComponentsPreparator;
 import org.ai.sharedtraveller.R;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.shared.traveller.client.domain.IAnnouncement;
-import org.shared.traveller.client.domain.ITraveller;
 import org.shared.traveller.client.domain.rest.Announcement;
-import org.shared.traveller.client.domain.rest.Announcement.AnnouncementBuilder;
-import org.shared.traveller.client.domain.rest.Traveller;
-import org.shared.traveller.client.domain.rest.event.NewRequestEvent;
+import org.shared.traveller.client.domain.rest.RequestInfo;
+import org.shared.traveller.client.domain.rest.RequestInfo.RequestInfoBuilder;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -44,8 +42,8 @@ import android.widget.Button;
 import eu.inmite.android.lib.dialogs.ISimpleDialogListener;
 
 public class MainActivity extends AbstractNetworkActivity implements
-		ISaveAnnouncementCommand, INewRequestCommand, ICitiesProvider,
-		IVehiclesProvider, ISimpleDialogListener
+		ISaveAnnouncementCommand, INewRequestCommand,
+		ICitiesProvider, IVehiclesProvider, ISimpleDialogListener
 {
 	private static final String FRAGMENT_TAG = "FRAGMENT_TAG";
 	private static final String UNSUCCESSFUL_ANNOUNCEMENT_SUBMIT =
@@ -92,10 +90,14 @@ public class MainActivity extends AbstractNetworkActivity implements
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		final Button showViewPagerIndicator = (Button) findViewById(R.id.show_view_pager_indicator);
-		final Button showSwipeView = (Button) findViewById(R.id.show_swipe_list_view);
+		final Button showViewPagerIndicator = (Button) findViewById(
+				R.id.show_view_pager_indicator);
+		final Button showSwipeView = (Button) findViewById(
+				R.id.show_swipe_list_view);
 		final Button showNewRequestDialog = (Button) findViewById(
 				R.id.show_new_request_dialog);
+		final Button showRequestsBtn = (Button) findViewById(
+				R.id.show_requests);
 
 		final MainActivity activity = this;
 
@@ -104,7 +106,7 @@ public class MainActivity extends AbstractNetworkActivity implements
 			@Override
 			public void onClick(final View v)
 			{
-				Intent intent = new Intent(MainActivity.this,
+				final Intent intent = new Intent(MainActivity.this,
 						InputAnnouncementActivity.class);
 				MainActivity.this.startActivity(intent);
 			}
@@ -140,6 +142,15 @@ public class MainActivity extends AbstractNetworkActivity implements
 			}
 		});
 
+		showRequestsBtn.setOnClickListener(new View.OnClickListener()
+		{
+			@Override
+			public void onClick(final View v)
+			{
+				startActivity(new Intent(activity,
+						AnnouncementRequestActivity.class));
+			}
+		});
 	}
 
 	@Override
@@ -167,14 +178,14 @@ public class MainActivity extends AbstractNetworkActivity implements
 				new AbstractPutClient()
 				{
 					@Override
-					protected void submitData(final OutputStream inOutStream)
+					protected void submitData(final OutputStream inStream)
 							throws ServiceConnectionException
 					{
 						final ObjectMapper writer = new ObjectMapper();
 
 						try
 						{
-							writer.writeValue(inOutStream, inAnnouncement);
+							writer.writeValue(inStream, inAnnouncement);
 						} catch (final IOException ioe)
 						{
 							final String errorMsg = MessageFormat.format(
@@ -192,23 +203,23 @@ public class MainActivity extends AbstractNetworkActivity implements
 	}
 
 	@Override
-	public void sendRequest(final NewRequestEvent inEvent)
+	public void sendRequest(final RequestInfo inRequest)
 	{
 		final AbstractPutClient sendRequestClient = new AbstractPutClient()
 		{
 			@Override
-			protected void submitData(final OutputStream inOutStream)
+			protected void submitData(final OutputStream inStream)
 					throws ServiceConnectionException
 			{
 				final ObjectMapper writer = new ObjectMapper();
 
 				try
 				{
-					writer.writeValue(inOutStream, inEvent);
+					writer.writeValue(inStream, inRequest);
 				} catch (final IOException ioe)
 				{
 					final String errorMsg = MessageFormat.format(
-							NEW_REQUEST_FAILED, inEvent);
+							NEW_REQUEST_FAILED, inRequest);
 
 					throw new ServiceConnectionException(errorMsg, ioe);
 				}
@@ -245,13 +256,13 @@ public class MainActivity extends AbstractNetworkActivity implements
 	{
 		if (requestCode == 0)
 		{
-			final ITraveller sender = new Traveller("temp");
-			final IAnnouncement announcement =
-					new AnnouncementBuilder("Bansko", "Sofia",
-							new Date(114, 1, 9), (short) 5, "temp").build();
-			final NewRequestEvent event = new NewRequestEvent(sender,
-					announcement);
-			sendRequest(event);
+			final RequestInfoBuilder builder = new RequestInfoBuilder();
+			builder.sender("temp")
+					.fromPoint("Bansko").toPoint("Sofia")
+					.departureDate(new Date(114, 1, 9))
+					.driverUsername("temp");
+			final RequestInfo request = builder.build();
+			sendRequest(request);
 		}
 	}
 

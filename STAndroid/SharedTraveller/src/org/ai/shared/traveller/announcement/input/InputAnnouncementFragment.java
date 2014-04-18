@@ -77,7 +77,7 @@ public class InputAnnouncementFragment extends Fragment
 				.findViewById(R.id.indicator);
 		indicator.setViewPager(pager);
 
-		View actionBarButtons = inflater.inflate(
+		final View actionBarButtons = inflater.inflate(
 				R.layout.edit_event_custom_actionbar,
 				new LinearLayout(getActivity()), false);
 		configureActionBarCancelButton(actionBarButtons);
@@ -88,15 +88,15 @@ public class InputAnnouncementFragment extends Fragment
 		return inputFragment;
 	}
 
-	private View configureActionBarCancelButton(View actionBarButtons)
+	private View configureActionBarCancelButton(final View actionBarButtons)
 	{
-		View cancelActionView = actionBarButtons
+		final View cancelActionView = actionBarButtons
 				.findViewById(R.id.action_cancel);
 		cancelActionView.setOnClickListener(new View.OnClickListener()
 		{
 
 			@Override
-			public void onClick(View v)
+			public void onClick(final View v)
 			{
 				getActivity().finish();
 			}
@@ -104,15 +104,15 @@ public class InputAnnouncementFragment extends Fragment
 		return cancelActionView;
 	}
 
-	private View configureActionBarDonelButton(View actionBarButtons)
+	private View configureActionBarDonelButton(final View actionBarButtons)
 	{
-		View cancelActionView = actionBarButtons
+		final View cancelActionView = actionBarButtons
 				.findViewById(R.id.action_done);
 		cancelActionView.setOnClickListener(new View.OnClickListener()
 		{
 
 			@Override
-			public void onClick(View v)
+			public void onClick(final View v)
 			{
 				if (saveCommand != null)
 				{

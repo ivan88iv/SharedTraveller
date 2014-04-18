@@ -1,8 +1,8 @@
 package org.ai.shared.traveller.command.request;
 
-import org.shared.traveller.client.domain.rest.event.NewRequestEvent;
+import org.shared.traveller.client.domain.rest.RequestInfo;
 
 public interface INewRequestCommand
 {
-    void sendRequest(final NewRequestEvent inEvent);
+    void sendRequest(final RequestInfo inEvent);
 }

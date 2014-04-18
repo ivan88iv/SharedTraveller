@@ -38,5 +38,15 @@ public abstract class AbstractDAO<T> implements IDAO<T>
 		entityManager.persist(inInstance);
 	}
 
+	@Transactional
+	@Override
+	public void merge(T inInstance)
+	{
+		assert null != inInstance;
+
+		// TODO handle exceptions
+		entityManager.merge(inInstance);
+	}
+
 	protected abstract Class<? extends T> getEntityClass();
 }

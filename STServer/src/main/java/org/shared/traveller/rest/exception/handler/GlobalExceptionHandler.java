@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class GlobalExceptionHandler
 {
-
 	private static final String MESSAGE = "An unknown error has occurred.";
 
 	@ExceptionHandler(Exception.class)

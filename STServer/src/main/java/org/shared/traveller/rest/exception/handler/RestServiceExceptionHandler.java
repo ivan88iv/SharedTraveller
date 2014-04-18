@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class RestServiceExceptionHandler
 {
-
 	@ExceptionHandler(value = RestServiceException.class)
 	public ResponseEntity<ErrorResponse> handleApplicationException(RestServiceException e)
 	{

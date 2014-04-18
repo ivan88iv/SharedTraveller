@@ -8,16 +8,32 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 import org.shared.traveller.business.domain.AbstractEntity;
 import org.shared.traveller.business.domain.IPersistentAnnouncement;
 import org.shared.traveller.business.domain.IPersistentRequest;
 import org.shared.traveller.business.domain.IPersistentTraveller;
-import org.shared.traveller.business.domain.enumeration.RequestStatus;
+import org.shared.traveller.client.domain.request.RequestStatus;
 
-@Entity(name = "request")
+@Entity(name = "Request")
 @Table(name = "request")
+@NamedQueries({
+	@NamedQuery(name = "Request.loadRequests",
+			query = "SELECT r FROM Request r "
+				+ "INNER JOIN r.announcement ann "
+				+ "WHERE ann.startPoint.name = :startPt AND "
+				+ "ann.endPoint.name = :endPt AND "
+				+ "ann.departureDate = :depDate AND "
+				+ "ann.driver.username = :driver"),
+	@NamedQuery(name = "Request.find",
+			query = "SELECT r FROM Request r "
+					+ "INNER JOIN r.announcement ann "
+					+ "WHERE ann.driver.username = :driver AND "
+					+ "r.id = :id")
+})
 public class RequestEntity extends AbstractEntity implements IPersistentRequest
 {
 	/**
@@ -55,7 +71,7 @@ public class RequestEntity extends AbstractEntity implements IPersistentRequest
 	}
 
 	@Override
-	public IPersistentTraveller getTraveller()
+	public IPersistentTraveller getSender()
 	{
 		// TODO deep copy
 		return traveller;
@@ -72,6 +88,12 @@ public class RequestEntity extends AbstractEntity implements IPersistentRequest
 	public RequestStatus getStatus()
 	{
 		return status;
+	}
+
+	@Override
+	public void setStatus(RequestStatus inStatus)
+	{
+		status = inStatus;
 	}
 
 	@Override

@@ -2,11 +2,11 @@ package org.ai.shared.traveller.announcement;
 
 import java.util.ArrayList;
 
-
 import org.ai.shared.traveller.announcement.adapter.LazyLoadingAdapter;
 import org.ai.shared.traveller.announcement.adapter.http.AnnouncementListHttpTask;
 import org.ai.shared.traveller.dialog.pickers.AbstractDatePickerDisplayer;
 import org.ai.shared.traveller.dialog.pickers.AbstractPickerDisplayer;
+import org.ai.shared.traveller.list.swipe.SettingsManager;
 import org.ai.sharedtraveller.R;
 import org.shared.traveller.client.domain.rest.Announcement;
 import org.shared.traveller.rest.param.SortOrder;

@@ -40,7 +40,7 @@ public class InputAnnouncementActivity extends AbstractNetworkActivity
 			"newAnnouncementTask";
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState)
+	protected void onCreate(final Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.simple_fragment_container);
@@ -79,14 +79,14 @@ public class InputAnnouncementActivity extends AbstractNetworkActivity
 				new AbstractPutClient()
 				{
 					@Override
-					protected void submitData(final OutputStream inOutStream)
+					protected void submitData(final OutputStream inStream)
 							throws ServiceConnectionException
 					{
 						final ObjectMapper writer = new ObjectMapper();
 
 						try
 						{
-							writer.writeValue(inOutStream, inAnnouncement);
+							writer.writeValue(inStream, inAnnouncement);
 						} catch (final IOException ioe)
 						{
 							final String errorMsg = MessageFormat.format(

@@ -33,12 +33,12 @@ public class NewRequestDialog extends SimpleDialogFragment
     @Override
     protected Builder build(final Builder initialBuilder)
     {
-        final Resources resources = getActivity().getResources();
         final View dialogView =
                 LayoutInflater.from(getActivity()).inflate(
                         R.layout.new_request_dialog, null);
         initialBuilder.setView(dialogView);
 
+        final Resources resources = getActivity().getResources();
         initialBuilder.setPositiveButton(resources.
                 getString(R.string.new_request_confirmation_btn),
                 new View.OnClickListener()

@@ -22,6 +22,7 @@ import javax.persistence.TemporalType;
 
 import org.shared.traveller.business.domain.AbstractEntity;
 import org.shared.traveller.business.domain.IPersistentAnnouncement;
+import org.shared.traveller.client.domain.IAnnouncement.Status;
 import org.shared.traveller.utility.DeepCopier;
 
 @Entity(name = "Announcement")
@@ -41,14 +42,6 @@ public class AnnouncementEntity extends AbstractEntity implements
 	 * The serial version UID
 	 */
 	private static final long serialVersionUID = -289136650774029639L;
-
-	public enum Status {
-		ACTIVE,
-
-		COMPLETED,
-
-		CANCELLED;
-	}
 
 	@Id
 	@GeneratedValue

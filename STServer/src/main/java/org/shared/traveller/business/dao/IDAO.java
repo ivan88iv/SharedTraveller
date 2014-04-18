@@ -23,9 +23,19 @@ public interface IDAO<T> extends Serializable
 	T findById(final long inId);
 
 	/**
-	 * Saves the provided instance in the data source
+	 * Saves the provided instance in the data source if it has not
+	 * been saved before
 	 *
 	 * @param inInstance the instance to be saved. It must not be null.
 	 */
 	void persist(final T inInstance);
+
+	/**
+	 * The method updates the instance if the instance exists in the
+	 * persistent layer or saves the new data to the persistent layer
+	 * otherwise
+	 *
+	 * @param inInstance the instance to be modified/saved
+	 */
+	void merge(final T inInstance);
 }

@@ -2,6 +2,7 @@ package org.ai.shared.traveller.network.connection.rest.client;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PushbackInputStream;
 import java.net.HttpURLConnection;
 import java.net.ProtocolException;
 import java.net.URL;
@@ -15,7 +16,7 @@ import org.shared.traveller.rest.domain.ErrorResponse;
 /**
  * The class contains the general functionality used to make a service call
  * 
- * @author Ivan
+ * @author "Ivan Ivanov"
  * 
  */
 public abstract class AbstractRestClient
@@ -166,16 +167,16 @@ public abstract class AbstractRestClient
      * 
      * @param inStream
      *            the stream which is to be closed
-     * @param inParseException
-     *            the instance represents a parse exception that has resulted
-     *            just before the stream close moment or null if none has been
+     * @param inOriginalException
+     *            the instance represents an exception that has resulted just
+     *            before the stream close moment or null if none has been
      *            present
      * @throws ServiceConnectionException
      *             if no parse exception has been thrown and if we are unable to
      *             close the stream
      */
     private void closeResultStream(final InputStream inStream,
-            final ParseException inParseException)
+            final Exception inOriginalException)
             throws ServiceConnectionException
     {
         try
@@ -183,7 +184,7 @@ public abstract class AbstractRestClient
             inStream.close();
         } catch (final IOException ioe)
         {
-            if (null == inParseException)
+            if (null == inOriginalException)
             {
                 throw new ServiceConnectionException(
                         "Could not close the service connection result stream",
@@ -227,17 +228,32 @@ public abstract class AbstractRestClient
                     new ErrorResponse(inResponseMsg));
         } else
         {
-            ParseException parseException = null;
+            ServiceConnectionException thrownException = null;
             try
             {
-                parsedResponse = inResponseParser.parseResponse(
-                        inResponseCode, inInputStream);
-            } catch (final ParseException pe)
+                final PushbackInputStream pushBackStream =
+                        new PushbackInputStream(inInputStream);
+                ParseException parseException = null;
+                try
+                {
+                    parsedResponse = inResponseParser.parseResponse(
+                            inResponseCode, pushBackStream);
+                } catch (final ParseException pe)
+                {
+                    parseException = pe;
+                    throw new ServiceConnectionException(
+                            "A problem occurred while trying to "
+                                    + "parse the server's response.", pe);
+                } finally
+                {
+                    closeResultStream(pushBackStream, parseException);
+                }
+            } catch (final ServiceConnectionException sce)
             {
-                parseException = pe;
+                thrownException = sce;
             } finally
             {
-                closeResultStream(inInputStream, parseException);
+                closeResultStream(inInputStream, thrownException);
             }
         }
 

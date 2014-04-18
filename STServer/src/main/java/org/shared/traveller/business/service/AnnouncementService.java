@@ -46,7 +46,7 @@ public class AnnouncementService implements Serializable
 	 * announcement
 	 * @param inDriver the name of the driver
 	 * @return an announcement that fits all the
-	 * selected criteria
+	 * selected criteria or null if none is found
 	 * @throws DataExtractionException if an error
 	 * occurs while trying to extract the announcement
 	 */
@@ -60,11 +60,25 @@ public class AnnouncementService implements Serializable
 				inDepDate, inDriver);
 	}
 
+	/**
+	 * Returns the count of the announcements from the persistent layer
+	 * that correspond to the specified information
+	 *
+	 * @param request the information needed for extracting all announcements
+	 * @return the count of the announcements in the database
+	 */
 	public long getAllAnnouncementsCount(GetAllAnnouncementsRequest request)
 	{
 		return announcementDAO.getAllCount(request);
 	}
 
+	/**
+	 * Returns a list of all persistent announcements that
+	 * relate to the specified information
+	 *
+	 * @param request the information needed to extract
+	 * @return
+	 */
 	public List<? extends IPersistentAnnouncement> getAllAnnouncements(
 			GetAllAnnouncementsRequest request)
 	{

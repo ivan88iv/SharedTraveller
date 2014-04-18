@@ -31,17 +31,24 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        
         <activity
             android:name="org.ai.shared.traveller.announcement.input.InputAnnouncementActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/app_name"
             android:launchMode="singleTop"
             android:theme="@style/AppTheme" >
-            <intent-filter>
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
+        
         <activity android:name="org.ai.shared.traveller.settings.SettingsActivity" >
+        </activity>
+        
+        <activity
+            android:name="org.ai.shared.traveller.request.AnnouncementRequestActivity"
+            android:configChanges="orientation|screenSize"
+            android:label="@string/app_name"
+            android:launchMode="singleTop"
+            android:theme="@style/AppTheme" >
         </activity>
     </application>
 

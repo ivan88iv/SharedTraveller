@@ -1,8 +1,6 @@
 package org.ai.shared.traveller.network.connection;
 
 import java.util.HashMap;
-
-
 import java.util.Map;
 import java.util.Set;
 
@@ -33,7 +31,8 @@ public abstract class AbstractNetworkActivity extends ActionBarActivity
 
     /**
      * The method is called to attach the tasks related to the activity, which
-     * perform the different server calls
+     * performs the different server calls. The tasks are attached on activity
+     * resume
      */
     protected abstract void attachTasks();
 

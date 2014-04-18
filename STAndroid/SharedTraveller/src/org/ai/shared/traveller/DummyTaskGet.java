@@ -14,7 +14,7 @@ public class DummyTaskGet extends AbstractNetworkTask<DummyRequest>
     public DummyTaskGet(final Activity inActivity,
             final AbstractRestClient inClient)
     {
-        super(inActivity, "stserver/dummy/asdadsad", inClient,
+        super(inActivity, "dummy/asdadsad", inClient,
                 DummyRequest.class);
     }
 

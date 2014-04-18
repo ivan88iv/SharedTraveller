@@ -11,6 +11,8 @@ public class PathResolver
     private static final String DEFAULT_SERVER_URL =
             "http://192.168.1.122:8080/";
 
+    private static final String SERVER_ROOT = "stserver/";
+
     private String serverUrl;
 
     public PathResolver(final Context inContext)
@@ -33,5 +35,7 @@ public class PathResolver
         {
             serverUrl += "/";
         }
+
+        serverUrl += SERVER_ROOT;
     }
 }

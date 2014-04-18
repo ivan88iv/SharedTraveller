@@ -19,7 +19,6 @@ import org.shared.traveller.business.domain.jpa.AnnouncementEntity;
 import org.shared.traveller.business.domain.jpa.AnnouncementEntity_;
 import org.shared.traveller.business.domain.jpa.CityEntity;
 import org.shared.traveller.business.domain.jpa.CityEntity_;
-import org.shared.traveller.business.exception.persistence.DataExtractionException;
 import org.shared.traveller.business.service.dto.GetAllAnnouncementsRequest;
 import org.shared.traveller.rest.param.SortOrder;
 import org.springframework.stereotype.Repository;
@@ -67,7 +66,7 @@ public class AnnouncementDAO extends AbstractDAO<IPersistentAnnouncement>
 			final String inStartCity,
 			final String inEndCity,
 			final Date inDepDate,
-			final String inDriverUsername) throws DataExtractionException {
+			final String inDriverUsername) {
 		assert null != inStartCity : NULL_START_CITY;
 		assert null != inEndCity : NULL_END_CITY;
 		assert null != inDepDate : NULL_DEP_DATE;
@@ -81,9 +80,9 @@ public class AnnouncementDAO extends AbstractDAO<IPersistentAnnouncement>
 					TypedQuery<AnnouncementEntity> inQuery)
 			{
 				inQuery.setParameter("startPt", inStartCity)
-				.setParameter("endPt", inEndCity)
-				.setParameter("depDate", inDepDate)
-				.setParameter("driver", inDriverUsername).setMaxResults(1);
+					.setParameter("endPt", inEndCity)
+					.setParameter("depDate", inDepDate)
+					.setParameter("driver", inDriverUsername).setMaxResults(1);
 			}
 		};
 

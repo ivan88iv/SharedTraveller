@@ -22,7 +22,8 @@ public interface IAnnouncementDAO extends IDAO<IPersistentAnnouncement>
 	 * @param inEndCity the end city
 	 * @param inDepDate the date of the departure
 	 * @param inDriver the name of the driver
-	 * @return the announcement that is loaded
+	 * @return the announcement that is loaded or null if
+	 * none is found
 	 *
 	 * @throws DataExtractionException when a problem
 	 * occurs while trying to load the announcement
@@ -31,5 +32,5 @@ public interface IAnnouncementDAO extends IDAO<IPersistentAnnouncement>
 			final String inStartCity,
 			final String inEndCity,
 			final Date inDepDate,
-			final String inDriver) throws DataExtractionException;
+			final String inDriver);
 }

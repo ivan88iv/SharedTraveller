@@ -11,10 +11,10 @@ import org.shared.traveller.business.service.dto.GetAllAnnouncementsRequest;
 import org.shared.traveller.client.domain.IAnnouncement;
 import org.shared.traveller.client.domain.rest.Announcement;
 import org.shared.traveller.client.domain.rest.Announcement.AnnouncementBuilder;
-import org.shared.traveller.producer.IPersistentAnnouncementProducer;
 import org.shared.traveller.rest.domain.AnnouncementsList;
 import org.shared.traveller.rest.param.ParamNames;
 import org.shared.traveller.rest.param.SortOrder;
+import org.shared.traveller.transformer.IPersistentAnnouncementProducer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -47,11 +47,11 @@ public class RestAnnouncementService
 		return new ResponseEntity<Void>(emptyResponse, HttpStatus.CREATED);
 	}
 
-	@RequestMapping(value = "/new2", method = RequestMethod.PUT)
-	public ResponseEntity<Void> createAnnouncement2()
+	@RequestMapping(value = "/new2", method = RequestMethod.GET)
+	public ResponseEntity<IAnnouncement> createAnnouncement()
 	{
-		Void v = null;
-		return new ResponseEntity<Void>(v, HttpStatus.CREATED);
+		return new ResponseEntity<IAnnouncement>(new Announcement(),
+				HttpStatus.CREATED);
 	}
 
 	@RequestMapping(value = "/all", method = RequestMethod.GET)

@@ -10,13 +10,13 @@ import org.shared.traveller.business.dao.ITravellerDAO;
 import org.shared.traveller.business.dao.IVehicleDAO;
 import org.shared.traveller.business.domain.IPersistentAnnouncement;
 import org.shared.traveller.business.domain.jpa.AnnouncementEntity.BusinessAnnouncementBuilder;
-import org.shared.traveller.business.domain.jpa.AnnouncementEntity.Status;
 import org.shared.traveller.business.domain.jpa.CityEntity;
 import org.shared.traveller.business.domain.jpa.TravellerEntity;
 import org.shared.traveller.business.domain.jpa.VehicleEntity;
 import org.shared.traveller.business.exception.IncorrectInputException;
 import org.shared.traveller.client.domain.IAnnouncement;
-import org.shared.traveller.producer.IPersistentAnnouncementProducer;
+import org.shared.traveller.client.domain.IAnnouncement.Status;
+import org.shared.traveller.transformer.IPersistentAnnouncementProducer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -53,39 +53,6 @@ public class AnnouncementProducer implements
 
 	@Autowired
 	private ITravellerDAO travellerDao;
-
-	private CityEntity extractCity(final String inCityName,
-			final String inErrorMsg)
-	{
-		final CityEntity city = (CityEntity) cityDao.findCityByName(inCityName);
-		if (null == city)
-		{
-			throw new IncorrectInputException(MessageFormat.format(
-					inErrorMsg, inCityName), HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-
-		return city;
-	}
-
-	private VehicleEntity extractVehicle(final String inVehicleName)
-	{
-		return (VehicleEntity) vehicleDao.findByDisplayName(inVehicleName);
-	}
-
-	private TravellerEntity extractDriver(final String inDriverUsername,
-			final String inErrorMsg)
-	{
-		final TravellerEntity driver = (TravellerEntity) travellerDao
-				.findByUsername(inDriverUsername);
-
-		if (null == driver)
-		{
-			throw new IncorrectInputException(inErrorMsg,
-					HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-
-		return driver;
-	}
 
 	@Override
 	public void visit(IAnnouncement inAnnouncement)
@@ -132,5 +99,38 @@ public class AnnouncementProducer implements
 	public IPersistentAnnouncement produce()
 	{
 		return persistentAnnouncement;
+	}
+
+	private CityEntity extractCity(final String inCityName,
+			final String inErrorMsg)
+	{
+		final CityEntity city = (CityEntity) cityDao.findCityByName(inCityName);
+		if (null == city)
+		{
+			throw new IncorrectInputException(MessageFormat.format(
+					inErrorMsg, inCityName), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+
+		return city;
+	}
+
+	private VehicleEntity extractVehicle(final String inVehicleName)
+	{
+		return (VehicleEntity) vehicleDao.findByDisplayName(inVehicleName);
+	}
+
+	private TravellerEntity extractDriver(final String inDriverUsername,
+			final String inErrorMsg)
+	{
+		final TravellerEntity driver = (TravellerEntity) travellerDao
+				.findByUsername(inDriverUsername);
+
+		if (null == driver)
+		{
+			throw new IncorrectInputException(inErrorMsg,
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+
+		return driver;
 	}
 }

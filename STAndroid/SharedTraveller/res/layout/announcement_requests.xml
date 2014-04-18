@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:swipe="http://schemas.android.com/apk/res-auto"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    style="@style/requests_container" >
+    
+    <LinearLayout android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        style="@style/requests_hdr_container">
+        <TextView android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:text="@string/requests_usrname_hdr"
+            style="@style/requests_hdr"/>
+        <TextView android:layout_width="1dp"
+            android:layout_height="fill_parent"
+            style="@style/requests_delim_bar"/>
+        <TextView android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/requests_status_hdr"
+            style="@style/requests_hdr"/>
+    </LinearLayout>
+    
+    <com.fortysevendeg.swipelistview.SwipeListView
+         android:id="@+id/requests_swipe_view"
+         android:listSelector="#00000000"
+         android:layout_width="fill_parent"
+         android:layout_height="wrap_content"
+         swipe:swipeFrontView="@+id/requests_list_front"
+         swipe:swipeBackView="@+id/requests_list_back"
+         swipe:swipeDrawableChecked="@drawable/choice_selected"
+         swipe:swipeDrawableUnchecked="@drawable/choice_unselected"
+         swipe:swipeAnimationTime="0"
+         swipe:swipeOffsetLeft="0dp"
+         swipe:swipeOffsetRight="0dp" />
+</LinearLayout>
