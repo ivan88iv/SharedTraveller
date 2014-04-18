@@ -19,9 +19,9 @@ import android.util.Log;
  */
 public class AllCitiesTask extends AbstractNetworkTask<List<String>>
 {
-    private final ICityComponentsPreparator preparator;
+	private final ICityComponentsPreparator preparator;
 
-    /**
+     /**
      * The constructor instantiates a new task for cities extraction
      * 
      * @param inActivity
@@ -42,30 +42,29 @@ public class AllCitiesTask extends AbstractNetworkTask<List<String>>
                 });
         preparator = inPreparator;
     }
+	@Override
+	protected void onError(final int inStatusCode, final ErrorResponse inError)
+	{
+		Log.d("AllCitiesTask",
+				"Unsuccessful extraction of the cities available");
+	}
 
-    @Override
-    protected void onError(final int inStatusCode, final ErrorResponse inError)
-    {
-        Log.d("AllCitiesTask",
-                "Unsuccessful extraction of the cities available");
-    }
+	@Override
+	protected void onSuccess(final List<String> inResult)
+	{
+		Log.d("AllCitiesTask",
+				"Successful extraction of the cities available");
 
-    @Override
-    protected void onSuccess(final List<String> inResult)
-    {
-        Log.d("AllCitiesTask",
-                "Successful extraction of the cities available");
+		if (null != inResult)
+		{
+			final String[] cityNames = new String[inResult.size()];
+			int currNameInd = 0;
+			for (final String currName : inResult)
+			{
+				cityNames[currNameInd++] = currName;
+			}
 
-        if (null != inResult)
-        {
-            final String[] cityNames = new String[inResult.size()];
-            int currNameInd = 0;
-            for (final String currName : inResult)
-            {
-                cityNames[currNameInd++] = currName;
-            }
-
-            preparator.prepareComponents(cityNames);
-        }
-    }
+			preparator.prepareComponents(cityNames);
+		}
+	}
 }

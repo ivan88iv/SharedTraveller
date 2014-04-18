@@ -54,4 +54,14 @@
 /STAndroid/android-styled-dialogs/library/bin/res/crunch/drawable-mdpi/sdl_background_light.9.png
 /STAndroid/android-styled-dialogs/library/bin/res/crunch/drawable-xhdpi/sdl_background_dark.9.png
 /STAndroid/android-styled-dialogs/library/bin/res/crunch/drawable-xhdpi/sdl_background_light.9.png
+
 bin
+/STServer/.apt_generated/org/shared/traveller/business/domain/CountryEntity_.java
+/STServer/.apt_generated/org/shared/traveller/business/domain/TempPasswordEntity_.java
+/STServer/.apt_generated/org/shared/traveller/business/domain/jpa/AnnouncementEntity_.java
+/STServer/.apt_generated/org/shared/traveller/business/domain/jpa/CityEntity_.java
+/STServer/.apt_generated/org/shared/traveller/business/domain/jpa/NotificationEntity_.java
+/STServer/.apt_generated/org/shared/traveller/business/domain/jpa/RequestEntity_.java
+/STServer/.apt_generated/org/shared/traveller/business/domain/jpa/TravellerEntity_.java
+/STServer/.apt_generated/org/shared/traveller/business/domain/jpa/VehicleEntity_.java
+.metadata

@@ -26,7 +26,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.Spinner;
 
 import com.viewpagerindicator.PageIndicator;
@@ -79,7 +78,7 @@ public class InputAnnouncementFragment extends Fragment
 
 		final View actionBarButtons = inflater.inflate(
 				R.layout.edit_event_custom_actionbar,
-				new LinearLayout(getActivity()), false);
+				container, false);
 		configureActionBarCancelButton(actionBarButtons);
 		configureActionBarDonelButton(actionBarButtons);
 		((ActionBarActivity) getActivity()).getSupportActionBar()

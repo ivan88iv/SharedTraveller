@@ -17,7 +17,7 @@ public class AnnouncementTabsAdapter extends FragmentPagerAdapter
     {
         super(inManager);
 
-        primaryTab = PrimaryTab.newInstance(false, true);
+        primaryTab = PrimaryTab.newInstance(false, true, null);
         secondaryTab = new SecondaryTab();
     }
 
