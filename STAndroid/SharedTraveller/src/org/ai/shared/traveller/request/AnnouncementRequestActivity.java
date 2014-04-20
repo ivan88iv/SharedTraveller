@@ -141,7 +141,7 @@ public class AnnouncementRequestActivity extends AbstractNetworkActivity
                 "Bansko", "Sofia", new Date(114, 1, 9),
                 (short) 5, "temp");
         transaction.add(R.id.requests_fragment_container,
-                AnnouncementRequestsFragment.newInstance(this,
+				AnnouncementRequestsFragment.newInstance(this,
                         builder.build()));
         transaction.commit();
     }

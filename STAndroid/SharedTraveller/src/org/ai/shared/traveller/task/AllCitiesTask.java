@@ -5,11 +5,12 @@ import java.util.List;
 import org.ai.shared.traveller.network.connection.rest.client.AbstractRestClient;
 import org.ai.shared.traveller.network.connection.task.AbstractNetworkTask;
 import org.ai.shared.traveller.ui.preparator.ICityComponentsPreparator;
-import org.codehaus.jackson.type.TypeReference;
 import org.shared.traveller.rest.domain.ErrorResponse;
 
 import android.app.Activity;
 import android.util.Log;
+
+import com.fasterxml.jackson.core.type.TypeReference;
 
 /**
  * The class is used to extract all cities and apply them to UI components.
@@ -21,27 +22,28 @@ public class AllCitiesTask extends AbstractNetworkTask<List<String>>
 {
 	private final ICityComponentsPreparator preparator;
 
-     /**
-     * The constructor instantiates a new task for cities extraction
-     * 
-     * @param inActivity
-     *            the activity to which the task is attached
-     * @param inClient
-     *            the REST client used for cities extraction
-     * @param inPreparator
-     *            the instance that is responsible for applying the extracted
-     *            city values to UI components
-     */
-    public AllCitiesTask(final Activity inActivity,
-            final AbstractRestClient inClient,
-            final ICityComponentsPreparator inPreparator)
-    {
-        super(inActivity, "cities/all", inClient,
-                new TypeReference<List<String>>()
-                {
-                });
-        preparator = inPreparator;
-    }
+	/**
+	 * The constructor instantiates a new task for cities extraction
+	 * 
+	 * @param inActivity
+	 *            the activity to which the task is attached
+	 * @param inClient
+	 *            the REST client used for cities extraction
+	 * @param inPreparator
+	 *            the instance that is responsible for applying the extracted
+	 *            city values to UI components
+	 */
+	public AllCitiesTask(final Activity inActivity,
+			final AbstractRestClient inClient,
+			final ICityComponentsPreparator inPreparator)
+	{
+		super(inActivity, "cities/all", inClient,
+				new TypeReference<List<String>>()
+				{
+				});
+		preparator = inPreparator;
+	}
+
 	@Override
 	protected void onError(final int inStatusCode, final ErrorResponse inError)
 	{
