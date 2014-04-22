@@ -24,7 +24,7 @@ public class AnnouncementListHttpTask implements
 
     private static final String URL_AMPERSAND_SEPARATOR = "&";
     private static final String URL_EQUALS_SEPARATOR = "=";
-    private static final String URL = "stserver/announcement/all?";
+    private static final String URL = "announcement/all?";
 
     private final ServerResponseParser<AnnouncementsList> parser = new ServerResponseParser<AnnouncementsList>(
             AnnouncementsList.class);

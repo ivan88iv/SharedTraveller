@@ -8,12 +8,13 @@ import org.ai.shared.traveller.MainActivity;
 import org.ai.shared.traveller.exceptions.ServiceConnectionException;
 import org.ai.shared.traveller.network.connection.rest.client.AbstractPutClient;
 import org.ai.shared.traveller.network.connection.task.AbstractNetworkTask;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.shared.traveller.client.domain.request.IRequestInfo;
 import org.shared.traveller.rest.domain.ErrorResponse;
 
 import android.util.Log;
 import android.widget.Toast;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * The class represents a task used to send new business requests to the server

@@ -9,13 +9,14 @@ import org.ai.shared.traveller.network.connection.rest.client.SimpleClient;
 import org.ai.shared.traveller.network.connection.task.AbstractNetworkTask;
 import org.ai.shared.traveller.request.AnnouncementRequestActivity;
 import org.ai.shared.traveller.request.RequestsAdapter;
-import org.codehaus.jackson.type.TypeReference;
 import org.shared.traveller.client.domain.IAnnouncement;
 import org.shared.traveller.client.domain.request.IRequestInfo;
 import org.shared.traveller.rest.domain.ErrorResponse;
 import org.shared.traveller.utility.InstanceAsserter;
 
 import android.util.Log;
+
+import com.fasterxml.jackson.core.type.TypeReference;
 
 /**
  * The class represents a task that is used in order to extract requests for a
@@ -54,10 +55,10 @@ public class RequestsExtractionTask
 				new TypeReference<List<IRequestInfo>>()
 				{
 				});
-
+		
 		InstanceAsserter.assertNotNull(inAnnouncement, "announcement");
 		InstanceAsserter.assertNotNull(inAdapter, "adapter");
-
+		
 		announcement = inAnnouncement;
 		adapter = inAdapter;
 	}

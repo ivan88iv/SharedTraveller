@@ -5,11 +5,12 @@ import java.util.List;
 import org.ai.shared.traveller.network.connection.rest.client.AbstractRestClient;
 import org.ai.shared.traveller.network.connection.task.AbstractNetworkTask;
 import org.ai.shared.traveller.ui.preparator.ICityComponentsPreparator;
-import org.codehaus.jackson.type.TypeReference;
 import org.shared.traveller.rest.domain.ErrorResponse;
 
 import android.app.Activity;
 import android.util.Log;
+
+import com.fasterxml.jackson.core.type.TypeReference;
 
 /**
  * The class is used to extract all cities and apply them to UI components.

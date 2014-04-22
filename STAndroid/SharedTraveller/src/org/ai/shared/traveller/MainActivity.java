@@ -27,7 +27,6 @@ import org.ai.shared.traveller.task.request.NewRequestTask;
 import org.ai.shared.traveller.ui.preparator.ICityComponentsPreparator;
 import org.ai.shared.traveller.ui.preparator.IVehicleComponentsPreparator;
 import org.ai.sharedtraveller.R;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.shared.traveller.client.domain.rest.Announcement;
 import org.shared.traveller.client.domain.rest.RequestInfo;
 import org.shared.traveller.client.domain.rest.RequestInfo.RequestInfoBuilder;
@@ -43,6 +42,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import eu.inmite.android.lib.dialogs.ISimpleDialogListener;
 
 public class MainActivity extends AbstractNetworkActivity implements

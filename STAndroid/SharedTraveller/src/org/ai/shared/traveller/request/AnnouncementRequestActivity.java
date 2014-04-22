@@ -290,5 +290,4 @@ public class AnnouncementRequestActivity extends CallerActivity
 						R.id.requests_fragment_container);
 
 		return fragment.getAdapter();
-	}
-}
+	}}

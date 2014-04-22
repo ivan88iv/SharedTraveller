@@ -89,6 +89,22 @@ public class AnnouncementDetailsDialog extends SimpleDialogFragment
 		freeSeats.setText(Integer.toString(anno.getSeats()));
 
 		final TextView status = (TextView) dialogView.findViewById(R.id.status);
-		status.setText(anno.getStatus().toString());
+		status.setText(capitalizeFirstLetter(anno.getStatus().toString()));
+	}
+
+	private String capitalizeFirstLetter(final String original)
+	{
+		String capitalizedString = null;
+		if (original == null || original.length() == 0)
+		{
+			capitalizedString = original;
+		} else
+		{
+			final Locale defaultLocale = Locale.getDefault();
+			capitalizedString = original.substring(0, 1)
+					.toUpperCase(defaultLocale)
+					+ original.substring(1).toLowerCase(defaultLocale);
+		}
+		return capitalizedString;
 	}
 }

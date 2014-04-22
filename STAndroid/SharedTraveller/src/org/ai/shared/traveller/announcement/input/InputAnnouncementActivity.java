@@ -19,7 +19,6 @@ import org.ai.shared.traveller.task.announcement.NewAnnouncementTask;
 import org.ai.shared.traveller.ui.preparator.ICityComponentsPreparator;
 import org.ai.shared.traveller.ui.preparator.IVehicleComponentsPreparator;
 import org.ai.sharedtraveller.R;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.shared.traveller.client.domain.rest.Announcement;
 
 import android.os.Bundle;
@@ -27,6 +26,8 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class InputAnnouncementActivity extends AbstractNetworkActivity
 		implements ISaveAnnouncementCommand, ICitiesProvider,

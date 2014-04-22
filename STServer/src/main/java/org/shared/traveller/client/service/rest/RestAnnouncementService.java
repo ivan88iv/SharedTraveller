@@ -50,7 +50,10 @@ public class RestAnnouncementService
 	@RequestMapping(value = "/new2", method = RequestMethod.GET)
 	public ResponseEntity<IAnnouncement> createAnnouncement()
 	{
-		return new ResponseEntity<IAnnouncement>(new Announcement(),
+
+		final AnnouncementBuilder builder = new AnnouncementBuilder(null,
+				null, null, (short)0, null);
+		return new ResponseEntity<IAnnouncement>(builder.build(),
 				HttpStatus.CREATED);
 	}
 
@@ -91,7 +94,7 @@ public class RestAnnouncementService
 					.depAddress(anno.getAddress())
 					.intermediatePoints(
 							getInterPoints(anno.getIntermediatePoints()))
-					.status(capitalizeFirstLetter(anno.getStatus().toString()));
+					.status(anno.getStatus());
 
 			if (anno.getVehicle() != null)
 			{
@@ -112,19 +115,4 @@ public class RestAnnouncementService
 		}
 		return interPoints;
 	}
-
-	private String capitalizeFirstLetter(String original)
-	{
-		String capitalizedString = null;
-		if (original == null || original.length() == 0)
-		{
-			capitalizedString = original;
-		} else
-		{
-			capitalizedString = original.substring(0, 1).toUpperCase()
-					+ original.substring(1).toLowerCase();
-		}
-		return capitalizedString;
-	}
-
 }

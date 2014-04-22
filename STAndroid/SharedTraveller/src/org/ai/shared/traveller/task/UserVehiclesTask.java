@@ -5,11 +5,12 @@ import java.util.List;
 import org.ai.shared.traveller.network.connection.rest.client.AbstractRestClient;
 import org.ai.shared.traveller.network.connection.task.AbstractNetworkTask;
 import org.ai.shared.traveller.ui.preparator.IVehicleComponentsPreparator;
-import org.codehaus.jackson.type.TypeReference;
 import org.shared.traveller.rest.domain.ErrorResponse;
 
 import android.app.Activity;
 import android.util.Log;
+
+import com.fasterxml.jackson.core.type.TypeReference;
 
 /**
  * The class represents a task which is used to extract the vehicles for a

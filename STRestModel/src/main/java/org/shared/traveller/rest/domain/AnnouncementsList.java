@@ -4,11 +4,14 @@ import java.util.List;
 
 import org.shared.traveller.client.domain.IAnnouncement;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
 public class AnnouncementsList
 {
 
 	private Integer count;
 
+	@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "@class")
 	private List<IAnnouncement> list;
 
 	public AnnouncementsList()
