@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.shared.traveller.business.domain.IPersistentAnnouncement;
 import org.shared.traveller.business.domain.IPersistentTraveller;
+import org.shared.traveller.business.exception.IllegalUpdateOperationException;
 import org.shared.traveller.business.exception.IncorrectInputException;
 import org.shared.traveller.business.exception.InfoLookupException;
 import org.shared.traveller.business.exception.InternalBusinessException;
@@ -53,8 +54,8 @@ public class RestRequestService
 	private static final String NO_REQUEST_FOUND =
 			"The request with id {0} does not exist.";
 
-	private static final String REQUEST_ACCEPTANCE_PROBLEM =
-			"A problem occurred while trying to accept the"
+	private static final String REQUEST_UPDATE_PROBLEM =
+			"A problem occurred while trying to update the"
 			+ " request with id {0}.";
 
 	@Autowired
@@ -183,7 +184,7 @@ public class RestRequestService
 	 * @param inRequestId the id of the request to be accepted
 	 * @return an empty result
 	 * @throws IncorrectInputException if the specified request
-	 * does not exist
+	 * does not exist or cannot be updated
 	 * @throws InternalBusinessException if a problem occurs while trying
 	 * to perform the status change
 	 */
@@ -204,7 +205,7 @@ public class RestRequestService
 	 * REST service that uses this method
 	 *
 	 * @throws IncorrectInputException if the specified request
-	 * does not exist
+	 * does not exist or cannot be updated
 	 * @throws InternalBusinessException if a problem occurs while trying
 	 * to perform the status change
 	 */
@@ -214,8 +215,15 @@ public class RestRequestService
 	{
 		try
 		{
-			requestService.changeStatus(inRequestId, inNewStatus);
-		} catch(final NonExistingResourceException nepe)
+			if(inNewStatus == RequestStatus.APPROVED)
+			{
+				requestService.accept(inRequestId);
+			} else if(inNewStatus == RequestStatus.REJECTED)
+			{
+				requestService.reject(inRequestId);
+			}
+		} catch(final NonExistingResourceException|
+				IllegalUpdateOperationException nepe)
 		{
 			throw new IncorrectInputException(
 					MessageFormat.format(NO_REQUEST_FOUND, inRequestId),
@@ -224,7 +232,7 @@ public class RestRequestService
 		} catch(final UnsuccessfulUpdateException uue)
 		{
 			throw new InternalBusinessException(
-					MessageFormat.format(REQUEST_ACCEPTANCE_PROBLEM,
+					MessageFormat.format(REQUEST_UPDATE_PROBLEM,
 							inRequestId), uue);
 		}
 

@@ -7,6 +7,7 @@ import java.util.Date;
 
 import org.ai.shared.traveller.announcement.AnnouncementsSwipeListFragment;
 import org.ai.shared.traveller.announcement.input.InputAnnouncementActivity;
+import org.ai.shared.traveller.call.CallEnder;
 import org.ai.shared.traveller.command.request.INewRequestCommand;
 import org.ai.shared.traveller.command.save.announcement.ISaveAnnouncementCommand;
 import org.ai.shared.traveller.data.providers.ICitiesProvider;
@@ -31,10 +32,13 @@ import org.shared.traveller.client.domain.rest.Announcement;
 import org.shared.traveller.client.domain.rest.RequestInfo;
 import org.shared.traveller.client.domain.rest.RequestInfo.RequestInfoBuilder;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.telephony.PhoneStateListener;
+import android.telephony.TelephonyManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -46,11 +50,9 @@ public class MainActivity extends AbstractNetworkActivity implements
 		ICitiesProvider, IVehiclesProvider, ISimpleDialogListener
 {
 	private static final String FRAGMENT_TAG = "FRAGMENT_TAG";
+
 	private static final String UNSUCCESSFUL_ANNOUNCEMENT_SUBMIT =
 			"Could not submit the announcement {0}.";
-
-	private static final String NEW_REQUEST_FAILED =
-			"Could not send new request for {0}.";
 
 	private static final String CREATION_ANNOUNCEMNT_TASK_KEY =
 			"newAnnouncementTask";
@@ -89,6 +91,8 @@ public class MainActivity extends AbstractNetworkActivity implements
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+
+		attachCallListener();
 
 		final Button showViewPagerIndicator = (Button) findViewById(
 				R.id.show_view_pager_indicator);
@@ -205,28 +209,7 @@ public class MainActivity extends AbstractNetworkActivity implements
 	@Override
 	public void sendRequest(final RequestInfo inRequest)
 	{
-		final AbstractPutClient sendRequestClient = new AbstractPutClient()
-		{
-			@Override
-			protected void submitData(final OutputStream inStream)
-					throws ServiceConnectionException
-			{
-				final ObjectMapper writer = new ObjectMapper();
-
-				try
-				{
-					writer.writeValue(inStream, inRequest);
-				} catch (final IOException ioe)
-				{
-					final String errorMsg = MessageFormat.format(
-							NEW_REQUEST_FAILED, inRequest);
-
-					throw new ServiceConnectionException(errorMsg, ioe);
-				}
-			}
-		};
-		addTask(NEW_REQUEST_TASK_KEY, new NewRequestTask(this,
-				sendRequestClient));
+		addTask(NEW_REQUEST_TASK_KEY, new NewRequestTask(this, inRequest));
 		executeTask(NEW_REQUEST_TASK_KEY);
 	}
 
@@ -270,5 +253,16 @@ public class MainActivity extends AbstractNetworkActivity implements
 	public void onNegativeButtonClicked(final int requestCode)
 	{
 		// TODO Auto-generated method stub
+	}
+
+	/**
+	 * The method attaches listeners to call made from the device
+	 */
+	private void attachCallListener()
+	{
+		final CallEnder callEnder = new CallEnder(this);
+		final TelephonyManager callManager = (TelephonyManager)
+				getSystemService(Context.TELEPHONY_SERVICE);
+		callManager.listen(callEnder, PhoneStateListener.LISTEN_CALL_STATE);
 	}
 }

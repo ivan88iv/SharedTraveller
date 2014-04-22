@@ -30,7 +30,7 @@ public abstract class AbstractDAO<T> implements IDAO<T>
 
 	@Transactional
 	@Override
-	public void persist(final T inInstance)
+	public void insert(final T inInstance)
 	{
 		assert null != inInstance : NULL_INSTANCE;
 
@@ -40,7 +40,7 @@ public abstract class AbstractDAO<T> implements IDAO<T>
 
 	@Transactional
 	@Override
-	public void merge(T inInstance)
+	public void update(T inInstance)
 	{
 		assert null != inInstance;
 

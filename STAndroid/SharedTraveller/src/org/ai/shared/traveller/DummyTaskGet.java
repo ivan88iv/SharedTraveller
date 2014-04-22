@@ -5,28 +5,28 @@ import org.ai.shared.traveller.network.connection.task.AbstractNetworkTask;
 import org.shared.traveller.rest.domain.DummyRequest;
 import org.shared.traveller.rest.domain.ErrorResponse;
 
-import android.app.Activity;
 import android.util.Log;
 
-public class DummyTaskGet extends AbstractNetworkTask<DummyRequest>
+public class DummyTaskGet extends
+		AbstractNetworkTask<MainActivity, DummyRequest>
 {
 
-    public DummyTaskGet(final Activity inActivity,
-            final AbstractRestClient inClient)
-    {
-        super(inActivity, "dummy/asdadsad", inClient,
-                DummyRequest.class);
-    }
+	public DummyTaskGet(final MainActivity inActivity,
+			final AbstractRestClient inClient)
+	{
+		super(inActivity, "dummy/asdadsad", inClient,
+				DummyRequest.class);
+	}
 
-    @Override
-    protected void onSuccess(final DummyRequest inResult)
-    {
-        Log.i("DummyTaskGet", "SUCCESS: " + inResult);
-    }
+	@Override
+	protected void onSuccess(final DummyRequest inResult)
+	{
+		Log.i("DummyTaskGet", "SUCCESS: " + inResult);
+	}
 
-    @Override
-    protected void onError(final int inStatusCode, final ErrorResponse inError)
-    {
-        Log.i("DummyTaskGet", "ERROR: " + inStatusCode + "  " + inError);
-    }
+	@Override
+	protected void onError(final int inStatusCode, final ErrorResponse inError)
+	{
+		Log.i("DummyTaskGet", "ERROR: " + inStatusCode + "  " + inError);
+	}
 }

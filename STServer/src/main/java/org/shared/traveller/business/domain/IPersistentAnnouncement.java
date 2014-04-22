@@ -71,6 +71,13 @@ public interface IPersistentAnnouncement
 	Short getFreeSeats();
 
 	/**
+	 * The method changes the value of the free seats in the announcement
+	 *
+	 * @param inSeats the new value of the free seats
+	 */
+	void setFreeSeats(final Short inSeats);
+
+	/**
 	 * Returns the status of the announcement
 	 *
 	 * @return the status of the announcement

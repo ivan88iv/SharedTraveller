@@ -8,53 +8,68 @@ import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 
+/**
+ * The class is responsible for the creation of dialogs that ask the user for
+ * sending some additional notifications to the clients
+ * 
+ * @author "Ivan Ivanov"
+ * 
+ */
 public class NotificationDialogFactory
-        extends AbstractDialogFactory
+		extends AbstractDialogFactory
 {
-    public NotificationDialogFactory(final FragmentActivity inActivity,
-            final String inTag)
-    {
-        super(inActivity, inTag);
-    }
+	/**
+	 * Instantiates a new dialog factory
+	 * 
+	 * @param inActivity
+	 *            the activity to which the new dialog will be associated
+	 * @param inTag
+	 *            the tag with which the dialog fragment is associated
+	 */
+	public NotificationDialogFactory(final FragmentActivity inActivity,
+			final String inTag)
+	{
+		super(inActivity, inTag);
+	}
 
-    @Override
-    protected int loadTitleResourceId()
-    {
-        return R.string.notification_dialog_title;
-    }
+	@Override
+	protected int loadTitleResourceId()
+	{
+		return R.string.notification_dialog_title;
+	}
 
-    @Override
-    protected String loadDescriptionMsg()
-    {
-        final String descriptionMsg = getActivity().getResources()
-                .getString(R.string.notificaiton_dialog_sub_title);
-        return descriptionMsg;
-    }
+	@Override
+	protected String loadDescriptionMsg()
+	{
+		final String descriptionMsg = getActivity().getResources()
+				.getString(R.string.notificaiton_dialog_sub_title);
+		return descriptionMsg;
+	}
 
-    @Override
-    protected int loadConfirmBtnResourceId()
-    {
-        return R.string.notification_dialog_confirmation_btn;
-    }
+	@Override
+	protected int loadConfirmBtnResourceId()
+	{
+		return R.string.notification_dialog_confirmation_btn;
+	}
 
-    @Override
-    protected int loadRejectBtnResourceId()
-    {
-        return R.string.notification_dialog_rejection_btn;
-    }
+	@Override
+	protected int loadRejectBtnResourceId()
+	{
+		return R.string.notification_dialog_rejection_btn;
+	}
 
-    @Override
-    protected View loadContent()
-    {
-        final LayoutInflater inflater =
-                getActivity().getLayoutInflater();
-        return inflater.inflate(R.layout.notification_dialog_content,
-                null);
-    }
+	@Override
+	protected View loadContent()
+	{
+		final LayoutInflater inflater =
+				getActivity().getLayoutInflater();
+		return inflater.inflate(R.layout.notification_dialog_content,
+				null);
+	}
 
-    @Override
-    protected int loadRequestCode()
-    {
-        return DialogRequestCode.REQUEST_NOTIFICATION.getCode();
-    }
+	@Override
+	protected int loadRequestCode()
+	{
+		return DialogRequestCode.REQUEST_NOTIFICATION.getCode();
+	}
 }

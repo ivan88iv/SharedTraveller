@@ -111,7 +111,7 @@ public class TravellerEntity extends AbstractEntity implements
 	}
 
 	@Override
-	public String getPhoneNUmber()
+	public String getPhoneNumber()
 	{
 		return phoneNumber;
 	}

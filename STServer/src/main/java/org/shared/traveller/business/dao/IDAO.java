@@ -28,7 +28,7 @@ public interface IDAO<T> extends Serializable
 	 *
 	 * @param inInstance the instance to be saved. It must not be null.
 	 */
-	void persist(final T inInstance);
+	void insert(final T inInstance);
 
 	/**
 	 * The method updates the instance if the instance exists in the
@@ -37,5 +37,5 @@ public interface IDAO<T> extends Serializable
 	 *
 	 * @param inInstance the instance to be modified/saved
 	 */
-	void merge(final T inInstance);
+	void update(final T inInstance);
 }

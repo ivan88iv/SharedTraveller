@@ -266,6 +266,12 @@ public class AnnouncementEntity extends AbstractEntity implements
 	}
 
 	@Override
+	public void setFreeSeats(Short inSeats)
+	{
+		freeSeats = inSeats;
+	}
+
+	@Override
 	public Status getStatus()
 	{
 		return status;

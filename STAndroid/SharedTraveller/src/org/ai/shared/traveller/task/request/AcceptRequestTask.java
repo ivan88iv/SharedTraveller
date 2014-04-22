@@ -1,38 +1,42 @@
 package org.ai.shared.traveller.task.request;
 
-import org.ai.shared.traveller.network.connection.rest.client.AbstractRestClient;
-import org.ai.shared.traveller.network.connection.task.AbstractNetworkTask;
+import org.ai.shared.traveller.request.AnnouncementRequestActivity;
 import org.shared.traveller.rest.domain.ErrorResponse;
 
-import android.app.Activity;
 import android.util.Log;
-import android.widget.Toast;
 
-public class AcceptRequestTask extends AbstractNetworkTask<Void>
+/**
+ * The class represents the asynchronous task used for accepting a request
+ * instance
+ * 
+ * @author "Ivan Ivanov"
+ * 
+ */
+public class AcceptRequestTask extends ChangeRequestStatusTask
 {
-    public AcceptRequestTask(final Activity inActivity,
-            final AbstractRestClient inClient)
-    {
-        super(inActivity, "request/accept", inClient, Void.class);
-    }
+	/**
+	 * The constructor initializes a new request acceptance asynchronous task
+	 * 
+	 * @param inActivity
+	 *            the activity to which the task is associated
+	 */
+	public AcceptRequestTask(final AnnouncementRequestActivity inActivity)
+	{
+		super(inActivity, "request/accept");
+	}
 
-    @Override
-    protected void onSuccess(final Void inResult)
-    {
-        Log.d("AcceptRequestTask", "The request was successfully accepted!");
-        Toast.makeText(getActivity(),
-                "The request has been accepted successfully!",
-                Toast.LENGTH_SHORT).show();
-    }
+	@Override
+	protected void onSuccess(final Void inResult)
+	{
+		Log.d("AcceptRequestTask", "The request was successfully accepted!");
+		getActivity().onRequestAccept();
+	}
 
-    @Override
-    protected void onError(final int inStatusCode, final ErrorResponse inError)
-    {
-        Log.d("AcceptRequestTask",
-                "The request could not be accepted successfully.");
-        Toast.makeText(getActivity(),
-                "The request could not be accepted because of a problem.",
-                Toast.LENGTH_SHORT).show();
-    }
-
+	@Override
+	protected void onError(final int inStatusCode, final ErrorResponse inError)
+	{
+		Log.d("AcceptRequestTask",
+				"The request could not be accepted successfully.");
+		getActivity().onRequestAcceptError();
+	}
 }

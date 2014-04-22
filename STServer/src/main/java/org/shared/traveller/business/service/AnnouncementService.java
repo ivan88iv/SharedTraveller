@@ -26,7 +26,7 @@ public class AnnouncementService implements Serializable
 	{
 		try
 		{
-			announcementDAO.persist(inAnnouncement);
+			announcementDAO.insert(inAnnouncement);
 		} catch (Exception e)
 		{
 			// TODO handle exceptions

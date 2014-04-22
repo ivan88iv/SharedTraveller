@@ -1,7 +1,6 @@
 package org.shared.traveller.client.domain.rest;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -36,7 +35,7 @@ public class Announcement implements IAnnouncement
 
     private String driverUsername;
 
-    private String status;
+    private Status status;
 
     private List<String> intermediatePts;
 
@@ -68,7 +67,7 @@ public class Announcement implements IAnnouncement
 
         private final String driverUsernameField;
 
-        private String statusField;
+        private Status statusField;
 
         private List<String> intermediatePtsField;
 
@@ -112,7 +111,7 @@ public class Announcement implements IAnnouncement
             return this;
         }
 
-        public AnnouncementBuilder status(final String inStatus)
+        public AnnouncementBuilder status(final Status inStatus)
         {
             statusField = inStatus;
             return this;
@@ -121,7 +120,7 @@ public class Announcement implements IAnnouncement
         public AnnouncementBuilder intermediatePoints(
                 final List<String> inIntermediatePts)
         {
-            intermediatePtsField = new ArrayList<String>(inIntermediatePts);
+            intermediatePtsField = DeepCopier.copy(inIntermediatePts);
             return this;
         }
 
@@ -131,12 +130,21 @@ public class Announcement implements IAnnouncement
         }
     }
 
-    // TODO try and make it protected
-    public Announcement()
+	 /**
+	  * This constructor is merely intended to be used for deserialization
+	  * purposes. It should not be used by any user code.
+	  */
+    protected Announcement()
     {
-
+    	// used for JSON deserialization purposes
     }
 
+    /**
+     * The constructor creates a new announcement using the information
+     * in the provided builder instance
+     *
+     * @param inBuilder the builder used to create the announcement
+     */
     private Announcement(final AnnouncementBuilder inBuilder)
     {
         from = inBuilder.fromField;
@@ -220,7 +228,7 @@ public class Announcement implements IAnnouncement
     }
 
     @Override
-    public String getStatus()
+    public Status getStatus()
     {
         return status;
     }
