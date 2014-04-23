@@ -65,3 +65,4 @@ bin
 /STServer/.apt_generated/org/shared/traveller/business/domain/jpa/TravellerEntity_.java
 /STServer/.apt_generated/org/shared/traveller/business/domain/jpa/VehicleEntity_.java
 .metadata
+/STServer/.classpath
