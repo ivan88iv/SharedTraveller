@@ -5,7 +5,7 @@ import java.io.OutputStream;
 import java.text.MessageFormat;
 import java.util.Date;
 
-import org.ai.shared.traveller.announcement.AnnouncementsSwipeListFragment;
+import org.ai.shared.traveller.announcement.activity.ShowAnnouncementsActivity;
 import org.ai.shared.traveller.announcement.input.InputAnnouncementActivity;
 import org.ai.shared.traveller.command.request.INewRequestCommand;
 import org.ai.shared.traveller.command.save.announcement.ISaveAnnouncementCommand;
@@ -18,6 +18,7 @@ import org.ai.shared.traveller.network.connection.rest.client.AbstractPutClient;
 import org.ai.shared.traveller.network.connection.rest.client.RequestTypes;
 import org.ai.shared.traveller.network.connection.rest.client.SimpleClient;
 import org.ai.shared.traveller.request.AnnouncementRequestActivity;
+import org.ai.shared.traveller.request.UserRequestsActivity;
 import org.ai.shared.traveller.settings.SettingsActivity;
 import org.ai.shared.traveller.task.AllCitiesTask;
 import org.ai.shared.traveller.task.UserVehiclesTask;
@@ -32,8 +33,6 @@ import org.shared.traveller.client.domain.rest.RequestInfo.RequestInfoBuilder;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -47,7 +46,6 @@ public class MainActivity extends AbstractNetworkActivity implements
 		ISaveAnnouncementCommand, INewRequestCommand,
 		ICitiesProvider, IVehiclesProvider, ISimpleDialogListener
 {
-	private static final String FRAGMENT_TAG = "FRAGMENT_TAG";
 	private static final String UNSUCCESSFUL_ANNOUNCEMENT_SUBMIT =
 			"Could not submit the announcement {0}.";
 
@@ -81,9 +79,6 @@ public class MainActivity extends AbstractNetworkActivity implements
 	@Override
 	protected void attachTasks()
 	{
-		final SimpleClient getClient = new SimpleClient(RequestTypes.GET);
-		addTask("DUMMY_TASK", new DummyTaskGet(this, getClient));
-		executeTask("DUMMY_TASK");
 	}
 
 	@Override
@@ -100,6 +95,8 @@ public class MainActivity extends AbstractNetworkActivity implements
 				R.id.show_new_request_dialog);
 		final Button showRequestsBtn = (Button) findViewById(
 				R.id.show_requests);
+		final Button showMyRequestsBtn = (Button) findViewById(
+				R.id.show_my_requests);
 
 		final MainActivity activity = this;
 
@@ -119,19 +116,9 @@ public class MainActivity extends AbstractNetworkActivity implements
 			@Override
 			public void onClick(final View v)
 			{
-				findViewById(R.id.fragment_container).setVisibility(
-						View.VISIBLE);
-				final FragmentManager fragmentManager = getSupportFragmentManager();
-				final FragmentTransaction fragmentTransaction = fragmentManager
-						.beginTransaction();
-				fragmentTransaction.add(R.id.fragment_container,
-						new AnnouncementsSwipeListFragment(), FRAGMENT_TAG);
-				fragmentTransaction.addToBackStack("swipeListView");
-				fragmentTransaction.commit();
-
-				showViewPagerIndicator.setVisibility(View.GONE);
-				showSwipeView.setVisibility(View.GONE);
-
+				Intent intent = new Intent(MainActivity.this,
+						ShowAnnouncementsActivity.class);
+				MainActivity.this.startActivity(intent);
 			}
 		});
 
@@ -151,6 +138,15 @@ public class MainActivity extends AbstractNetworkActivity implements
 			{
 				startActivity(new Intent(activity,
 						AnnouncementRequestActivity.class));
+			}
+		});
+		showMyRequestsBtn.setOnClickListener(new View.OnClickListener()
+		{
+			@Override
+			public void onClick(final View v)
+			{
+				startActivity(new Intent(activity,
+						UserRequestsActivity.class));
 			}
 		});
 	}
@@ -261,7 +257,7 @@ public class MainActivity extends AbstractNetworkActivity implements
 			final RequestInfoBuilder builder = new RequestInfoBuilder();
 			builder.sender("temp")
 					.fromPoint("Bansko").toPoint("Sofia")
-					.departureDate(new Date(114, 1, 9))
+					.departureDate(new Date())
 					.driverUsername("temp");
 			final RequestInfo request = builder.build();
 			sendRequest(request);

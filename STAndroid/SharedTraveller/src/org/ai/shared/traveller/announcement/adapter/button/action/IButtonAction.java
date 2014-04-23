@@ -15,7 +15,7 @@ import android.view.View;
  * @author AlexanderIvanov
  * 
  */
-public interface IButtonAction
+public interface IButtonAction<T>
 {
-    public void perform(Context cxt, Announcement announcement);
+	public void perform(Context cxt, T announcement);
 }

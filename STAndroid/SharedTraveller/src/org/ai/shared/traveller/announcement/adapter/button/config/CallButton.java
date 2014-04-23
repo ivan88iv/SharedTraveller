@@ -3,10 +3,11 @@ package org.ai.shared.traveller.announcement.adapter.button.config;
 import org.ai.shared.traveller.announcement.adapter.button.action.CallAction;
 import org.ai.shared.traveller.announcement.adapter.button.action.IButtonAction;
 import org.ai.sharedtraveller.R;
+import org.shared.traveller.client.domain.IAnnouncement;
 
 import android.graphics.Color;
 
-public class CallButton extends AbstractButton
+public class CallButton extends AbstractButton<IAnnouncement>
 {
 
 	@Override
@@ -16,7 +17,7 @@ public class CallButton extends AbstractButton
 	}
 
 	@Override
-	public IButtonAction getAction()
+	public IButtonAction<IAnnouncement> getAction()
 	{
 		return new CallAction();
 	}

@@ -35,36 +35,35 @@ public class AnnouncementService implements Serializable
 	}
 
 	/**
-	 * The method loads the announcement that has
-	 * the given start and end points, the provided
-	 * departure date and driver
-	 *
-	 * @param inStartCity the start point of the
-	 * announcement
-	 * @param inEndCity the end point of the announcement
-	 * @param inDepDate the departure date for the
-	 * announcement
-	 * @param inDriver the name of the driver
-	 * @return an announcement that fits all the
-	 * selected criteria or null if none is found
-	 * @throws DataExtractionException if an error
-	 * occurs while trying to extract the announcement
+	 * The method loads the announcement that has the given start and end
+	 * points, the provided departure date and driver
+	 * 
+	 * @param inStartCity
+	 *            the start point of the announcement
+	 * @param inEndCity
+	 *            the end point of the announcement
+	 * @param inDepDate
+	 *            the departure date for the announcement
+	 * @param inDriver
+	 *            the name of the driver
+	 * @return an announcement that fits all the selected criteria or null if
+	 *         none is found
+	 * @throws DataExtractionException
+	 *             if an error occurs while trying to extract the announcement
 	 */
-	public IPersistentAnnouncement loadAnnouncement(
-			final String inStartCity,
-			final String inEndCity,
-			final Date inDepDate,
-			final String inDriver) throws DataExtractionException {
+	public IPersistentAnnouncement loadAnnouncement(final String inStartCity, final String inEndCity,
+			final Date inDepDate, final String inDriver) throws DataExtractionException
+	{
 
-		return announcementDAO.loadAnnouncement(inStartCity, inEndCity,
-				inDepDate, inDriver);
+		return announcementDAO.loadAnnouncement(inStartCity, inEndCity, inDepDate, inDriver);
 	}
 
 	/**
-	 * Returns the count of the announcements from the persistent layer
-	 * that correspond to the specified information
-	 *
-	 * @param request the information needed for extracting all announcements
+	 * Returns the count of the announcements from the persistent layer that
+	 * correspond to the specified information
+	 * 
+	 * @param request
+	 *            the information needed for extracting all announcements
 	 * @return the count of the announcements in the database
 	 */
 	public long getAllAnnouncementsCount(GetAllAnnouncementsRequest request)
@@ -73,15 +72,16 @@ public class AnnouncementService implements Serializable
 	}
 
 	/**
-	 * Returns a list of all persistent announcements that
-	 * relate to the specified information
-	 *
-	 * @param request the information needed to extract
+	 * Returns a list of all persistent announcements that relate to the
+	 * specified information
+	 * 
+	 * @param request
+	 *            the information needed to extract
 	 * @return
 	 */
-	public List<? extends IPersistentAnnouncement> getAllAnnouncements(
-			GetAllAnnouncementsRequest request)
+	public List<? extends IPersistentAnnouncement> getAllAnnouncements(GetAllAnnouncementsRequest request)
 	{
 		return announcementDAO.getAll(request);
 	}
+
 }

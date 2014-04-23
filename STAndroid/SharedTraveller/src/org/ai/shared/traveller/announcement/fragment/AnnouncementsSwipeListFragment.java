@@ -1,21 +1,20 @@
-package org.ai.shared.traveller.announcement;
+package org.ai.shared.traveller.announcement.fragment;
 
 import java.util.ArrayList;
 
-import org.ai.shared.traveller.announcement.adapter.LazyLoadingAdapter;
+import org.ai.shared.traveller.announcement.adapter.AllAnnouncementsLazyLoadingAdapter;
 import org.ai.shared.traveller.announcement.adapter.http.AnnouncementListHttpTask;
 import org.ai.shared.traveller.dialog.pickers.AbstractDatePickerDisplayer;
 import org.ai.shared.traveller.dialog.pickers.AbstractPickerDisplayer;
 import org.ai.shared.traveller.list.swipe.SettingsManager;
 import org.ai.sharedtraveller.R;
-import org.shared.traveller.client.domain.rest.Announcement;
+import org.shared.traveller.client.domain.IAnnouncement;
 import org.shared.traveller.rest.param.SortOrder;
 
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -28,7 +27,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.DatePicker;
 import android.widget.EditText;
 
-import com.fortysevendeg.swipelistview.BaseSwipeListViewListener;
 import com.fortysevendeg.swipelistview.SwipeListView;
 
 /**
@@ -56,7 +54,7 @@ public class AnnouncementsSwipeListFragment extends Fragment implements
 
 	private SwipeListView swipeListView;
 
-	private LazyLoadingAdapter adapter;
+	private AllAnnouncementsLazyLoadingAdapter adapter;
 
 	private HeaderViewHolder headerViewHolder;
 
@@ -64,8 +62,8 @@ public class AnnouncementsSwipeListFragment extends Fragment implements
 	public void onCreate(final Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
-		adapter = new LazyLoadingAdapter(getActivity(),
-				new ArrayList<Announcement>(), new AnnouncementListHttpTask(
+		adapter = new AllAnnouncementsLazyLoadingAdapter(getActivity(),
+				new ArrayList<IAnnouncement>(), new AnnouncementListHttpTask(
 						getActivity()));
 		headerViewHolder = new HeaderViewHolder();
 		setHasOptionsMenu(true);
@@ -79,61 +77,11 @@ public class AnnouncementsSwipeListFragment extends Fragment implements
 				R.layout.swipe_list_view_fragment, container, false);
 
 		swipeListView = (SwipeListView) fragment
-				.findViewById(R.id.example_lv_list);
+				.findViewById(R.id.swipe_list_view);
 		final View header = View.inflate(getActivity(),
 				R.layout.swipe_list_view_header, null);
 		swipeListView.addHeaderView(header);
 		configureHeader(header);
-
-		swipeListView.setSwipeListViewListener(new BaseSwipeListViewListener()
-		{
-			@Override
-			public void onOpened(final int position, final boolean toRight)
-			{
-			}
-
-			@Override
-			public void onClosed(final int position, final boolean fromRight)
-			{
-			}
-
-			@Override
-			public void onListChanged()
-			{
-			}
-
-			@Override
-			public void onMove(final int position, final float x)
-			{
-			}
-
-			@Override
-			public void onStartOpen(final int position, final int action,
-					final boolean right)
-			{
-				Log.d("swipe", String.format("onStartOpen %d - action %d",
-						position, action));
-			}
-
-			@Override
-			public void onStartClose(final int position, final boolean right)
-			{
-				Log.d("swipe", String.format("onStartClose %d", position));
-			}
-
-			@Override
-			public void onClickFrontView(final int position)
-			{
-				Log.d("swipe", String.format("onClickFrontView %d", position));
-			}
-
-			@Override
-			public void onClickBackView(final int position)
-			{
-				Log.d("swipe", String.format("onClickBackView %d", position));
-			}
-
-		});
 
 		swipeListView.setAdapter(adapter);
 
@@ -282,13 +230,14 @@ public class AnnouncementsSwipeListFragment extends Fragment implements
 		swipeListView.setAdapter(adapter);
 	}
 
-	private LazyLoadingAdapter cerateAdapter(final SortOrder sortOrder)
+	private AllAnnouncementsLazyLoadingAdapter cerateAdapter(
+			final SortOrder sortOrder)
 	{
 		final String from = headerViewHolder.from.getText().toString();
 		final String to = headerViewHolder.to.getText().toString();
 		final String date = headerViewHolder.date.getText().toString();
-		return new LazyLoadingAdapter(getActivity(),
-				new ArrayList<Announcement>(), new AnnouncementListHttpTask(
+		return new AllAnnouncementsLazyLoadingAdapter(getActivity(),
+				new ArrayList<IAnnouncement>(), new AnnouncementListHttpTask(
 						getActivity(), from, to, date, sortOrder));
 	}
 

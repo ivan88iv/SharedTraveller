@@ -12,14 +12,15 @@ import org.ai.shared.traveller.network.connection.response.ServerResponseParser;
 import org.ai.shared.traveller.network.connection.rest.client.AbstractRestClient;
 import org.ai.shared.traveller.network.connection.rest.client.RequestTypes;
 import org.ai.shared.traveller.network.connection.rest.client.SimpleClient;
+import org.shared.traveller.client.domain.IAnnouncement;
 import org.shared.traveller.rest.domain.AnnouncementsList;
+import org.shared.traveller.rest.domain.CountedResponseList;
 import org.shared.traveller.rest.param.ParamNames;
 import org.shared.traveller.rest.param.SortOrder;
 
 import android.app.Activity;
 
-public class AnnouncementListHttpTask implements
-        IAdapterHttpTask<ServerResponse<AnnouncementsList>>
+public class AnnouncementListHttpTask implements IAdapterHttpTask<ServerResponse<? extends CountedResponseList<IAnnouncement>>>
 {
 
     private static final String URL_AMPERSAND_SEPARATOR = "&";
@@ -71,7 +72,7 @@ public class AnnouncementListHttpTask implements
     }
 
     @Override
-    public ServerResponse<AnnouncementsList> execute(final int fetchSize,
+    public ServerResponse<? extends CountedResponseList<IAnnouncement>> execute(final int fetchSize,
             final int position) throws ParseException,
             ServiceConnectionException
     {
