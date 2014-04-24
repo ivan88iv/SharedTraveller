@@ -112,7 +112,7 @@ public class TravellerEntity extends AbstractEntity implements IPersistentTravel
 	}
 
 	@Override
-	public String getPhoneNUmber()
+	public String getPhoneNumber()
 	{
 		return phoneNumber;
 	}

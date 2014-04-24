@@ -78,8 +78,7 @@ public class RestAnnouncementService
 					.getName(), anno.getDepartureDate(), anno.getFreeSeats(), anno.getDriver().getFirstName() + " "
 					+ anno.getDriver().getLastName());
 			builder.depTime(anno.getDepartureTime()).price(anno.getPrice()).depAddress(anno.getAddress())
-					.intermediatePoints(getInterPoints(anno.getIntermediatePoints()))
-					.status(capitalizeFirstLetter(anno.getStatus().toString()));
+					.intermediatePoints(getInterPoints(anno.getIntermediatePoints()));
 
 			if (anno.getVehicle() != null)
 			{

@@ -4,16 +4,17 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
 
-import org.ai.shared.traveller.network.connection.rest.client.AbstractRestClient;
+import org.ai.shared.traveller.network.connection.rest.client.RequestTypes;
+import org.ai.shared.traveller.network.connection.rest.client.SimpleClient;
 import org.ai.shared.traveller.network.connection.task.AbstractNetworkTask;
+import org.ai.shared.traveller.request.AnnouncementRequestActivity;
 import org.ai.shared.traveller.request.RequestsAdapter;
 import org.shared.traveller.client.domain.IAnnouncement;
 import org.shared.traveller.client.domain.request.IRequestInfo;
 import org.shared.traveller.rest.domain.ErrorResponse;
+import org.shared.traveller.utility.InstanceAsserter;
 
-import android.app.Activity;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 
@@ -25,7 +26,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
  * 
  */
 public class RequestsExtractionTask
-		extends AbstractNetworkTask<List<IRequestInfo>>
+		extends AbstractNetworkTask<AnnouncementRequestActivity,
+		List<IRequestInfo>>
 {
 	private final IAnnouncement announcement;
 
@@ -37,22 +39,26 @@ public class RequestsExtractionTask
 	 * @param inActivity
 	 *            the activity which calls the task
 	 * @param inAnnouncement
-	 *            the announcement for which requests are extracted
+	 *            the announcement for which requests are extracted. It may not
+	 *            be null.
 	 * @param inAdapter
 	 *            the request adapter instance to which extracted requests are
-	 *            attached
-	 * @param inClient
-	 *            the REST client used to make the server call
+	 *            attached. It may not be null.
 	 */
-	public RequestsExtractionTask(final Activity inActivity,
+	public RequestsExtractionTask(
+			final AnnouncementRequestActivity inActivity,
 			final IAnnouncement inAnnouncement,
-			final RequestsAdapter inAdapter,
-			final AbstractRestClient inClient)
+			final RequestsAdapter inAdapter)
 	{
 		super(inActivity, constructServerPath(inAnnouncement),
-				inClient, new TypeReference<List<IRequestInfo>>()
+				new SimpleClient(RequestTypes.GET),
+				new TypeReference<List<IRequestInfo>>()
 				{
 				});
+		
+		InstanceAsserter.assertNotNull(inAnnouncement, "announcement");
+		InstanceAsserter.assertNotNull(inAdapter, "adapter");
+		
 		announcement = inAnnouncement;
 		adapter = inAdapter;
 	}
@@ -63,11 +69,7 @@ public class RequestsExtractionTask
 		Log.d("RequestsExtractionTask",
 				"Requests for the announcement " + announcement +
 						" were extracted successfully.");
-		adapter.setRequests(inResult);
-		adapter.notifyDataSetChanged();
-		Toast.makeText(getActivity(),
-				"Successful requests extraction!",
-				Toast.LENGTH_SHORT).show();
+		getActivity().onRequestsExtractionSuccess(inResult, adapter);
 	}
 
 	@Override
@@ -75,9 +77,7 @@ public class RequestsExtractionTask
 	{
 		Log.d("RequestsExtractionTask",
 				"No requests were extracted because of a problem.");
-		Toast.makeText(getActivity(),
-				"No requests were extracted because of a problem.",
-				Toast.LENGTH_SHORT).show();
+		getActivity().onRequestsExtractionError();
 	}
 
 	/**

@@ -12,6 +12,7 @@ import org.ai.shared.traveller.network.connection.response.ServerResponse;
 import org.ai.shared.traveller.network.connection.response.ServerResponseParser;
 import org.ai.shared.traveller.network.connection.rest.client.AbstractRestClient;
 import org.shared.traveller.rest.domain.ErrorResponse;
+import org.shared.traveller.utility.InstanceAsserter;
 
 import android.app.Activity;
 import android.os.AsyncTask;
@@ -25,13 +26,14 @@ import com.fasterxml.jackson.core.type.TypeReference;
  * 
  * @author "Ivan Ivanov"
  * 
+ * @param <A>
+ *            the concrete type of the activity related to this task
  * @param <Result>
  *            the type of the body contained in the server response that is
  *            received after making the call to the server
  */
-public abstract class AbstractNetworkTask<Result> extends
-		AsyncTask<Void, Void, ServerResponse<Result>> implements INetworkTask
-{
+public abstract class AbstractNetworkTask<A extends Activity, Result> extends
+		AsyncTask<Void, Void, ServerResponse<Result>> implements INetworkTask{;
 	private static final String UNABLE_TO_PARSE_RESULT =
 			"Unable to parse result from a service call";
 
@@ -46,19 +48,7 @@ public abstract class AbstractNetworkTask<Result> extends
 
 	private final PathResolver resolver;
 
-	private Activity activity;
-
-	private static final String NULL_ACTIVITY = "Activity may not be null";
-
-	private static final String NULL_SERVER_PATH = "Server path may not be null";
-
-	private static final String NULL_CLIENT = "Client may not be null";
-
-	private static final String NULL_CLASS = "Class instance may not be null";
-
-	private static final String NULL_RESPONSE_TYPE_REF =
-			"The reference of the response body type may not be null";
-
+	private A activity;
 	/**
 	 * The constructor creates a new abstract network task
 	 * 
@@ -73,24 +63,21 @@ public abstract class AbstractNetworkTask<Result> extends
 	 * @param inClass
 	 *            the class of the server response body type. It may not be null
 	 */
-	public AbstractNetworkTask(final Activity inActivity,
+	public AbstractNetworkTask(final A inActivity,
 			final String inServerPath, final AbstractRestClient inClient,
 			final Class<Result> inClass)
 	{
 		super();
-
-		assert null != inActivity : NULL_ACTIVITY;
-		assert null != inServerPath : NULL_SERVER_PATH;
-		assert null != inClient : NULL_CLIENT;
-		assert null != inClass : NULL_CLASS;
-
+		InstanceAsserter.assertNotNull(inActivity, "activity");
+		InstanceAsserter.assertNotNull(inServerPath, "server path");
+		InstanceAsserter.assertNotNull(inClient, "client");
+		InstanceAsserter.assertNotNull(inClass, "class instance");
 		activity = inActivity;
 		resolver = new PathResolver(inActivity);
 		parser = new ServerResponseParser<Result>(inClass);
 		requestAddress = createRequestURL(inServerPath);
 		restClient = inClient;
 	}
-
 	/**
 	 * The constructor creates a new abstract network task
 	 * 
@@ -106,24 +93,22 @@ public abstract class AbstractNetworkTask<Result> extends
 	 *            the reference of the server response body type. It may not be
 	 *            null
 	 */
-	public AbstractNetworkTask(final Activity inActivity,
+	public AbstractNetworkTask(final A inActivity,
 			final String inServerPath, final AbstractRestClient inClient,
 			final TypeReference<Result> inRef)
 	{
 		super();
-
-		assert null != inActivity : NULL_ACTIVITY;
-		assert null != inServerPath : NULL_SERVER_PATH;
-		assert null != inClient : NULL_CLIENT;
-		assert null != inRef : NULL_RESPONSE_TYPE_REF;
-
+		InstanceAsserter.assertNotNull(inActivity, "activity");
+		InstanceAsserter.assertNotNull(inServerPath, "server path");
+		InstanceAsserter.assertNotNull(inClient, "client");
+		InstanceAsserter.assertNotNull(inRef,
+				"reference of the response body type");
 		activity = inActivity;
 		resolver = new PathResolver(inActivity);
 		parser = new ServerResponseParser<Result>(inRef);
 		requestAddress = createRequestURL(inServerPath);
 		restClient = inClient;
 	}
-
 	/**
 	 * The method is executed on successful execution of the service request
 	 * 
@@ -132,7 +117,6 @@ public abstract class AbstractNetworkTask<Result> extends
 	 *            call
 	 */
 	protected abstract void onSuccess(final Result inResult);
-
 	/**
 	 * The method is executed on unsuccessful execution of the service call
 	 * 
@@ -143,20 +127,17 @@ public abstract class AbstractNetworkTask<Result> extends
 	 */
 	protected abstract void onError(final int inStatusCode,
 			final ErrorResponse inError);
-
 	@Override
 	public void perform()
 	{
 		execute();
 	}
-
 	@Override
 	public void unbind()
 	{
 		cancel(true);
 		activity = null;
 	}
-
 	@Override
 	protected ServerResponse<Result> doInBackground(final Void... params)
 	{
@@ -180,10 +161,8 @@ public abstract class AbstractNetworkTask<Result> extends
 					UNABLE_TO_CONNECT, requestAddress));
 			response = new ServerResponse<Result>(400, content);
 		}
-
 		return response;
 	}
-
 	@Override
 	protected void onPostExecute(final ServerResponse<Result> result)
 	{
@@ -198,17 +177,15 @@ public abstract class AbstractNetworkTask<Result> extends
 			}
 		}
 	}
-
 	/**
 	 * Returns the activity associated with the network task
 	 * 
 	 * @return the activity associated with the network task
 	 */
-	protected Activity getActivity()
+	protected A getActivity()
 	{
 		return activity;
 	}
-
 	/**
 	 * Creates the request URL that corresponds to the given server path
 	 * 
@@ -226,7 +203,5 @@ public abstract class AbstractNetworkTask<Result> extends
 		{
 			throw new IllegalUrlException(inServerPath, murle);
 		}
-
 		return requestUrl;
-	}
-}
+	}}

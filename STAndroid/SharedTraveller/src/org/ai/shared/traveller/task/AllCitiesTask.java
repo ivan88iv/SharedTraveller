@@ -18,7 +18,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
  * @author "Ivan Ivanov"
  * 
  */
-public class AllCitiesTask extends AbstractNetworkTask<List<String>>
+public class AllCitiesTask extends AbstractNetworkTask<Activity, List<String>>
 {
 	private final ICityComponentsPreparator preparator;
 

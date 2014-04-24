@@ -161,7 +161,7 @@ public class RequestService implements Serializable
 				final RequestInfoBuilder builder = new RequestInfoBuilder();
 				builder.id(request.getId()).fromPoint(inStartPt).toPoint(inEndPt).departureDate(inDepDate)
 						.driverUsername(inDriverUsrname).sender(request.getSender().getUsername())
-						.status(request.getStatus()).announcementStatus(announcementStatus);
+						.status(request.getStatus());
 				requestInfo.add(builder.build());
 			}
 		}
@@ -199,7 +199,7 @@ public class RequestService implements Serializable
 		}
 
 		persistentRequest.setStatus(inNewStatus);
-		requestDAO.merge(persistentRequest);
+		requestDAO.update(persistentRequest);
 	}
 
 	public RequestList getUserRequests(final AuthenticatedUser inUser, final int inStartIndex, final int inCount)
@@ -223,8 +223,7 @@ public class RequestService implements Serializable
 				builder.id(request.getId()).fromPoint(anno.getStartPoint().getName())
 						.toPoint(anno.getEndPoint().getName()).departureDate(anno.getDepartureDate())
 						.driverUsername(request.getAnnouncement().getDriver().getUsername())
-						.sender(request.getSender().getUsername()).status(request.getStatus())
-						.announcementStatus(anno.getStatus());
+						.sender(request.getSender().getUsername()).status(request.getStatus());
 				userRequests.add(builder.build());
 			}
 			result.setCount(userRequestsCount.intValue());

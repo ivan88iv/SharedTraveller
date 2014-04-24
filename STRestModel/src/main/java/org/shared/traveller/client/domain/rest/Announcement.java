@@ -1,7 +1,6 @@
 package org.shared.traveller.client.domain.rest;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -39,8 +38,7 @@ public class Announcement implements IAnnouncement
 
 	private String driverUsername;
 
-	private String status;
-
+    private Status status;
 	private List<String> intermediatePts;
 
 	public static class AnnouncementBuilder
@@ -58,7 +56,7 @@ public class Announcement implements IAnnouncement
 		private final String toField;
 
 		private final Date depDateField;
-
+;
 		private Date depTimeField;
 
 		private BigDecimal priceField;
@@ -71,8 +69,7 @@ public class Announcement implements IAnnouncement
 
 		private final String driverUsernameField;
 
-		private String statusField;
-
+        private Status statusField;
 		private List<String> intermediatePtsField;
 
 		public AnnouncementBuilder(final String inFrom, final String inTo, final Date inDepDate, final short inSeats,
@@ -114,45 +111,52 @@ public class Announcement implements IAnnouncement
 			return this;
 		}
 
-		public AnnouncementBuilder status(final String inStatus)
-		{
-			statusField = inStatus;
-			return this;
-		}
-
-		public AnnouncementBuilder intermediatePoints(final List<String> inIntermediatePts)
-		{
-			intermediatePtsField = new ArrayList<String>(inIntermediatePts);
-			return this;
-		}
-
+        public AnnouncementBuilder status(final Status inStatus)
+        {
+            statusField = inStatus;
+            return this;
+        }
+        public AnnouncementBuilder intermediatePoints(
+                final List<String> inIntermediatePts)
+        {
+            intermediatePtsField = DeepCopier.copy(inIntermediatePts);
+            return this;
+        }
 		public Announcement build()
 		{
 			return new Announcement(this);
 		}
 	}
 
-	// TODO try and make it protected
-	public Announcement()
-	{
-
+	 /**
+	  * This constructor is merely intended to be used for deserialization
+	  * purposes. It should not be used by any user code.
+	  */
+    public Announcement()
+    {
+    	// used for JSON deserialization purposes
 	}
 
-	private Announcement(final AnnouncementBuilder inBuilder)
-	{
-		from = inBuilder.fromField;
-		to = inBuilder.toField;
-		departureDate = DeepCopier.copy(inBuilder.depDateField);
-		departureTime = DeepCopier.copy(inBuilder.depTimeField);
-		price = DeepCopier.copy(inBuilder.priceField);
-		seats = inBuilder.seatsField;
-		depAddress = inBuilder.depAddressField;
-		vehicleName = inBuilder.vehicleNameField;
-		driverUsername = inBuilder.driverUsernameField;
-		intermediatePts = DeepCopier.copy(inBuilder.intermediatePtsField);
-		status = inBuilder.statusField;
-	}
-
+    /**
+     * The constructor creates a new announcement using the information
+     * in the provided builder instance
+     *
+     * @param inBuilder the builder used to create the announcement
+     */
+    private Announcement(final AnnouncementBuilder inBuilder)
+    {
+        from = inBuilder.fromField;
+        to = inBuilder.toField;
+        departureDate = DeepCopier.copy(inBuilder.depDateField);
+        departureTime = DeepCopier.copy(inBuilder.depTimeField);
+        price = DeepCopier.copy(inBuilder.priceField);
+        seats = inBuilder.seatsField;
+        depAddress = inBuilder.depAddressField;
+        vehicleName = inBuilder.vehicleNameField;
+        driverUsername = inBuilder.driverUsernameField;
+        intermediatePts = DeepCopier.copy(inBuilder.intermediatePtsField);
+        status = inBuilder.statusField;
+    }
 	@Override
 	public String getFrom()
 	{
@@ -220,9 +224,8 @@ public class Announcement implements IAnnouncement
 		return driverUsername;
 	}
 
-	@Override
-	public String getStatus()
-	{
-		return status;
-	}
-}
+    @Override
+    public Status getStatus()
+    {
+        return status;
+    }}

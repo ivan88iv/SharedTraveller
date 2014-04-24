@@ -10,19 +10,48 @@ import android.widget.BaseAdapter;
 
 import com.fortysevendeg.swipelistview.SwipeListView;
 
-public abstract class AbstractSwipeListFragment<T> extends Fragment
+/**
+ * The class is used as a base class for the fragments that represent swipe list
+ * view functionality
+ * 
+ * @author "Ivan Ivanov"
+ * 
+ * @param <T>
+ *            the type of the elements represented in the swipe list
+ * @param <A>
+ *            the type of the adapter used to supplement elements for the
+ *            fragment
+ * 
+ */
+public abstract class AbstractSwipeListFragment<T, A extends BaseAdapter>
+		extends Fragment
 {
 	private int swipeContainerLayoutId;
 
 	private int swipeViewId;
 
-	private BaseAdapter adapter;
+	private A adapter;
 
+	/**
+	 * The method loads the id for the swipe container layout
+	 * 
+	 * @return the id of the swipe container layout
+	 */
 	protected abstract int loadSwipeContainerLayoutId();
 
+	/**
+	 * The method loads and returns the id of the swipe view
+	 * 
+	 * @return the id of the swipe view
+	 */
 	protected abstract int loadSwipeViewId();
 
-	protected abstract BaseAdapter loadAdapter();
+	/**
+	 * The method loads and returns the adapter used for the current fragment
+	 * 
+	 * @return the adapter used for the current fragment
+	 */
+	protected abstract A loadAdapter();
 
 	@Override
 	public void onCreate(final Bundle savedInstanceState)
@@ -47,6 +76,16 @@ public abstract class AbstractSwipeListFragment<T> extends Fragment
 		prepareSwipeSettings(swipeView);
 
 		return swipeContainer;
+	}
+
+	/**
+	 * Returns the adapter used for this fragment
+	 * 
+	 * @return the adapter that is used for the current fragment
+	 */
+	public A getAdapter()
+	{
+		return adapter;
 	}
 
 	/**

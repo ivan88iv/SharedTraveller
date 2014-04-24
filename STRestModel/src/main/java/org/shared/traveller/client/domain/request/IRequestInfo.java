@@ -3,7 +3,6 @@ package org.shared.traveller.client.domain.request;
 import java.io.Serializable;
 import java.util.Date;
 
-import org.shared.traveller.client.domain.IAnnouncement.Status;
 import org.shared.traveller.client.domain.rest.RequestInfo;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -46,7 +45,7 @@ public interface IRequestInfo extends Serializable
 	String getToPoint();
 
 	/**
-	 * Returns the date of the departure
+	 * Returns the date of the departure*
 	 * 
 	 * @return the date of the departure
 	 */
@@ -60,6 +59,13 @@ public interface IRequestInfo extends Serializable
 	String getDriver();
 
 	/**
+	 * Returns the telephone of the request's driver
+	 *
+	 * @return the telephone of the request's driver
+	 */
+	String getDriverPhone();
+
+	/**
 	 * Returns the status of the request
 	 * 
 	 * @return the status of the request
@@ -71,7 +77,12 @@ public interface IRequestInfo extends Serializable
 	 * sent
 	 * 
 	 * @return the status of the announcement for which this request has been
-	 *         sent
+	 *         sent	 */
+
+	/**
+	* The method sets the new status for the current request
+	 *
+	 * @param inStatus the new status value to be set
 	 */
-	Status getAnnouncementStatus();
+	void setStatus(final RequestStatus inStatus);
 }

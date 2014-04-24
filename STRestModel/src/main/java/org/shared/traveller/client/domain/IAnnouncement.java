@@ -121,7 +121,7 @@ public interface IAnnouncement extends Serializable
 	 * 
 	 * @return the status of the announcement
 	 */
-	String getStatus();
+	Status getStatus();
 
 	/**
 	 * The method is used to allow adding of new functionality through the

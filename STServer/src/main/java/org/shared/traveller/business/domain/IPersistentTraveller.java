@@ -12,7 +12,7 @@ public interface IPersistentTraveller
 
 	String getFbAuthToken();
 
-	String getPhoneNUmber();
+	String getPhoneNumber();
 
 	String getEmail();
 

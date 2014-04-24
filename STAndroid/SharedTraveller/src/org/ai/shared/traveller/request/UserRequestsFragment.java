@@ -8,10 +8,8 @@ import org.ai.shared.traveller.list.swipe.AbstractSwipeListFragment;
 import org.ai.sharedtraveller.R;
 import org.shared.traveller.client.domain.request.IRequestInfo;
 
-import android.widget.BaseAdapter;
-
 public class UserRequestsFragment extends
-		AbstractSwipeListFragment<IRequestInfo>
+		AbstractSwipeListFragment<IRequestInfo, MyRequestsLazyLoadingAdapter>
 {
 
 	@Override
@@ -27,7 +25,7 @@ public class UserRequestsFragment extends
 	}
 
 	@Override
-	protected BaseAdapter loadAdapter()
+	protected MyRequestsLazyLoadingAdapter loadAdapter()
 	{
 		return new MyRequestsLazyLoadingAdapter(getActivity(),
 				new ArrayList<IRequestInfo>(), new UserRequestsHttpTask(
