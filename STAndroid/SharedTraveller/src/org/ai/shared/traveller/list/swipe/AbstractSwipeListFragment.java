@@ -26,6 +26,7 @@ import com.fortysevendeg.swipelistview.SwipeListView;
 public abstract class AbstractSwipeListFragment<T, A extends BaseAdapter>
 		extends Fragment
 {
+
 	private int swipeContainerLayoutId;
 
 	private int swipeViewId;

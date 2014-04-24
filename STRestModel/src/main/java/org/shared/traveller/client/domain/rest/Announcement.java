@@ -38,6 +38,7 @@ public class Announcement implements IAnnouncement
 
 	private String driverUsername;
 
+
     private Status status;
 	private List<String> intermediatePts;
 
@@ -68,6 +69,7 @@ public class Announcement implements IAnnouncement
 		private String vehicleNameField;
 
 		private final String driverUsernameField;
+
 
         private Status statusField;
 		private List<String> intermediatePtsField;
@@ -111,6 +113,7 @@ public class Announcement implements IAnnouncement
 			return this;
 		}
 
+
         public AnnouncementBuilder status(final Status inStatus)
         {
             statusField = inStatus;
@@ -128,15 +131,7 @@ public class Announcement implements IAnnouncement
 		}
 	}
 
-	 /**
-	  * This constructor is merely intended to be used for deserialization
-	  * purposes. It should not be used by any user code.
-	  */
-    public Announcement()
-    {
-    	// used for JSON deserialization purposes
-	}
-
+	
     /**
      * The constructor creates a new announcement using the information
      * in the provided builder instance
@@ -223,6 +218,7 @@ public class Announcement implements IAnnouncement
 	{
 		return driverUsername;
 	}
+
 
     @Override
     public Status getStatus()

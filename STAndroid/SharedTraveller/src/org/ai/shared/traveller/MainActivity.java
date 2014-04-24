@@ -5,6 +5,7 @@ import java.io.OutputStream;
 import java.text.MessageFormat;
 import java.util.Date;
 
+
 import org.ai.shared.traveller.announcement.activity.ShowAnnouncementsActivity;
 import org.ai.shared.traveller.announcement.input.InputAnnouncementActivity;
 import org.ai.shared.traveller.call.CallEnder;
@@ -35,6 +36,9 @@ import org.shared.traveller.client.domain.rest.RequestInfo.RequestInfoBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+
+import android.telephony.PhoneStateListener;
+import android.telephony.TelephonyManager;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.view.Menu;
@@ -54,6 +58,7 @@ public class MainActivity extends AbstractNetworkActivity implements
 
 	private static final String UNSUCCESSFUL_ANNOUNCEMENT_SUBMIT =
 			"Could not submit the announcement {0}.";
+
 
 	private static final String CREATION_ANNOUNCEMNT_TASK_KEY =
 			"newAnnouncementTask";
@@ -82,6 +87,7 @@ public class MainActivity extends AbstractNetworkActivity implements
 	@Override
 	protected void attachTasks()
 	{
+
 	}
 
 	@Override
@@ -121,6 +127,7 @@ public class MainActivity extends AbstractNetworkActivity implements
 			@Override
 			public void onClick(final View v)
 			{
+
 				Intent intent = new Intent(MainActivity.this,
 						ShowAnnouncementsActivity.class);
 				MainActivity.this.startActivity(intent);
@@ -208,6 +215,7 @@ public class MainActivity extends AbstractNetworkActivity implements
 	@Override
 	public void sendRequest(final RequestInfo inRequest)
 	{
+
 		addTask(NEW_REQUEST_TASK_KEY, new NewRequestTask(this, inRequest));
 		executeTask(NEW_REQUEST_TASK_KEY);
 	}
@@ -241,6 +249,7 @@ public class MainActivity extends AbstractNetworkActivity implements
 			final RequestInfoBuilder builder = new RequestInfoBuilder();
 			builder.sender("temp")
 					.fromPoint("Bansko").toPoint("Sofia")
+
 					.departureDate(new Date())
 					.driverUsername("temp");
 			final RequestInfo request = builder.build();
