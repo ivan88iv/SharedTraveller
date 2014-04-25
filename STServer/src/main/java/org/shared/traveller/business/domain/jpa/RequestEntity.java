@@ -16,24 +16,22 @@ import org.shared.traveller.business.domain.AbstractEntity;
 import org.shared.traveller.business.domain.IPersistentAnnouncement;
 import org.shared.traveller.business.domain.IPersistentRequest;
 import org.shared.traveller.business.domain.IPersistentTraveller;
+import org.shared.traveller.business.domain.jpa.query.RequestNamedQueryNames;
 import org.shared.traveller.client.domain.request.RequestStatus;
 
 @Entity(name = "Request")
 @Table(name = "request")
-@NamedQueries({
-	@NamedQuery(name = "Request.loadRequests",
-			query = "SELECT r FROM Request r "
-				+ "INNER JOIN r.announcement ann "
-				+ "WHERE ann.startPoint.name = :startPt AND "
-				+ "ann.endPoint.name = :endPt AND "
-				+ "ann.departureDate = :depDate AND "
+@NamedQueries(
+{
+		@NamedQuery(name = "Request.loadRequests", query = "SELECT r FROM Request r "
+				+ "INNER JOIN r.announcement ann " + "WHERE ann.startPoint.name = :startPt AND "
+				+ "ann.endPoint.name = :endPt AND " + "ann.departureDate = :depDate AND "
 				+ "ann.driver.username = :driver"),
-	@NamedQuery(name = "Request.find",
-			query = "SELECT r FROM Request r "
-					+ "INNER JOIN r.announcement ann "
-					+ "WHERE ann.driver.username = :driver AND "
-					+ "r.id = :id")
-})
+		@NamedQuery(name = "Request.find", query = "SELECT r FROM Request r " + "INNER JOIN r.announcement ann "
+				+ "WHERE ann.driver.username = :driver AND " + "r.id = :id"),
+		@NamedQuery(name = RequestNamedQueryNames.GET_REQUESTS_FOR_USER, query = "SELECT r from Request r inner join fetch r.announcement "
+				+ " inner join fetch r.traveller  where r.traveller = :traveller"),
+		@NamedQuery(name = RequestNamedQueryNames.GET_REQUESTS_COUNT_FOR_USER, query = "SELECT count(r) from Request r  where r.traveller = :traveller") })
 public class RequestEntity extends AbstractEntity implements IPersistentRequest
 {
 	/**
@@ -43,7 +41,7 @@ public class RequestEntity extends AbstractEntity implements IPersistentRequest
 
 	@Id
 	@GeneratedValue
-	@Column(name = "ID", updatable=false)
+	@Column(name = "ID", updatable = false)
 	private Long id;
 
 	@Column(name = "STATUS")
@@ -58,13 +56,14 @@ public class RequestEntity extends AbstractEntity implements IPersistentRequest
 	@JoinColumn(name = "ANNOUNCEMENT_ID")
 	private AnnouncementEntity announcement;
 
-	protected RequestEntity() {
+	protected RequestEntity()
+	{
 		// used beacause of JPA
 	}
 
-	public RequestEntity(final RequestStatus inStatus,
-			final TravellerEntity inTraveller,
-			final AnnouncementEntity inAnnouncemnet) {
+	public RequestEntity(final RequestStatus inStatus, final TravellerEntity inTraveller,
+			final AnnouncementEntity inAnnouncemnet)
+	{
 		status = inStatus;
 		traveller = inTraveller;
 		announcement = inAnnouncemnet;

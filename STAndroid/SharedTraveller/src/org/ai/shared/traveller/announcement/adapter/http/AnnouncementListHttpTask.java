@@ -7,16 +7,16 @@ import org.ai.shared.traveller.manager.domain.DomainManager;
 import org.ai.shared.traveller.network.connection.client.IServiceClient;
 import org.ai.shared.traveller.network.connection.response.ServerResponse;
 import org.ai.shared.traveller.network.connection.response.ServerResponseParser;
+import org.shared.traveller.client.domain.IAnnouncement;
 import org.shared.traveller.rest.domain.AnnouncementsList;
+import org.shared.traveller.rest.domain.CountedResponseList;
 import org.shared.traveller.rest.param.ParamNames;
 import org.shared.traveller.rest.param.SortOrder;
 
 import android.app.Activity;
 
-public class AnnouncementListHttpTask implements
-		IAdapterHttpTask<ServerResponse<AnnouncementsList>>
-{
-
+public class AnnouncementListHttpTask implementspublic class AnnouncementListHttpTask implements
+		IAdapterHttpTask<ServerResponse<AnnouncementsList>>{
 	private static final String URL_AMPERSAND_SEPARATOR = "&";
 	private static final String URL_EQUALS_SEPARATOR = "=";
 	private static final String URL = "announcement/all?";
@@ -76,6 +76,21 @@ public class AnnouncementListHttpTask implements
 				url);
 		response = client.callService(parser);
 
+    @Override
+    public ServerResponse<? extends CountedResponseList<IAnnouncement>> execute(final int fetchSize,
+            final int position) throws ParseException,
+            ServiceConnectionException
+    {
+        ServerResponse<AnnouncementsList> response = null;
+        final PathResolver pathResolver = new PathResolver(activity);
+        url = appednFilter(pathResolver.resolvePath(URL), fetchSize, position);
+        try
+        {
+            response = restClient.callService(new URL(url), parser);
+        } catch (final MalformedURLException e)
+        {
+            throw new IllegalUrlException(url, e);
+        }
 		return response;
 	}
 

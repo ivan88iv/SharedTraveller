@@ -6,7 +6,7 @@ import org.shared.traveller.client.domain.IAnnouncement;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
-public class AnnouncementsList
+public class AnnouncementsList implements CountedResponseList<IAnnouncement>
 {
 
 	private Integer count;
@@ -26,6 +26,7 @@ public class AnnouncementsList
 		this.list = list;
 	}
 
+	@Override
 	public Integer getCount()
 	{
 		return count;
@@ -36,6 +37,7 @@ public class AnnouncementsList
 		this.count = count;
 	}
 
+	@Override
 	public List<IAnnouncement> getList()
 	{
 		return list;

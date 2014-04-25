@@ -1,10 +1,8 @@
 package org.ai.shared.traveller.announcement.adapter.button;
 
 import org.ai.shared.traveller.announcement.adapter.button.config.IButtonConfig;
-import org.ai.shared.traveller.announcement.adapter.button.factory.ButtonRowFactory;
 import org.ai.shared.traveller.announcement.adapter.button.row.IButtonRow;
 import org.ai.shared.traveller.announcement.adapter.type.SwipeListViewContext;
-import org.shared.traveller.client.domain.rest.Announcement;
 
 import android.content.Context;
 import android.view.View;
@@ -18,56 +16,58 @@ import android.widget.Button;
  * @author AlexanderIvanov
  * 
  */
-public class RowButtonComposer
+public abstract class RowButtonComposer<T>
 {
 
-    private final IButtonRow row;
+	private final IButtonRow<T> row;
 
-    private final Announcement anno;
+	private final T anno;
 
-    private final Context cxt;
+	private final Context cxt;
 
-    public RowButtonComposer(final SwipeListViewContext type,
-            final Announcement anno, final Context cxt)
-    {
-        super();
-        this.cxt = cxt;
-        this.anno = anno;
-        this.row = ButtonRowFactory.getButtonRow(type);
-    }
+	public RowButtonComposer(final SwipeListViewContext type,
+			final T anno, final Context cxt)
+	{
+		super();
+		this.cxt = cxt;
+		this.anno = anno;
+		this.row = getButtonRow(type);
+	}
 
-    public void configFirstButton(final Button button)
-    {
-        final IButtonConfig buttonConfig = row.getFirstButton(anno);
-        configButton(button, buttonConfig);
-    }
+	protected abstract IButtonRow<T> getButtonRow(final SwipeListViewContext type);
 
-    public void configSecondButton(final Button button)
-    {
-        final IButtonConfig buttonConfig = row.getSecondButton(anno);
-        configButton(button, buttonConfig);
-    }
+	public void configFirstButton(final Button button)
+	{
+		final IButtonConfig<T> buttonConfig = row.getFirstButton(anno);
+		configButton(button, buttonConfig);
+	}
 
-    public void configThirdButton(final Button button)
-    {
-        final IButtonConfig buttonConfig = row.getThirdButton(anno);
-        configButton(button, buttonConfig);
-    }
+	public void configSecondButton(final Button button)
+	{
+		final IButtonConfig<T> buttonConfig = row.getSecondButton(anno);
+		configButton(button, buttonConfig);
+	}
 
-    private void configButton(final Button button,
-            final IButtonConfig buttonConfig)
-    {
-        button.setText(buttonConfig.getText());
-        button.setVisibility(buttonConfig.getVisability());
-        button.setOnClickListener(new OnClickListener()
-        {
+	public void configThirdButton(final Button button)
+	{
+		final IButtonConfig<T> buttonConfig = row.getThirdButton(anno);
+		configButton(button, buttonConfig);
+	}
 
-            @Override
-            public void onClick(final View v)
-            {
-                buttonConfig.getAction().perform(cxt, anno);
-            }
-        });
-        button.setBackgroundColor(buttonConfig.getBackgroundColor());
-    }
+	private void configButton(final Button button,
+			final IButtonConfig<T> buttonConfig)
+	{
+		button.setText(buttonConfig.getText());
+		button.setVisibility(buttonConfig.getVisability());
+		button.setOnClickListener(new OnClickListener()
+		{
+
+			@Override
+			public void onClick(final View v)
+			{
+				buttonConfig.getAction().perform(cxt, anno);
+			}
+		});
+		button.setBackgroundColor(buttonConfig.getBackgroundColor());
+	}
 }

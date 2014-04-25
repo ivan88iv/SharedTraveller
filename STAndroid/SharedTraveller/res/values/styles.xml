@@ -2,13 +2,13 @@
 
     <!--
         Base application theme, dependent on API level. This theme is replaced
-        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
+        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
     -->
     <style name="AppBaseTheme" parent="@style/Theme.AppCompat.Light">
         <!--
             Theme customizations available in newer API levels can go in
             res/values-vXX/styles.xml, while customizations related to
-            backward-compatibility can go here.
+            backward-compatibility can go here.
         -->
     </style>
 
@@ -17,12 +17,10 @@
 
         <!--
         All customizations that are NOT specific to a particular 
-        API-level can go here.
-
+        API-level can go here.
         -->
         <item name="sdlDialogStyle">@style/DialogStyleDark.Custom</item>
     </style>
-
 
     <!-- ======================== Genral =============================== -->
     <style name="dark_bottom_border">
@@ -36,14 +34,15 @@
     <style name="light_bottom_border_small">
         <item name="android:background">@drawable/bottom_border_light_small</item>
     </style>
+
     <style name="light_border">
         <item name="android:background">@drawable/border_light</item>
     </style>
-    
+
     <style name="topless_light_border">
         <item name="android:background">@drawable/topless_border_light</item>
     </style>
-    
+
     <!-- ======================= Announcement Tabs ====================== -->
     <style name="announcement_tab" parent="Theme.PageIndicatorDefaults">
         <item name="android:textColor">#FFFFFF</item>
@@ -176,23 +175,23 @@
         <item name="buttonBackgroundColorFocused">#C5C5C5</item>
         <item name="dialogBackground">@drawable/dialog_background</item>
     </style>
-    
+
     <style name="dialog_content">
         <item name="android:paddingTop">10dp</item>
         <item name="android:paddingBottom">10dp</item>
     </style>
-    
+
     <style name="dialog_bordered" parent="light_bottom_border_big">
         <item name="android:textColor">#fff</item>
     </style>
-    
+
     <style name="dialog_title" parent="dialog_bordered">
         <item name="android:gravity">center_horizontal</item>
         <item name="android:textSize">18sp</item>
         <item name="android:textStyle">bold</item>
         <item name="android:layout_marginBottom">8dp</item>
     </style>
-    
+
     <style name="dialog_description">
         <item name="android:textSize">14sp</item>
         <item name="android:gravity">center_horizontal</item>
@@ -200,7 +199,7 @@
         <item name="android:layout_marginTop">20dp</item>
         <item name="android:textStyle">bold</item>
     </style>
-    
+
     <!-- ========================= New Request ============================ -->
     <style name="notifcation_dialog_row">
         <item name="android:layout_marginLeft">15dp</item>
@@ -219,65 +218,61 @@
         <item name="android:layout_height">match_parent</item>
         <item name="android:background">?android:attr/listDivider</item>
     </style>
-    
+
     <!-- ========================= Requests =============================== -->
     <style name="requests_container">
         <item name="android:layout_gravity">top</item>
-        <item name="android:layout_marginTop">20dp</item>
-        <item name="android:layout_marginBottom">50dp</item>
-        <item name="android:paddingTop">10dp</item>
-        <item name="android:paddingBottom">10dp</item>
         <item name="android:background">#808080</item>
     </style>
-    
-    <style name="requests_hdr_container" parent="light_border">
-    </style>
-    
+
+    <style name="requests_hdr_container" parent="light_border"></style>
+
     <style name="requests_hdr">
         <item name="android:textColor">#fff</item>
         <item name="android:textStyle">bold</item>
         <item name="android:gravity">center</item>
         <item name="android:textSize">16sp</item>
     </style>
-    
+
     <style name="requests_delim_bar">
         <item name="android:background">#fff</item>
     </style>
-    
+
     <style name="requests_row_btns_holder" parent="topless_light_border">
         <item name="android:paddingTop">4dp</item>
         <item name="android:paddingBottom">4dp</item>
     </style>
-    
-	<style name="requests_btn">
+
+    <style name="requests_btn">
         <item name="android:background">@drawable/button_background</item>
         <item name="android:layout_marginRight">12dp</item>
         <item name="android:layout_marginLeft">12dp</item>
-	</style>
-	
-	<style name="requests_btn_placeholder">
-	    <item name="android:layout_marginRight">12dp</item>
-	    <item name="android:layout_marginLeft">12dp</item>
-	</style>
+    </style>
 
-	<style name="requests_call_btn" parent="requests_btn">
-	    <item name="android:background">@drawable/call_button_background</item>
-	</style>
-	
+    <style name="requests_btn_placeholder">
+        <item name="android:layout_marginRight">12dp</item>
+        <item name="android:layout_marginLeft">12dp</item>
+    </style>
+
+    <style name="requests_call_btn" parent="requests_btn">
+        <item name="android:background">@drawable/call_button_background</item>
+    </style>
+
     <style name="reject_request_btn" parent="requests_btn">
         <item name="android:background">@drawable/reject_button_background</item>
     </style>
-    
+
     <style name="requests_front">
         <item name="android:background">#808080</item>
     </style>
-    
+
     <style name="username_holder">
         <item name="android:textColor">#fff</item>
         <item name="android:paddingLeft">12dp</item>
         <item name="android:textStyle">italic</item>
     </style>
- <style name="TextAppearance.EditEvent_LabelSmall" parent="TextAppearance.EditEvent_Small">
+
+    <style name="TextAppearance.EditEvent_LabelSmall" parent="TextAppearance.EditEvent_Small">
         <item name="android:minHeight">24dip</item>
         <item name="android:layout_width">144dip</item>
         <item name="android:layout_marginLeft">2dip</item>
@@ -293,5 +288,6 @@
         <item name="android:textColor">#FFAAAAAA</item>
     </style>
 
-    <style name="TextAppearance" parent="android:TextAppearance">
-    </style></resources>
+    <style name="TextAppearance" parent="android:TextAppearance"></style>
+
+</resources>

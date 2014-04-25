@@ -10,14 +10,14 @@ import org.ai.shared.traveller.announcement.adapter.button.action.IButtonAction;
  * @author AlexanderIvanov
  * 
  */
-public interface IButtonConfig
+public interface IButtonConfig<T>
 {
 
 	public int getText();
 
 	public int getVisability();
 
-	public IButtonAction getAction();
+	public IButtonAction<T> getAction();
 
 	// This can be changed to drawable to style if needed
 	public int getBackgroundColor();

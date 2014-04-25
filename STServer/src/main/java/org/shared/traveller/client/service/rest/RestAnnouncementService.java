@@ -37,8 +37,8 @@ public class RestAnnouncementService
 	private IPersistentAnnouncementProducer producer;
 
 	@RequestMapping(value = "/new", method = RequestMethod.PUT)
-	public ResponseEntity<Void> createAnnouncement(
-			@RequestBody Announcement inNewAnnouncement)
+
+	public ResponseEntity<Void> createAnnouncement(@RequestBody Announcement inNewAnnouncement)
 	{
 		inNewAnnouncement.accept(producer);
 		businessService.createNewAnnouncement(producer.produce());
@@ -50,41 +50,39 @@ public class RestAnnouncementService
 	@RequestMapping(value = "/new2", method = RequestMethod.GET)
 	public ResponseEntity<IAnnouncement> createAnnouncement()
 	{
-
 		final AnnouncementBuilder builder = new AnnouncementBuilder(null,
 				null, null, (short)0, null);
 		return new ResponseEntity<IAnnouncement>(builder.build(),
-				HttpStatus.CREATED);
-	}
+				HttpStatus.CREATED);	}
 
 	@RequestMapping(value = "/all", method = RequestMethod.GET)
 	@ResponseBody
-	public ResponseEntity<AnnouncementsList> getAnouncements(
-			@RequestParam(value = ParamNames.START) Integer start,
+
+	public ResponseEntity<AnnouncementsList> getAnouncements(@RequestParam(value = ParamNames.START) Integer start,
 			@RequestParam(value = ParamNames.COUNT) Integer count,
 			@RequestParam(required = false, value = ParamNames.FROM) String from,
 			@RequestParam(required = false, value = ParamNames.TO) String to,
 			@RequestParam(required = false, value = ParamNames.SORT_ORDER) SortOrder sortOrder,
 			UriComponentsBuilder builder)
 	{
-		GetAllAnnouncementsRequest request = new GetAllAnnouncementsRequest(
-				start, count, from, to, sortOrder);
+
+		GetAllAnnouncementsRequest request = new GetAllAnnouncementsRequest(start, count, from, to, sortOrder);
 		long allCount = businessService.getAllAnnouncementsCount(request);
-		List<? extends IPersistentAnnouncement> announcements = businessService
-				.getAllAnnouncements(request);
-		AnnouncementsList result = new AnnouncementsList(new BigDecimal(
-				allCount).intValueExact(),
+
+		List<? extends IPersistentAnnouncement> announcements = businessService.getAllAnnouncements(request);
+		AnnouncementsList result = new AnnouncementsList(new BigDecimal(allCount).intValueExact(),
 				transformDomains(announcements));
 		return new ResponseEntity<AnnouncementsList>(result, HttpStatus.OK);
 	}
 
-	private List<IAnnouncement> transformDomains(
-			List<? extends IPersistentAnnouncement> source)
+
+	private List<IAnnouncement> transformDomains(List<? extends IPersistentAnnouncement> source)
 	{
 		List<IAnnouncement> result = new ArrayList<IAnnouncement>();
 		for (IPersistentAnnouncement anno : source)
 		{
-			AnnouncementBuilder builder = new AnnouncementBuilder(anno
+
+AnnouncementBuilder builder = new AnnouncementBuilder(anno
 					.getStartPoint().getName(), anno.getEndPoint()
 					.getName(), anno.getDepartureDate(), anno.getFreeSeats(),
 					anno.getDriver().getFirstName() + " "
@@ -95,7 +93,6 @@ public class RestAnnouncementService
 					.intermediatePoints(
 							getInterPoints(anno.getIntermediatePoints()))
 					.status(anno.getStatus());
-
 			if (anno.getVehicle() != null)
 			{
 				builder.vehicleName(anno.getVehicle().getMake());
@@ -105,8 +102,8 @@ public class RestAnnouncementService
 		return result;
 	}
 
-	private List<String> getInterPoints(
-			List<? extends IPersistentCity> jpaInterPoints)
+
+	private List<String> getInterPoints(List<? extends IPersistentCity> jpaInterPoints)
 	{
 		List<String> interPoints = new ArrayList<String>();
 		for (IPersistentCity interPoint : jpaInterPoints)
@@ -115,4 +112,15 @@ public class RestAnnouncementService
 		}
 		return interPoints;
 	}
-}
+private String capitalizeFirstLetter(String original)
+	{
+		String capitalizedString = null;
+		if (original == null || original.length() == 0)
+		{
+			capitalizedString = original;
+		} else
+		{
+			capitalizedString = original.substring(0, 1).toUpperCase() + original.substring(1).toLowerCase();
+		}
+		return capitalizedString;
+	}}

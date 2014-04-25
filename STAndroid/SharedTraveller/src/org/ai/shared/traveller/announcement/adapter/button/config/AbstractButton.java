@@ -3,7 +3,7 @@ package org.ai.shared.traveller.announcement.adapter.button.config;
 import android.graphics.Color;
 import android.view.View;
 
-public abstract class AbstractButton implements IButtonConfig
+public abstract class AbstractButton<T> implements IButtonConfig<T>
 {
 
 	@Override

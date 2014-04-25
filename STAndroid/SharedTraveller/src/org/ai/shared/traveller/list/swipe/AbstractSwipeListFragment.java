@@ -6,7 +6,7 @@ import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 
 import com.fortysevendeg.swipelistview.SwipeListView;
 
@@ -23,9 +23,10 @@ import com.fortysevendeg.swipelistview.SwipeListView;
  *            fragment
  * 
  */
-public abstract class AbstractSwipeListFragment<T, A extends ArrayAdapter<T>>
+public abstract class AbstractSwipeListFragment<T, A extends BaseAdapter>
 		extends Fragment
 {
+
 	private int swipeContainerLayoutId;
 
 	private int swipeViewId;

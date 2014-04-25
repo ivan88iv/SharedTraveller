@@ -18,12 +18,8 @@ import org.shared.traveller.business.domain.IPersistentTraveller;
 @Entity(name = "traveller")
 @Table(name = "traveller")
 @NamedQueries(
-{
-		@NamedQuery(name = "TravellerEntity.findByUsername",
-				query = "SELECT t FROM traveller t WHERE t.username = :username")
-})
-public class TravellerEntity extends AbstractEntity implements
-		IPersistentTraveller
+{ @NamedQuery(name = "TravellerEntity.findByUsername", query = "SELECT t FROM traveller t WHERE t.username = :username") })
+public class TravellerEntity extends AbstractEntity implements IPersistentTraveller
 {
 	/**
 	 * The serial version UID
@@ -75,6 +71,11 @@ public class TravellerEntity extends AbstractEntity implements
 	public Long getId()
 	{
 		return id;
+	}
+
+	public void setId(Long id)
+	{
+		this.id = id;
 	}
 
 	@Override

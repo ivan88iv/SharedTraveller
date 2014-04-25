@@ -39,6 +39,7 @@ public class Announcement implements IAnnouncement
 
 	private String driverUsername;
 
+
     private Status status;
 
 	private List<String> intermediatePts;
@@ -68,6 +69,7 @@ public class Announcement implements IAnnouncement
 		private String vehicleNameField;
 
 		private final String driverUsernameField;
+
 
         private Status statusField;
 		private List<String> intermediatePtsField;
@@ -130,12 +132,12 @@ public class Announcement implements IAnnouncement
 			return this;
 		}
 
-        @Override
-		public AnnouncementBuilder status(final Status inStatus)
-        {
+        public AnnouncementBuilder status(final Status inStatus)        @Override
+		public AnnouncementBuilder status(final Status inStatus)        {
             statusField = inStatus;
             return this;
         }
+
         @Override
 		public AnnouncementBuilder intermediatePoints(
                 final List<String> inIntermediatePts)
@@ -143,6 +145,7 @@ public class Announcement implements IAnnouncement
             intermediatePtsField = DeepCopier.copy(inIntermediatePts);
             return this;
         }
+
 		@Override
 		public Announcement build()
 		{
@@ -150,14 +153,6 @@ public class Announcement implements IAnnouncement
 		}
 	}
 
-	 /**
-	  * This constructor is merely intended to be used for deserialization
-	  * purposes. It should not be used by any user code.
-	  */
-    protected Announcement()
-    {
-    	// used for JSON deserialization purposes
-	}
 
     /**
      * The constructor creates a new announcement using the information

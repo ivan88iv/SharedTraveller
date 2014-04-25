@@ -3,7 +3,8 @@ package org.ai.shared.traveller;
 import java.text.MessageFormat;
 import java.util.Date;
 
-import org.ai.shared.traveller.announcement.AnnouncementsSwipeListFragment;
+
+import org.ai.shared.traveller.announcement.activity.ShowAnnouncementsActivity;
 import org.ai.shared.traveller.announcement.input.InputAnnouncementActivity;
 import org.ai.shared.traveller.call.CallEnder;
 import org.ai.shared.traveller.command.request.INewRequestCommand;
@@ -16,6 +17,7 @@ import org.ai.shared.traveller.manager.domain.DomainManager;
 import org.ai.shared.traveller.network.connection.AbstractNetworkActivity;
 import org.ai.shared.traveller.network.connection.client.IServiceClient;
 import org.ai.shared.traveller.request.AnnouncementRequestActivity;
+import org.ai.shared.traveller.request.UserRequestsActivity;
 import org.ai.shared.traveller.settings.SettingsActivity;
 import org.ai.shared.traveller.task.AllCitiesTask;
 import org.ai.shared.traveller.task.UserVehiclesTask;
@@ -31,8 +33,9 @@ import org.shared.traveller.client.domain.rest.RequestInfo.RequestInfoBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
+
+import android.telephony.PhoneStateListener;
+import android.telephony.TelephonyManager;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.view.Menu;
@@ -49,6 +52,7 @@ public class MainActivity extends AbstractNetworkActivity implements
 
 	private static final String UNSUCCESSFUL_ANNOUNCEMENT_SUBMIT =
 			"Could not submit the announcement {0}.";
+
 
 	private static final String CREATION_ANNOUNCEMNT_TASK_KEY =
 			"newAnnouncementTask";
@@ -83,8 +87,7 @@ public class MainActivity extends AbstractNetworkActivity implements
 		final IServiceClient getClient = clientFactory.createSimpleClient(this,
 				"dummy/asdadsad");
 		addTask("DUMMY_TASK", new DummyTaskGet(this, getClient));
-		executeTask("DUMMY_TASK");
-	}
+		executeTask("DUMMY_TASK");	}
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState)
@@ -102,6 +105,8 @@ public class MainActivity extends AbstractNetworkActivity implements
 				R.id.show_new_request_dialog);
 		final Button showRequestsBtn = (Button) findViewById(
 				R.id.show_requests);
+		final Button showMyRequestsBtn = (Button) findViewById(
+				R.id.show_my_requests);
 
 		final MainActivity activity = this;
 
@@ -121,19 +126,9 @@ public class MainActivity extends AbstractNetworkActivity implements
 			@Override
 			public void onClick(final View v)
 			{
-				findViewById(R.id.fragment_container).setVisibility(
-						View.VISIBLE);
-				final FragmentManager fragmentManager = getSupportFragmentManager();
-				final FragmentTransaction fragmentTransaction = fragmentManager
-						.beginTransaction();
-				fragmentTransaction.add(R.id.fragment_container,
-						new AnnouncementsSwipeListFragment(), FRAGMENT_TAG);
-				fragmentTransaction.addToBackStack("swipeListView");
-				fragmentTransaction.commit();
-
-				showViewPagerIndicator.setVisibility(View.GONE);
-				showSwipeView.setVisibility(View.GONE);
-
+				Intent intent = new Intent(MainActivity.this,
+						ShowAnnouncementsActivity.class);
+				MainActivity.this.startActivity(intent);
 			}
 		});
 
@@ -153,6 +148,15 @@ public class MainActivity extends AbstractNetworkActivity implements
 			{
 				startActivity(new Intent(activity,
 						AnnouncementRequestActivity.class));
+			}
+		});
+		showMyRequestsBtn.setOnClickListener(new View.OnClickListener()
+		{
+			@Override
+			public void onClick(final View v)
+			{
+				startActivity(new Intent(activity,
+						UserRequestsActivity.class));
 			}
 		});
 	}
@@ -227,6 +231,7 @@ public class MainActivity extends AbstractNetworkActivity implements
 			builder.sender("temp")
 					.fromPoint("Bansko").toPoint("Sofia")
 					.departureDate(new Date(114, 1, 9))
+					.departureDate(new Date())
 					.driverUsername("temp");
 			final RequestInfo request = builder.build();
 			sendRequest(request);
