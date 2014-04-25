@@ -21,6 +21,12 @@ public abstract class CallerActivity extends AbstractNetworkActivity
 			"The phone number may not be null.";
 
 	/**
+	 * The key for the lastly visited activity before the call was made
+	 */
+	public static final String LAST_VISITED_ACTIVITY_KEY =
+			"lastActivity";
+
+	/**
 	 * The method makes a call to the specified telephone number
 	 * 
 	 * @param inPhoneNumber
@@ -45,7 +51,7 @@ public abstract class CallerActivity extends AbstractNetworkActivity
 		final SharedPreferences callPreferences =
 				getSharedPreferences("call_prefs", Context.MODE_PRIVATE);
 		final Editor editor = callPreferences.edit();
-		editor.putString("lastActivity", getClass().getName());
+		editor.putString(LAST_VISITED_ACTIVITY_KEY, getClass().getName());
 		editor.commit();
 	}
 }

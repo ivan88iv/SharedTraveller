@@ -3,7 +3,9 @@ package org.ai.shared.traveller.task.request;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.ai.shared.traveller.network.connection.rest.client.AbstractPostClient;
+import org.ai.shared.traveller.factory.client.IServiceClientFactory;
+import org.ai.shared.traveller.manager.domain.DomainManager;
+import org.ai.shared.traveller.network.connection.client.IServiceClient;
 import org.ai.shared.traveller.network.connection.task.AbstractNetworkTask;
 import org.ai.shared.traveller.request.AnnouncementRequestActivity;
 
@@ -29,33 +31,32 @@ public abstract class ChangeRequestStatusTask
 			final AnnouncementRequestActivity inActivity,
 			final String inUrl)
 	{
-		super(inActivity, inUrl, createPostClient(inActivity), Void.class);
+		super(inActivity, createServiceClient(inActivity, inUrl), Void.class);
 	}
 
 	/**
-	 * The method creates and returns the POST client used for changing the
+	 * The method creates and returns the service client used for changing the
 	 * status of the specified request in the provided activity
 	 * 
 	 * @param inActivity
 	 *            the activity which holds information about the specified
 	 *            request whose status is to be changed
+	 * @param inPath
+	 *            the service path of the request
 	 * @return the created POST REST client
 	 */
-	private static AbstractPostClient createPostClient(
-			final AnnouncementRequestActivity inActivity)
+	private static IServiceClient createServiceClient(
+			final AnnouncementRequestActivity inActivity,
+			final String inPath)
 	{
-		return new AbstractPostClient()
-		{
-			@Override
-			protected Map<String, String>
-					prepareRequestParameters()
-			{
-				final Map<String, String> parameters =
-						new HashMap<String, String>();
-				parameters.put("id",
-						String.valueOf(inActivity.getLastSelectedRequestId()));
-				return parameters;
-			}
-		};
+		final Map<String, String> parameters =
+				new HashMap<String, String>();
+		parameters.put("id",
+				String.valueOf(inActivity.getLastSelectedRequestId()));
+		final IServiceClientFactory clientFactory =
+				DomainManager.getInstance().getServiceClientFactory();
+
+		return clientFactory.createFormSubmitionClient(inActivity, inPath,
+				parameters);
 	}
 }

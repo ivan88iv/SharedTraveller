@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.ai.shared.traveller.call.CallerActivity;
-import org.ai.shared.traveller.dialog.STDialog;
+import org.ai.shared.traveller.dialog.STDialogFragment;
 import org.ai.shared.traveller.dialog.request.AcceptRequestDialogFactory;
 import org.ai.shared.traveller.dialog.request.RejectRequestDialogFactory;
 import org.ai.sharedtraveller.R;
@@ -300,7 +300,7 @@ public class RequestsAdapter extends ArrayAdapter<IRequestInfo>
 									(FragmentActivity) getContext(),
 									inRequest.getSender());
 					requestSelectionListener.onRequestSelect(inPosition);
-					STDialog.show(factory);
+					STDialogFragment.show(factory);
 				}
 			});
 			inHolder.rejectBtn.setOnClickListener(new View.OnClickListener()
@@ -313,7 +313,7 @@ public class RequestsAdapter extends ArrayAdapter<IRequestInfo>
 									(FragmentActivity) getContext(),
 									inRequest.getSender());
 					requestSelectionListener.onRequestSelect(inPosition);
-					STDialog.show(factory);
+					STDialogFragment.show(factory);
 				}
 			});
 		} else

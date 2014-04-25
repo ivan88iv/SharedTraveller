@@ -1,6 +1,6 @@
 package org.ai.shared.traveller.task.announcement;
 
-import org.ai.shared.traveller.network.connection.rest.client.AbstractRestClient;
+import org.ai.shared.traveller.network.connection.client.IServiceClient;
 import org.ai.shared.traveller.network.connection.task.AbstractNetworkTask;
 import org.shared.traveller.rest.domain.ErrorResponse;
 
@@ -26,9 +26,9 @@ public class NewAnnouncementTask extends AbstractNetworkTask<Activity, Void>
 	 *            the REST client used to send the REST request to the server
 	 */
 	public NewAnnouncementTask(final Activity inActivity,
-			final AbstractRestClient inClient)
+			final IServiceClient inClient)
 	{
-		super(inActivity, "announcement/new", inClient, Void.class);
+		super(inActivity, inClient, Void.class);
 	}
 
 	@Override

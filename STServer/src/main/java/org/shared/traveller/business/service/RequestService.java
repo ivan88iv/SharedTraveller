@@ -165,7 +165,6 @@ public class RequestService implements Serializable
 		return requestInfo;
 	}
 
-
 	/**
 	 * The method rejects the specified request
 	 *

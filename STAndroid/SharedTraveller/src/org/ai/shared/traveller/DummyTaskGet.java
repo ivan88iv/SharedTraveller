@@ -1,6 +1,6 @@
 package org.ai.shared.traveller;
 
-import org.ai.shared.traveller.network.connection.rest.client.AbstractRestClient;
+import org.ai.shared.traveller.network.connection.client.IServiceClient;
 import org.ai.shared.traveller.network.connection.task.AbstractNetworkTask;
 import org.shared.traveller.rest.domain.DummyRequest;
 import org.shared.traveller.rest.domain.ErrorResponse;
@@ -12,10 +12,9 @@ public class DummyTaskGet extends
 {
 
 	public DummyTaskGet(final MainActivity inActivity,
-			final AbstractRestClient inClient)
+			final IServiceClient inClient)
 	{
-		super(inActivity, "dummy/asdadsad", inClient,
-				DummyRequest.class);
+		super(inActivity, inClient, DummyRequest.class);
 	}
 
 	@Override

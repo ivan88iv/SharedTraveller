@@ -2,7 +2,7 @@ package org.ai.shared.traveller.task;
 
 import java.util.List;
 
-import org.ai.shared.traveller.network.connection.rest.client.AbstractRestClient;
+import org.ai.shared.traveller.network.connection.client.IServiceClient;
 import org.ai.shared.traveller.network.connection.task.AbstractNetworkTask;
 import org.ai.shared.traveller.ui.preparator.ICityComponentsPreparator;
 import org.shared.traveller.rest.domain.ErrorResponse;
@@ -28,16 +28,16 @@ public class AllCitiesTask extends AbstractNetworkTask<Activity, List<String>>
 	 * @param inActivity
 	 *            the activity to which the task is attached
 	 * @param inClient
-	 *            the REST client used for cities extraction
+	 *            the service client used for cities extraction
 	 * @param inPreparator
 	 *            the instance that is responsible for applying the extracted
 	 *            city values to UI components
 	 */
 	public AllCitiesTask(final Activity inActivity,
-			final AbstractRestClient inClient,
+			final IServiceClient inClient,
 			final ICityComponentsPreparator inPreparator)
 	{
-		super(inActivity, "cities/all", inClient,
+		super(inActivity, inClient,
 				new TypeReference<List<String>>()
 				{
 				});

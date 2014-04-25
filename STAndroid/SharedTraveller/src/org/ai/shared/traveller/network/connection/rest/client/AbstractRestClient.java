@@ -4,14 +4,21 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PushbackInputStream;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 
+import org.ai.shared.traveller.exceptions.IllegalUrlException;
 import org.ai.shared.traveller.exceptions.ParseException;
 import org.ai.shared.traveller.exceptions.ServiceConnectionException;
+import org.ai.shared.traveller.network.connection.client.IServiceClient;
+import org.ai.shared.traveller.network.connection.path.resolver.PathResolver;
 import org.ai.shared.traveller.network.connection.response.ServerResponse;
 import org.ai.shared.traveller.network.connection.response.ServerResponseParser;
 import org.shared.traveller.rest.domain.ErrorResponse;
+import org.shared.traveller.utility.InstanceAsserter;
+
+import android.content.Context;
 
 /**
  * The class contains the general functionality used to make a service call
@@ -19,51 +26,54 @@ import org.shared.traveller.rest.domain.ErrorResponse;
  * @author "Ivan Ivanov"
  * 
  */
-public abstract class AbstractRestClient
+public abstract class AbstractRestClient implements IServiceClient
 {
-	private static final String NO_URL = "No URL is supplied.";
+	private final RequestType type;
 
-	private static final String NO_PARSER = "No response pareser is passed.";
-
-	private static final String NULL_REQUEST_TYPE = "No request type passed.";
-
-	private final RequestTypes type;
+	private final URL serviceUrl;
 
 	/**
 	 * The constructor creates a new abstract rest client
 	 * 
+	 * @param inContext
+	 *            the android context into which this client is created. It may
+	 *            not be null.
 	 * @param inType
-	 *            the request type made by the client
+	 *            the request type made by the client. It may not be null
+	 * @param inServerPath
+	 *            the server path of the service called by this client. It may
+	 *            not be null
 	 */
-	public AbstractRestClient(final RequestTypes inType)
+	public AbstractRestClient(final Context inContext,
+			final RequestType inType, final String inServerPath)
 	{
-		assert null != inType : NULL_REQUEST_TYPE;
+		InstanceAsserter.assertNotNull(inContext, "context");
+		InstanceAsserter.assertNotNull(inType, "request type");
+		InstanceAsserter.assertNotNull(inServerPath, "service url");
 
 		type = inType;
+		serviceUrl = createRequestURL(new PathResolver(inContext),
+				inServerPath);
 	}
 
 	/**
 	 * The method is used to call a service
 	 * 
-	 * @param inURL
-	 *            the URL of the service
-	 * @param inResponseParser
-	 *            the parser of the service response
 	 * @return the parser server response
 	 * @throws ServiceConnectionException
 	 *             if no proper connection could be made to the server
 	 * @throws ParseException
 	 *             if a problem occurs while trying to parse the server result
 	 */
-	public <T> ServerResponse<T> callService(final URL inURL,
+	@Override
+	public <T> ServerResponse<T> callService(
 			final ServerResponseParser<T> inResponseParser)
 			throws ServiceConnectionException, ParseException
 	{
-		assert null != inURL : NO_URL;
-		assert null != inResponseParser : NO_PARSER;
+		InstanceAsserter.assertNotNull(inResponseParser, "response parser");
 
 		ServerResponse<T> parsedResponse = null;
-		final HttpURLConnection connection = connectService(inURL);
+		final HttpURLConnection connection = connectService(serviceUrl);
 
 		try
 		{
@@ -95,6 +105,12 @@ public abstract class AbstractRestClient
 		}
 
 		return parsedResponse;
+	}
+
+	@Override
+	public URL getServiceAddress()
+	{
+		return serviceUrl;
 	}
 
 	/**
@@ -258,5 +274,29 @@ public abstract class AbstractRestClient
 		}
 
 		return parsedResponse;
+	}
+
+	/**
+	 * Creates the request URL that corresponds to the given server path
+	 * 
+	 * @param inResolver
+	 *            the path resolver used for parsing the specified service URL.
+	 *            It may not be null.
+	 * @param inServerPath
+	 *            the server path that determines the request URL
+	 * @return the formed request URL
+	 */
+	private URL createRequestURL(final PathResolver inResolver,
+			final String inServerPath)
+	{
+		URL requestUrl = null;
+		try
+		{
+			requestUrl = new URL(inResolver.resolvePath(inServerPath));
+		} catch (final MalformedURLException murle)
+		{
+			throw new IllegalUrlException(inServerPath, murle);
+		}
+		return requestUrl;
 	}
 }

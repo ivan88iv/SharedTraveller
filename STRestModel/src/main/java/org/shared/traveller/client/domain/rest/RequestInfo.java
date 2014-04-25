@@ -41,7 +41,7 @@ public class RequestInfo implements IRequestInfo
 	 * @author "Ivan Ivanov"
 	 *
 	 */
-	public static class RequestInfoBuilder
+	public static class RequestInfoBuilder implements IRequestInfo.IBuilder
 	{
 		private Long idField;
 
@@ -59,114 +59,63 @@ public class RequestInfo implements IRequestInfo
 
 		private RequestStatus statusField;
 
-		/**
-		 * Sets a new value for the request's id
-		 *
-		 * @param inId
-		 *            the new value to be set
-		 * @return the current request info builder
-		 */
+		@Override
 		public RequestInfoBuilder id(final Long inId)
 		{
 			idField = inId;
 			return this;
 		}
 
-		/**
-		 * Sets a new user name to the sender field
-		 *
-		 * @param inSender
-		 *            the new sender user name
-		 * @return the builder
-		 */
+		@Override
 		public RequestInfoBuilder sender(final String inSender)
 		{
 			senderField = inSender;
 			return this;
 		}
 
-		/**
-		 * Sets a new settlement for a start point of the travel
-		 *
-		 * @param inFrom
-		 *            the new start point
-		 * @return the builder
-		 */
+		@Override
 		public RequestInfoBuilder fromPoint(final String inFrom)
 		{
 			fromField = inFrom;
 			return this;
 		}
 
-		/**
-		 * Sets a new settlement for a end point of the travel
-		 *
-		 * @param inTo
-		 *            the new end point
-		 * @return the builder
-		 */
+		@Override
 		public RequestInfoBuilder toPoint(final String inTo)
 		{
 			toField = inTo;
 			return this;
 		}
 
-		/**
-		 * Sets a new date for the departure
-		 *
-		 * @param inDepDate
-		 *            the new departure date
-		 * @return the builder
-		 */
+		@Override
 		public RequestInfoBuilder departureDate(final Date inDepDate)
 		{
 			departureDateField = DeepCopier.copy(inDepDate);
 			return this;
 		}
 
-		/**
-		 * Sets a new value for the user name of the driver
-		 *
-		 * @param inUsername
-		 *            the new driver's user name
-		 * @return the builder
-		 */
+		@Override
 		public RequestInfoBuilder driverUsername(final String inUsername)
 		{
 			driverField = inUsername;
 			return this;
 		}
 
-		/**
-		 * The method sets the new driver's phone number
-		 *
-		 * @param inDriverPhone the new phone number of the driver
-		 * @return the builder
-		 */
+		@Override
 		public RequestInfoBuilder driverPhone(final String inDriverPhone)
 		{
 			driverPhoneField = inDriverPhone;
 			return this;
 		}
 
-		/**
-		 * Sets a new status value for the request
-		 *
-		 * @param inStatus
-		 *            the new request's status
-		 * @return the builder
-		 */
+		@Override
 		public RequestInfoBuilder status(final RequestStatus inStatus)
 		{
 			statusField = inStatus;
 			return this;
 		}
 
-		/**
-		 * The method builds a new request information instance
-		 *
-		 * @return the newly constructed instance
-		 */
+		@Override
 		public RequestInfo build()
 		{
 			return new RequestInfo(this);

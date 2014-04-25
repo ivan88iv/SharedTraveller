@@ -6,8 +6,10 @@ import java.util.List;
 import org.ai.shared.traveller.call.CallerActivity;
 import org.ai.shared.traveller.command.request.IRequestExtractionCommand;
 import org.ai.shared.traveller.dialog.DialogRequestCode;
-import org.ai.shared.traveller.dialog.STDialog;
+import org.ai.shared.traveller.dialog.STDialogFragment;
 import org.ai.shared.traveller.dialog.request.NotificationDialogFactory;
+import org.ai.shared.traveller.factory.builder.IBuilderFactory;
+import org.ai.shared.traveller.manager.domain.DomainManager;
 import org.ai.shared.traveller.task.request.AcceptRequestTask;
 import org.ai.shared.traveller.task.request.RejectRequestTask;
 import org.ai.shared.traveller.task.request.RequestsExtractionTask;
@@ -16,7 +18,6 @@ import org.shared.traveller.client.domain.IAnnouncement;
 import org.shared.traveller.client.domain.IAnnouncement.Status;
 import org.shared.traveller.client.domain.request.IRequestInfo;
 import org.shared.traveller.client.domain.request.RequestStatus;
-import org.shared.traveller.client.domain.rest.Announcement.AnnouncementBuilder;
 import org.shared.traveller.utility.InstanceAsserter;
 
 import android.os.Bundle;
@@ -109,12 +110,12 @@ public class AnnouncementRequestActivity extends CallerActivity
 	{
 		if (requestCode == DialogRequestCode.ACCEPT_REQUEST_CODE.getCode())
 		{
-			STDialog.show(new NotificationDialogFactory(this,
+			STDialogFragment.show(new NotificationDialogFactory(this,
 					"notification_accept_request"));
 		} else if (requestCode == DialogRequestCode.REJECT_REQUEST_CODE
 				.getCode())
 		{
-			STDialog.show(new NotificationDialogFactory(this,
+			STDialogFragment.show(new NotificationDialogFactory(this,
 					"notification_reject_request"));
 		} else if (requestCode == DialogRequestCode.REQUEST_NOTIFICATION
 				.getCode())
@@ -175,13 +176,15 @@ public class AnnouncementRequestActivity extends CallerActivity
 		final IAnnouncement prevAnnouncement =
 				adapter.getSelectedAnnouncement();
 
-		// TODO replace this code with REST-independent code
 		final short newSeats = (short) (prevAnnouncement.getSeats() - 1);
-		final AnnouncementBuilder builder = new AnnouncementBuilder(
-				prevAnnouncement.getFrom(),
-				prevAnnouncement.getTo(),
-				prevAnnouncement.getDepartureDate(),
-				newSeats, prevAnnouncement.getDriverUsername());
+		final IBuilderFactory factory = DomainManager.getInstance()
+				.getBuilderFactory();
+		final IAnnouncement.IBuilder builder = factory
+				.createAnnouncementBuilder(
+						prevAnnouncement.getFrom(),
+						prevAnnouncement.getTo(),
+						prevAnnouncement.getDepartureDate(),
+						newSeats, prevAnnouncement.getDriverUsername());
 		final IAnnouncement newAnnouncement = builder
 				.depAddress(prevAnnouncement.getDepAddress())
 				.depTime(prevAnnouncement.getDepartureTime())
@@ -265,9 +268,11 @@ public class AnnouncementRequestActivity extends CallerActivity
 				manager.beginTransaction();
 		// TODO replace the hard-coded announcement with a one coming from
 		// the bundle
-		final AnnouncementBuilder builder = new AnnouncementBuilder(
-				"Bansko", "Sofia", new Date(114, 1, 9),
-				(short) 5, "temp");
+		final IBuilderFactory factory =
+				DomainManager.getInstance().getBuilderFactory();
+		final IAnnouncement.IBuilder builder =
+				factory.createAnnouncementBuilder("Bansko", "Sofia",
+						new Date(114, 1, 9), (short) 5, "temp");
 		builder.status(Status.ACTIVE);
 		transaction.add(R.id.requests_fragment_container,
 				AnnouncementRequestsFragment.newInstance(this,
@@ -290,4 +295,5 @@ public class AnnouncementRequestActivity extends CallerActivity
 						R.id.requests_fragment_container);
 
 		return fragment.getAdapter();
-	}}
+	}
+}

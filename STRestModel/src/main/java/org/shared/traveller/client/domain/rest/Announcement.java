@@ -7,6 +7,7 @@ import java.util.List;
 import org.shared.traveller.client.domain.IAnnouncement;
 import org.shared.traveller.client.domain.visitor.IAnnouncementVisitor;
 import org.shared.traveller.utility.DeepCopier;
+import org.shared.traveller.utility.InstanceAsserter;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
 
@@ -39,18 +40,17 @@ public class Announcement implements IAnnouncement
 	private String driverUsername;
 
     private Status status;
+
 	private List<String> intermediatePts;
 
-	public static class AnnouncementBuilder
+	/**
+	 * The class is used to create new announcement instances
+	 *
+	 * @author "Ivan Ivanov"
+	 *
+	 */
+	public static class AnnouncementBuilder implements IAnnouncement.IBuilder
 	{
-		private static final String NULL_FROM_POINT = "Start point cannot be null.";
-
-		private static final String NULL_TO_POINT = "End point cannot be null.";
-
-		private static final String NULL_DEP_DATE = "Departure date cannot be null.";
-
-		private static final String NULL_USERNAME = "The driver's username cannot be null.";
-
 		private final String fromField;
 
 		private final String toField;
@@ -72,13 +72,28 @@ public class Announcement implements IAnnouncement
         private Status statusField;
 		private List<String> intermediatePtsField;
 
-		public AnnouncementBuilder(final String inFrom, final String inTo, final Date inDepDate, final short inSeats,
+		/**
+		 * Creates a new builder instance
+		 *
+		 * @param inFrom the from point for the announcement being built.
+		 * It may not be null
+		 * @param inTo the to point for the announcement being built.
+		 * It may not be null
+		 * @param inDepDate the departure date for the announcement being
+		 * built. It may not be null
+		 * @param inSeats the number of seats for the announcement being built
+		 * @param inDriverUsername the user name of the driver. It may not
+		 * be null
+		 */
+		public AnnouncementBuilder(final String inFrom, final String inTo,
+				final Date inDepDate, final short inSeats,
 				final String inDriverUsername)
 		{
-			assert null != inFrom : NULL_FROM_POINT;
-			assert null != inTo : NULL_TO_POINT;
-			assert null != inDepDate : NULL_DEP_DATE;
-			assert null != inDriverUsername : NULL_USERNAME;
+			InstanceAsserter.assertNotNull(inFrom, "start point");
+			InstanceAsserter.assertNotNull(inTo, "end point");
+			InstanceAsserter.assertNotNull(inDepDate, "departure date");
+			InstanceAsserter.assertNotNull(inDriverUsername,
+					"driver's user name");
 
 			fromField = inFrom;
 			toField = inTo;
@@ -87,41 +102,48 @@ public class Announcement implements IAnnouncement
 			driverUsernameField = inDriverUsername;
 		}
 
+		@Override
 		public AnnouncementBuilder depTime(final Date inDepTime)
 		{
 			depTimeField = DeepCopier.copy(inDepTime);
 			return this;
 		}
 
+		@Override
 		public AnnouncementBuilder price(final BigDecimal inPrice)
 		{
 			priceField = DeepCopier.copy(inPrice);
 			return this;
 		}
 
+		@Override
 		public AnnouncementBuilder depAddress(final String inDepAddress)
 		{
 			depAddressField = inDepAddress;
 			return this;
 		}
 
+		@Override
 		public AnnouncementBuilder vehicleName(final String inVehName)
 		{
 			vehicleNameField = inVehName;
 			return this;
 		}
 
-        public AnnouncementBuilder status(final Status inStatus)
+        @Override
+		public AnnouncementBuilder status(final Status inStatus)
         {
             statusField = inStatus;
             return this;
         }
-        public AnnouncementBuilder intermediatePoints(
+        @Override
+		public AnnouncementBuilder intermediatePoints(
                 final List<String> inIntermediatePts)
         {
             intermediatePtsField = DeepCopier.copy(inIntermediatePts);
             return this;
         }
+		@Override
 		public Announcement build()
 		{
 			return new Announcement(this);
@@ -157,6 +179,7 @@ public class Announcement implements IAnnouncement
         intermediatePts = DeepCopier.copy(inBuilder.intermediatePtsField);
         status = inBuilder.statusField;
     }
+
 	@Override
 	public String getFrom()
 	{
@@ -228,4 +251,5 @@ public class Announcement implements IAnnouncement
     public Status getStatus()
     {
         return status;
-    }}
+    }
+}
