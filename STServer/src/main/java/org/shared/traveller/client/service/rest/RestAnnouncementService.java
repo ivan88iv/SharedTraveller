@@ -37,7 +37,6 @@ public class RestAnnouncementService
 	private IPersistentAnnouncementProducer producer;
 
 	@RequestMapping(value = "/new", method = RequestMethod.PUT)
-
 	public ResponseEntity<Void> createAnnouncement(@RequestBody Announcement inNewAnnouncement)
 	{
 		inNewAnnouncement.accept(producer);
@@ -50,14 +49,12 @@ public class RestAnnouncementService
 	@RequestMapping(value = "/new2", method = RequestMethod.GET)
 	public ResponseEntity<IAnnouncement> createAnnouncement()
 	{
-		final AnnouncementBuilder builder = new AnnouncementBuilder(null,
-				null, null, (short)0, null);
-		return new ResponseEntity<IAnnouncement>(builder.build(),
-				HttpStatus.CREATED);	}
+		final AnnouncementBuilder builder = new AnnouncementBuilder(null, null, null, (short) 0, null);
+		return new ResponseEntity<IAnnouncement>(builder.build(), HttpStatus.CREATED);
+	}
 
 	@RequestMapping(value = "/all", method = RequestMethod.GET)
 	@ResponseBody
-
 	public ResponseEntity<AnnouncementsList> getAnouncements(@RequestParam(value = ParamNames.START) Integer start,
 			@RequestParam(value = ParamNames.COUNT) Integer count,
 			@RequestParam(required = false, value = ParamNames.FROM) String from,
@@ -75,24 +72,17 @@ public class RestAnnouncementService
 		return new ResponseEntity<AnnouncementsList>(result, HttpStatus.OK);
 	}
 
-
 	private List<IAnnouncement> transformDomains(List<? extends IPersistentAnnouncement> source)
 	{
 		List<IAnnouncement> result = new ArrayList<IAnnouncement>();
 		for (IPersistentAnnouncement anno : source)
 		{
 
-AnnouncementBuilder builder = new AnnouncementBuilder(anno
-					.getStartPoint().getName(), anno.getEndPoint()
-					.getName(), anno.getDepartureDate(), anno.getFreeSeats(),
-					anno.getDriver().getFirstName() + " "
-							+ anno.getDriver().getLastName());
-			builder.depTime(anno.getDepartureTime())
-					.price(anno.getPrice())
-					.depAddress(anno.getAddress())
-					.intermediatePoints(
-							getInterPoints(anno.getIntermediatePoints()))
-					.status(anno.getStatus());
+			AnnouncementBuilder builder = new AnnouncementBuilder(anno.getStartPoint().getName(), anno.getEndPoint()
+					.getName(), anno.getDepartureDate(), anno.getFreeSeats(), anno.getDriver().getFirstName() + " "
+					+ anno.getDriver().getLastName());
+			builder.depTime(anno.getDepartureTime()).price(anno.getPrice()).depAddress(anno.getAddress())
+					.intermediatePoints(getInterPoints(anno.getIntermediatePoints())).status(anno.getStatus());
 			if (anno.getVehicle() != null)
 			{
 				builder.vehicleName(anno.getVehicle().getMake());
@@ -101,7 +91,6 @@ AnnouncementBuilder builder = new AnnouncementBuilder(anno
 		}
 		return result;
 	}
-
 
 	private List<String> getInterPoints(List<? extends IPersistentCity> jpaInterPoints)
 	{
@@ -112,15 +101,6 @@ AnnouncementBuilder builder = new AnnouncementBuilder(anno
 		}
 		return interPoints;
 	}
-private String capitalizeFirstLetter(String original)
-	{
-		String capitalizedString = null;
-		if (original == null || original.length() == 0)
-		{
-			capitalizedString = original;
-		} else
-		{
-			capitalizedString = original.substring(0, 1).toUpperCase() + original.substring(1).toLowerCase();
-		}
-		return capitalizedString;
-	}}
+
+	
+}

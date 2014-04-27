@@ -41,23 +41,16 @@ public class RestRequestService
 
 	private static final String NULL_NEW_REQUEST_EVENT = "The event for creating a new request may not be null.";
 
-
 	private static final String TRAVEL_REQUEST_SEND_PROBLEM = "Could not send a new travel request: {0}.";
 
-
 	private static final String INCORRECT_REQUEST_INPUT = "The request input is not correct: {0}.";
-
 
 	private static final String REQUEST_EXTRACTION_PROBLEM = "Could not extract requests for announcement info: "
 			+ "start settlement {0}," + "end settlement {1}," + "departure date {2}," + "driver {3}.";
 
-
 	private static final String NO_REQUEST_FOUND = "The request with id {0} does not exist.";
 
-	private static final String REQUEST_UPDATE_PROBLEM =
-			"A problem occurred while trying to update the";
-
-private static final String REQUEST_ACCEPTANCE_PROBLEM = "A problem occurred while trying to accept the";
+	private static final String REQUEST_ACCEPTANCE_PROBLEM = "A problem occurred while trying to accept the";
 
 	@Autowired
 	private AnnouncementService announcementService;
@@ -69,7 +62,7 @@ private static final String REQUEST_ACCEPTANCE_PROBLEM = "A problem occurred whi
 	private RequestService requestService;
 
 	/**
-
+	 * 
 	 * The method is a rest service method that is responsible for the creation
 	 * of a new request business object. It uses a special event object for this
 	 * purpose.
@@ -83,7 +76,6 @@ private static final String REQUEST_ACCEPTANCE_PROBLEM = "A problem occurred whi
 	 *         successfully created.
 	 */
 	@RequestMapping(value = "/new", method = RequestMethod.PUT)
-
 	public ResponseEntity<Void> sendTravelRequest(@RequestBody final RequestInfo inRequest)
 	{
 		if (null == inRequest)
@@ -106,13 +98,11 @@ private static final String REQUEST_ACCEPTANCE_PROBLEM = "A problem occurred whi
 			throw new InternalBusinessException(MessageFormat.format(TRAVEL_REQUEST_SEND_PROBLEM, inRequest), dee);
 		}
 
-
 		if (null == loadedAnnouncement || null == sender)
 		{
 			throw new IncorrectInputException(MessageFormat.format(INCORRECT_REQUEST_INPUT, inRequest),
 					HttpStatus.NOT_FOUND);
 		}
-
 
 		try
 		{
@@ -123,13 +113,12 @@ private static final String REQUEST_ACCEPTANCE_PROBLEM = "A problem occurred whi
 			throw new InternalBusinessException(MessageFormat.format(TRAVEL_REQUEST_SEND_PROBLEM, inRequest), dme);
 		}
 
-
 		ResponseEntity<Void> response = new ResponseEntity<>(HttpStatus.CREATED);
 		return response;
 	}
 
 	/**
-
+	 * 
 	 * The method finds and returns all the request information that has been
 	 * generated for the specified announcement
 	 * 
@@ -162,25 +151,23 @@ private static final String REQUEST_ACCEPTANCE_PROBLEM = "A problem occurred whi
 					inDepartureDate, inDriverUsername), ile);
 		}
 
-
 		return new ResponseEntity<List<? extends IRequestInfo>>(requestInfos, HttpStatus.OK);
 	}
 
 	/**
 	 * The method rejects the provided request
-
+	 * 
 	 * 
 	 * @param inRequestId
 	 *            the id of the request to be rejected
 	 * @return an empty result
-
+	 * 
 	 * @throws IncorrectInputException
 	 *             if the specified request does not exist
 	 * @throws InternalBusinessException
 	 *             if a problem occurs while trying to perform the status change
 	 */
 	@RequestMapping(value = "/reject", method = RequestMethod.POST)
-
 	public ResponseEntity<Void> rejectRequest(@RequestParam(value = "id") final Long inRequestId)
 	{
 		return changeRequestStatus(inRequestId, RequestStatus.REJECTED);
@@ -188,18 +175,17 @@ private static final String REQUEST_ACCEPTANCE_PROBLEM = "A problem occurred whi
 
 	/**
 	 * The method accepts the provided request
-
+	 * 
 	 * 
 	 * @param inRequestId
 	 *            the id of the request to be accepted
 	 * @return an empty result
-
-@throws IncorrectInputException
+	 * @throws IncorrectInputException
 	 *             if the specified request does not exist
 	 * @throws InternalBusinessException
-	 *             if a problem occurs while trying to perform the status change	 */
+	 *             if a problem occurs while trying to perform the status change
+	 */
 	@RequestMapping(value = "/accept", method = RequestMethod.POST)
-
 	public ResponseEntity<Void> acceptRequest(@RequestParam(value = "id") final Long inRequestId)
 	{
 		return changeRequestStatus(inRequestId, RequestStatus.APPROVED);
@@ -218,8 +204,8 @@ private static final String REQUEST_ACCEPTANCE_PROBLEM = "A problem occurred whi
 
 	/**
 	 * The method changes the status of the provided request
-
-* 
+	 * 
+	 * 
 	 * @param inRequestId
 	 *            the id of the request which status is to be changed
 	 * @param inNewStatus
@@ -230,31 +216,29 @@ private static final String REQUEST_ACCEPTANCE_PROBLEM = "A problem occurred whi
 	 * @throws IncorrectInputException
 	 *             if the specified request does not exist
 	 * @throws InternalBusinessException
-	 *             if a problem occurs while trying to perform the status change	 */
+	 *             if a problem occurs while trying to perform the status change
+	 */
 
 	private ResponseEntity<Void> changeRequestStatus(final Long inRequestId, final RequestStatus inNewStatus)
 	{
 		try
 		{
-			if(inNewStatus == RequestStatus.APPROVED)
+			if (inNewStatus == RequestStatus.APPROVED)
 			{
 				requestService.accept(inRequestId);
-			} else if(inNewStatus == RequestStatus.REJECTED)
+			} else if (inNewStatus == RequestStatus.REJECTED)
 			{
 				requestService.reject(inRequestId);
 			}
-		} catch(final NonExistingResourceException|
-				IllegalUpdateOperationException nepe)
+		} catch (final NonExistingResourceException | IllegalUpdateOperationException nepe)
 		{
-			throw new IncorrectInputException(
-					MessageFormat.format(NO_REQUEST_FOUND, inRequestId),
-					nepe, HttpStatus.NOT_FOUND);
-
-
+			throw new IncorrectInputException(MessageFormat.format(NO_REQUEST_FOUND, inRequestId), nepe,
+					HttpStatus.NOT_FOUND);
 
 		} catch (final UnsuccessfulUpdateException uue)
 		{
-throw new InternalBusinessException(MessageFormat.format(REQUEST_ACCEPTANCE_PROBLEM, inRequestId), uue);		}
+			throw new InternalBusinessException(MessageFormat.format(REQUEST_ACCEPTANCE_PROBLEM, inRequestId), uue);
+		}
 
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
