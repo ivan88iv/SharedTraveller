@@ -18,7 +18,6 @@ import org.shared.traveller.business.exception.NonExistingResourceException;
 import org.shared.traveller.business.exception.UnsuccessfulUpdateException;
 import org.shared.traveller.business.exception.persistence.DataExtractionException;
 import org.shared.traveller.business.exception.persistence.DataModificationException;
-import org.shared.traveller.client.domain.IAnnouncement.Status;
 import org.shared.traveller.client.domain.request.IRequestInfo;
 import org.shared.traveller.client.domain.request.RequestStatus;
 import org.shared.traveller.client.domain.rest.RequestInfo;
@@ -144,7 +143,6 @@ public class RequestService implements Serializable
 
 		if (null != announcement)
 		{
-			final Status announcementStatus = announcement.getStatus();
 			List<? extends IPersistentRequest> persistentRequests = null;
 
 			try
