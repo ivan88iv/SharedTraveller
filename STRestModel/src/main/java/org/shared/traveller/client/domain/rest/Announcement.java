@@ -38,9 +38,13 @@ public class Announcement implements IAnnouncement
 
 	private String driverUsername;
 
-
-    private Status status;
+	private Status status;
 	private List<String> intermediatePts;
+
+	public Announcement()
+	{
+
+	}
 
 	public static class AnnouncementBuilder
 	{
@@ -56,8 +60,7 @@ public class Announcement implements IAnnouncement
 
 		private final String toField;
 
-		private final Date depDateField;
-;
+		private final Date depDateField;;
 		private Date depTimeField;
 
 		private BigDecimal priceField;
@@ -70,8 +73,7 @@ public class Announcement implements IAnnouncement
 
 		private final String driverUsernameField;
 
-
-        private Status statusField;
+		private Status statusField;
 		private List<String> intermediatePtsField;
 
 		public AnnouncementBuilder(final String inFrom, final String inTo, final Date inDepDate, final short inSeats,
@@ -113,45 +115,46 @@ public class Announcement implements IAnnouncement
 			return this;
 		}
 
+		public AnnouncementBuilder status(final Status inStatus)
+		{
+			statusField = inStatus;
+			return this;
+		}
 
-        public AnnouncementBuilder status(final Status inStatus)
-        {
-            statusField = inStatus;
-            return this;
-        }
-        public AnnouncementBuilder intermediatePoints(
-                final List<String> inIntermediatePts)
-        {
-            intermediatePtsField = DeepCopier.copy(inIntermediatePts);
-            return this;
-        }
+		public AnnouncementBuilder intermediatePoints(final List<String> inIntermediatePts)
+		{
+			intermediatePtsField = DeepCopier.copy(inIntermediatePts);
+			return this;
+		}
+
 		public Announcement build()
 		{
 			return new Announcement(this);
 		}
 	}
 
-	
-    /**
-     * The constructor creates a new announcement using the information
-     * in the provided builder instance
-     *
-     * @param inBuilder the builder used to create the announcement
-     */
-    private Announcement(final AnnouncementBuilder inBuilder)
-    {
-        from = inBuilder.fromField;
-        to = inBuilder.toField;
-        departureDate = DeepCopier.copy(inBuilder.depDateField);
-        departureTime = DeepCopier.copy(inBuilder.depTimeField);
-        price = DeepCopier.copy(inBuilder.priceField);
-        seats = inBuilder.seatsField;
-        depAddress = inBuilder.depAddressField;
-        vehicleName = inBuilder.vehicleNameField;
-        driverUsername = inBuilder.driverUsernameField;
-        intermediatePts = DeepCopier.copy(inBuilder.intermediatePtsField);
-        status = inBuilder.statusField;
-    }
+	/**
+	 * The constructor creates a new announcement using the information in the
+	 * provided builder instance
+	 * 
+	 * @param inBuilder
+	 *            the builder used to create the announcement
+	 */
+	private Announcement(final AnnouncementBuilder inBuilder)
+	{
+		from = inBuilder.fromField;
+		to = inBuilder.toField;
+		departureDate = DeepCopier.copy(inBuilder.depDateField);
+		departureTime = DeepCopier.copy(inBuilder.depTimeField);
+		price = DeepCopier.copy(inBuilder.priceField);
+		seats = inBuilder.seatsField;
+		depAddress = inBuilder.depAddressField;
+		vehicleName = inBuilder.vehicleNameField;
+		driverUsername = inBuilder.driverUsernameField;
+		intermediatePts = DeepCopier.copy(inBuilder.intermediatePtsField);
+		status = inBuilder.statusField;
+	}
+
 	@Override
 	public String getFrom()
 	{
@@ -219,9 +222,9 @@ public class Announcement implements IAnnouncement
 		return driverUsername;
 	}
 
-
-    @Override
-    public Status getStatus()
-    {
-        return status;
-    }}
+	@Override
+	public Status getStatus()
+	{
+		return status;
+	}
+}
