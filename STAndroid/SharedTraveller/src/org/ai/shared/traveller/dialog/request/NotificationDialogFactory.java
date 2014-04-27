@@ -1,7 +1,7 @@
 package org.ai.shared.traveller.dialog.request;
 
 import org.ai.shared.traveller.dialog.DialogRequestCode;
-import org.ai.shared.traveller.dialog.STDialog.AbstractDialogFactory;
+import org.ai.shared.traveller.dialog.STDialogFragment.AbstractDialogFactory;
 import org.ai.sharedtraveller.R;
 
 import android.support.v4.app.FragmentActivity;

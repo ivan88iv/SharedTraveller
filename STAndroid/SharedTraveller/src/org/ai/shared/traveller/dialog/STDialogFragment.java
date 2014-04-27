@@ -17,7 +17,7 @@ import eu.inmite.android.lib.dialogs.SimpleDialogFragment;
  * @author "Ivan Ivanov"
  * 
  */
-public class STDialog extends SimpleDialogFragment
+public class STDialogFragment extends SimpleDialogFragment
 {
 	/**
 	 * The class represents a factory that is used to provide the common
@@ -100,9 +100,9 @@ public class STDialog extends SimpleDialogFragment
 		 * 
 		 * @return the newly created dialog
 		 */
-		public STDialog create()
+		public STDialogFragment create()
 		{
-			final STDialog dialog = new STDialog();
+			final STDialogFragment dialog = new STDialogFragment();
 			dialog.titleResourceId = loadTitleResourceId();
 			dialog.descriptionMsg = loadDescriptionMsg();
 			dialog.confirmBtnResourceId = loadConfirmBtnResourceId();
@@ -156,7 +156,7 @@ public class STDialog extends SimpleDialogFragment
 	 */
 	public static void show(final AbstractDialogFactory inFactory)
 	{
-		final STDialog dialog = inFactory.create();
+		final STDialogFragment dialog = inFactory.create();
 		dialog.show(
 				inFactory.getActivity().getSupportFragmentManager(),
 				inFactory.getTag());

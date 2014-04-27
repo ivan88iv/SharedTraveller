@@ -1,16 +1,12 @@
 package org.ai.shared.traveller.network.connection.task;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.text.MessageFormat;
 
-import org.ai.shared.traveller.exceptions.IllegalUrlException;
 import org.ai.shared.traveller.exceptions.ParseException;
 import org.ai.shared.traveller.exceptions.ServiceConnectionException;
-import org.ai.shared.traveller.network.connection.path.resolver.PathResolver;
+import org.ai.shared.traveller.network.connection.client.IServiceClient;
 import org.ai.shared.traveller.network.connection.response.ServerResponse;
 import org.ai.shared.traveller.network.connection.response.ServerResponseParser;
-import org.ai.shared.traveller.network.connection.rest.client.AbstractRestClient;
 import org.shared.traveller.rest.domain.ErrorResponse;
 import org.shared.traveller.utility.InstanceAsserter;
 
@@ -33,30 +29,26 @@ import com.fasterxml.jackson.core.type.TypeReference;
  *            received after making the call to the server
  */
 public abstract class AbstractNetworkTask<A extends Activity, Result> extends
-		AsyncTask<Void, Void, ServerResponse<Result>> implements INetworkTask{;
+		AsyncTask<Void, Void, ServerResponse<Result>> implements INetworkTask
+{
 	private static final String UNABLE_TO_PARSE_RESULT =
 			"Unable to parse result from a service call";
 
 	private static final String UNABLE_TO_CONNECT =
 			"Could not connect to service {0}.";
 
-	private final URL requestAddress;
-
-	private final AbstractRestClient restClient;
+	private final IServiceClient serviceClient;
 
 	private final ServerResponseParser<Result> parser;
 
-	private final PathResolver resolver;
-
 	private A activity;
+
 	/**
 	 * The constructor creates a new abstract network task
 	 * 
 	 * @param inActivity
 	 *            the activity for which the task is executed. It may not be
 	 *            null
-	 * @param inServerPath
-	 *            the path in the server. It may not be null
 	 * @param inClient
 	 *            the client used to make the REST service calls. It may not be
 	 *            null.
@@ -64,28 +56,26 @@ public abstract class AbstractNetworkTask<A extends Activity, Result> extends
 	 *            the class of the server response body type. It may not be null
 	 */
 	public AbstractNetworkTask(final A inActivity,
-			final String inServerPath, final AbstractRestClient inClient,
+			final IServiceClient inClient,
 			final Class<Result> inClass)
 	{
 		super();
+
 		InstanceAsserter.assertNotNull(inActivity, "activity");
-		InstanceAsserter.assertNotNull(inServerPath, "server path");
 		InstanceAsserter.assertNotNull(inClient, "client");
 		InstanceAsserter.assertNotNull(inClass, "class instance");
+
 		activity = inActivity;
-		resolver = new PathResolver(inActivity);
+		serviceClient = inClient;
 		parser = new ServerResponseParser<Result>(inClass);
-		requestAddress = createRequestURL(inServerPath);
-		restClient = inClient;
 	}
+
 	/**
 	 * The constructor creates a new abstract network task
 	 * 
 	 * @param inActivity
 	 *            the activity for which the task is executed. It may not be
 	 *            null
-	 * @param inServerPath
-	 *            the path in the server. It may not be null
 	 * @param inClient
 	 *            the client used to make the REST service calls. It may not be
 	 *            null
@@ -94,21 +84,20 @@ public abstract class AbstractNetworkTask<A extends Activity, Result> extends
 	 *            null
 	 */
 	public AbstractNetworkTask(final A inActivity,
-			final String inServerPath, final AbstractRestClient inClient,
+			final IServiceClient inClient,
 			final TypeReference<Result> inRef)
 	{
 		super();
 		InstanceAsserter.assertNotNull(inActivity, "activity");
-		InstanceAsserter.assertNotNull(inServerPath, "server path");
 		InstanceAsserter.assertNotNull(inClient, "client");
 		InstanceAsserter.assertNotNull(inRef,
 				"reference of the response body type");
+
 		activity = inActivity;
-		resolver = new PathResolver(inActivity);
+		serviceClient = inClient;
 		parser = new ServerResponseParser<Result>(inRef);
-		requestAddress = createRequestURL(inServerPath);
-		restClient = inClient;
 	}
+
 	/**
 	 * The method is executed on successful execution of the service request
 	 * 
@@ -117,6 +106,7 @@ public abstract class AbstractNetworkTask<A extends Activity, Result> extends
 	 *            call
 	 */
 	protected abstract void onSuccess(final Result inResult);
+
 	/**
 	 * The method is executed on unsuccessful execution of the service call
 	 * 
@@ -127,24 +117,27 @@ public abstract class AbstractNetworkTask<A extends Activity, Result> extends
 	 */
 	protected abstract void onError(final int inStatusCode,
 			final ErrorResponse inError);
+
 	@Override
 	public void perform()
 	{
 		execute();
 	}
+
 	@Override
 	public void unbind()
 	{
 		cancel(true);
 		activity = null;
 	}
+
 	@Override
 	protected ServerResponse<Result> doInBackground(final Void... params)
 	{
 		ServerResponse<Result> response = null;
 		try
 		{
-			response = restClient.callService(requestAddress, parser);
+			response = serviceClient.callService(parser);
 		} catch (final ParseException pe)
 		{
 			Log.d("AbstractNetwTask", UNABLE_TO_PARSE_RESULT, pe);
@@ -154,15 +147,16 @@ public abstract class AbstractNetworkTask<A extends Activity, Result> extends
 		} catch (final ServiceConnectionException sce)
 		{
 			Log.d("AbstractNetworkTask",
-					MessageFormat.format(UNABLE_TO_CONNECT, requestAddress),
-					sce);
+					MessageFormat.format(UNABLE_TO_CONNECT,
+							serviceClient.getServiceAddress()), sce);
 			final ErrorResponse content = new ErrorResponse();
 			content.setMessage(MessageFormat.format(
-					UNABLE_TO_CONNECT, requestAddress));
+					UNABLE_TO_CONNECT, serviceClient.getServiceAddress()));
 			response = new ServerResponse<Result>(400, content);
 		}
 		return response;
 	}
+
 	@Override
 	protected void onPostExecute(final ServerResponse<Result> result)
 	{
@@ -177,6 +171,7 @@ public abstract class AbstractNetworkTask<A extends Activity, Result> extends
 			}
 		}
 	}
+
 	/**
 	 * Returns the activity associated with the network task
 	 * 
@@ -186,22 +181,4 @@ public abstract class AbstractNetworkTask<A extends Activity, Result> extends
 	{
 		return activity;
 	}
-	/**
-	 * Creates the request URL that corresponds to the given server path
-	 * 
-	 * @param inServerPath
-	 *            the server path that determines the request URL
-	 * @return the formed request URL
-	 */
-	private URL createRequestURL(final String inServerPath)
-	{
-		URL requestUrl = null;
-		try
-		{
-			requestUrl = new URL(resolver.resolvePath(inServerPath));
-		} catch (final MalformedURLException murle)
-		{
-			throw new IllegalUrlException(inServerPath, murle);
-		}
-		return requestUrl;
-	}}
+}

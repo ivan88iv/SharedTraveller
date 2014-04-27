@@ -4,8 +4,9 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
 
-import org.ai.shared.traveller.network.connection.rest.client.RequestTypes;
-import org.ai.shared.traveller.network.connection.rest.client.SimpleClient;
+import org.ai.shared.traveller.factory.client.IServiceClientFactory;
+import org.ai.shared.traveller.manager.domain.DomainManager;
+import org.ai.shared.traveller.network.connection.client.IServiceClient;
 import org.ai.shared.traveller.network.connection.task.AbstractNetworkTask;
 import org.ai.shared.traveller.request.AnnouncementRequestActivity;
 import org.ai.shared.traveller.request.RequestsAdapter;
@@ -14,6 +15,7 @@ import org.shared.traveller.client.domain.request.IRequestInfo;
 import org.shared.traveller.rest.domain.ErrorResponse;
 import org.shared.traveller.utility.InstanceAsserter;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -50,15 +52,14 @@ public class RequestsExtractionTask
 			final IAnnouncement inAnnouncement,
 			final RequestsAdapter inAdapter)
 	{
-		super(inActivity, constructServerPath(inAnnouncement),
-				new SimpleClient(RequestTypes.GET),
+		super(inActivity, prepareServiceClient(inActivity, inAnnouncement),
 				new TypeReference<List<IRequestInfo>>()
 				{
 				});
-		
+
 		InstanceAsserter.assertNotNull(inAnnouncement, "announcement");
 		InstanceAsserter.assertNotNull(inAdapter, "adapter");
-		
+
 		announcement = inAnnouncement;
 		adapter = inAdapter;
 	}
@@ -100,5 +101,23 @@ public class RequestsExtractionTask
 		serverPath += ("&driver=" + inAnnouncement.getDriverUsername());
 
 		return serverPath;
+	}
+
+	/**
+	 * The method prepares the service client used for the call
+	 * 
+	 * @param inContext
+	 *            the context used to prepare the client
+	 * @param inAnnouncement
+	 *            the announcement used to prepare the client
+	 * @return the prepared service client
+	 */
+	private static IServiceClient prepareServiceClient(final Context inContext,
+			final IAnnouncement inAnnouncement)
+	{
+		final IServiceClientFactory clientFactory =
+				DomainManager.getInstance().getServiceClientFactory();
+		return clientFactory.createSimpleClient(inContext,
+				constructServerPath(inAnnouncement));
 	}
 }

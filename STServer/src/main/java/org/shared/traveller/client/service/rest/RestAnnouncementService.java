@@ -99,17 +99,4 @@ public class RestAnnouncementService
 		return interPoints;
 	}
 
-	private String capitalizeFirstLetter(String original)
-	{
-		String capitalizedString = null;
-		if (original == null || original.length() == 0)
-		{
-			capitalizedString = original;
-		} else
-		{
-			capitalizedString = original.substring(0, 1).toUpperCase() + original.substring(1).toLowerCase();
-		}
-		return capitalizedString;
-	}
-
 }

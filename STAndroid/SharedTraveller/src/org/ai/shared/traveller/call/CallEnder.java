@@ -53,7 +53,8 @@ public class CallEnder extends PhoneStateListener
 					context.getSharedPreferences("call_prefs",
 							Context.MODE_PRIVATE);
 			final String beforeCallActivityClassName =
-					callPreferences.getString("lastActivity",
+					callPreferences.getString(
+							CallerActivity.LAST_VISITED_ACTIVITY_KEY,
 							MainActivity.class.getName());
 			Class<?> beforeCallActivityClass = null;
 

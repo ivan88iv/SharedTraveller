@@ -1,18 +1,15 @@
 package org.ai.shared.traveller.announcement.input;
 
-import java.io.IOException;
-import java.io.OutputStream;
 import java.text.MessageFormat;
 
 import org.ai.shared.traveller.announcement.input.tab.PrimaryTab;
 import org.ai.shared.traveller.command.save.announcement.ISaveAnnouncementCommand;
 import org.ai.shared.traveller.data.providers.ICitiesProvider;
 import org.ai.shared.traveller.data.providers.IVehiclesProvider;
-import org.ai.shared.traveller.exceptions.ServiceConnectionException;
+import org.ai.shared.traveller.factory.client.IServiceClientFactory;
+import org.ai.shared.traveller.manager.domain.DomainManager;
 import org.ai.shared.traveller.network.connection.AbstractNetworkActivity;
-import org.ai.shared.traveller.network.connection.rest.client.AbstractPutClient;
-import org.ai.shared.traveller.network.connection.rest.client.RequestTypes;
-import org.ai.shared.traveller.network.connection.rest.client.SimpleClient;
+import org.ai.shared.traveller.network.connection.client.IServiceClient;
 import org.ai.shared.traveller.task.AllCitiesTask;
 import org.ai.shared.traveller.task.UserVehiclesTask;
 import org.ai.shared.traveller.task.announcement.NewAnnouncementTask;
@@ -27,19 +24,21 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 public class InputAnnouncementActivity extends AbstractNetworkActivity
 		implements ISaveAnnouncementCommand, ICitiesProvider,
 		IVehiclesProvider
 {
 
 	private static final String FRAGMENT_TAG = "FRAGMENT_TAG";
+
 	private static final String UNSUCCESSFUL_ANNOUNCEMENT_SUBMIT =
 			"Could not submit the announcement {0}.";
 
 	private static final String CREATION_ANNOUNCEMNT_TASK_KEY =
 			"newAnnouncementTask";
+
+	private final IServiceClientFactory clientFactory =
+			DomainManager.getInstance().getServiceClientFactory();
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState)
@@ -78,29 +77,12 @@ public class InputAnnouncementActivity extends AbstractNetworkActivity
 	@Override
 	public void saveAnnouncement(final Announcement inAnnouncement)
 	{
-		final AbstractPutClient newAnnouncementClient =
-				new AbstractPutClient()
-				{
-					@Override
-					protected void submitData(final OutputStream inStream)
-							throws ServiceConnectionException
-					{
-						final ObjectMapper writer = new ObjectMapper();
-
-						try
-						{
-							writer.writeValue(inStream, inAnnouncement);
-						} catch (final IOException ioe)
-						{
-							final String errorMsg = MessageFormat.format(
-									UNSUCCESSFUL_ANNOUNCEMENT_SUBMIT,
-									inAnnouncement);
-
-							throw new ServiceConnectionException(
-									errorMsg, ioe);
-						}
-					}
-				};
+		final IServiceClient newAnnouncementClient =
+				clientFactory.createNewResourceClient(
+						InputAnnouncementActivity.this,
+						"announcement/new", inAnnouncement,
+						MessageFormat.format(UNSUCCESSFUL_ANNOUNCEMENT_SUBMIT,
+								inAnnouncement));
 		addTask(CREATION_ANNOUNCEMNT_TASK_KEY, new NewAnnouncementTask(this,
 				newAnnouncementClient));
 		executeTask(CREATION_ANNOUNCEMNT_TASK_KEY);
@@ -110,7 +92,8 @@ public class InputAnnouncementActivity extends AbstractNetworkActivity
 	@Override
 	public void provideCityNames(final ICityComponentsPreparator inPreparator)
 	{
-		final SimpleClient getClient = new SimpleClient(RequestTypes.GET);
+		final IServiceClient getClient = clientFactory.createSimpleClient(this,
+				"cities/all");
 		final AllCitiesTask citiesTask = new AllCitiesTask(this, getClient,
 				inPreparator);
 		addTask("CITIES_TASK", citiesTask);
@@ -121,11 +104,11 @@ public class InputAnnouncementActivity extends AbstractNetworkActivity
 	public void provideVehicleNames(final String inUsername,
 			final IVehicleComponentsPreparator inPreparator)
 	{
-		final SimpleClient getClient = new SimpleClient(RequestTypes.GET);
+		final IServiceClient getClient = clientFactory.createSimpleClient(this,
+				"vehicles/" + inUsername);
 		final UserVehiclesTask vehicleTask = new UserVehiclesTask(this,
-				getClient, inUsername, inPreparator);
+				getClient, inPreparator);
 		addTask("VEHICLE_TASK", vehicleTask);
 		executeTask("VEHICLE_TASK");
 	}
-
 }

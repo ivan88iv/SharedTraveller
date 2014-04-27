@@ -1,7 +1,5 @@
 package org.ai.shared.traveller;
 
-import java.io.IOException;
-import java.io.OutputStream;
 import java.text.MessageFormat;
 import java.util.Date;
 
@@ -14,11 +12,10 @@ import org.ai.shared.traveller.command.save.announcement.ISaveAnnouncementComman
 import org.ai.shared.traveller.data.providers.ICitiesProvider;
 import org.ai.shared.traveller.data.providers.IVehiclesProvider;
 import org.ai.shared.traveller.dialog.request.NewRequestDialog;
-import org.ai.shared.traveller.exceptions.ServiceConnectionException;
+import org.ai.shared.traveller.factory.client.IServiceClientFactory;
+import org.ai.shared.traveller.manager.domain.DomainManager;
 import org.ai.shared.traveller.network.connection.AbstractNetworkActivity;
-import org.ai.shared.traveller.network.connection.rest.client.AbstractPutClient;
-import org.ai.shared.traveller.network.connection.rest.client.RequestTypes;
-import org.ai.shared.traveller.network.connection.rest.client.SimpleClient;
+import org.ai.shared.traveller.network.connection.client.IServiceClient;
 import org.ai.shared.traveller.request.AnnouncementRequestActivity;
 import org.ai.shared.traveller.request.UserRequestsActivity;
 import org.ai.shared.traveller.settings.SettingsActivity;
@@ -45,9 +42,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import eu.inmite.android.lib.dialogs.ISimpleDialogListener;
 
 public class MainActivity extends AbstractNetworkActivity implements
@@ -64,6 +58,9 @@ public class MainActivity extends AbstractNetworkActivity implements
 			"newAnnouncementTask";
 
 	private static final String NEW_REQUEST_TASK_KEY = "sendRequestTask";
+
+	private final IServiceClientFactory clientFactory =
+			DomainManager.getInstance().getServiceClientFactory();
 
 	@Override
 	public boolean onCreateOptionsMenu(final Menu menu)
@@ -87,8 +84,9 @@ public class MainActivity extends AbstractNetworkActivity implements
 	@Override
 	protected void attachTasks()
 	{
-
-	}
+		final IServiceClient getClient = clientFactory.createSimpleClient(this,
+				"dummy/asdadsad");
+		executeTask("DUMMY_TASK");	}
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState)
@@ -127,7 +125,6 @@ public class MainActivity extends AbstractNetworkActivity implements
 			@Override
 			public void onClick(final View v)
 			{
-
 				Intent intent = new Intent(MainActivity.this,
 						ShowAnnouncementsActivity.class);
 				MainActivity.this.startActivity(intent);
@@ -184,29 +181,11 @@ public class MainActivity extends AbstractNetworkActivity implements
 	@Override
 	public void saveAnnouncement(final Announcement inAnnouncement)
 	{
-		final AbstractPutClient newAnnouncementClient =
-				new AbstractPutClient()
-				{
-					@Override
-					protected void submitData(final OutputStream inStream)
-							throws ServiceConnectionException
-					{
-						final ObjectMapper writer = new ObjectMapper();
-
-						try
-						{
-							writer.writeValue(inStream, inAnnouncement);
-						} catch (final IOException ioe)
-						{
-							final String errorMsg = MessageFormat.format(
-									UNSUCCESSFUL_ANNOUNCEMENT_SUBMIT,
-									inAnnouncement);
-
-							throw new ServiceConnectionException(
-									errorMsg, ioe);
-						}
-					}
-				};
+		final IServiceClient newAnnouncementClient =
+				clientFactory.createNewResourceClient(MainActivity.this,
+						"announcement/new", inAnnouncement,
+						MessageFormat.format(UNSUCCESSFUL_ANNOUNCEMENT_SUBMIT,
+								inAnnouncement));
 		addTask(CREATION_ANNOUNCEMNT_TASK_KEY, new NewAnnouncementTask(this,
 				newAnnouncementClient));
 		executeTask(CREATION_ANNOUNCEMNT_TASK_KEY);
@@ -215,7 +194,6 @@ public class MainActivity extends AbstractNetworkActivity implements
 	@Override
 	public void sendRequest(final RequestInfo inRequest)
 	{
-
 		addTask(NEW_REQUEST_TASK_KEY, new NewRequestTask(this, inRequest));
 		executeTask(NEW_REQUEST_TASK_KEY);
 	}
@@ -223,7 +201,8 @@ public class MainActivity extends AbstractNetworkActivity implements
 	@Override
 	public void provideCityNames(final ICityComponentsPreparator inPreparator)
 	{
-		final SimpleClient getClient = new SimpleClient(RequestTypes.GET);
+		final IServiceClient getClient = clientFactory.createSimpleClient(this,
+				"cities/all");
 		final AllCitiesTask citiesTask = new AllCitiesTask(this, getClient,
 				inPreparator);
 		addTask("CITIES_TASK", citiesTask);
@@ -234,9 +213,10 @@ public class MainActivity extends AbstractNetworkActivity implements
 	public void provideVehicleNames(final String inUsername,
 			final IVehicleComponentsPreparator inPreparator)
 	{
-		final SimpleClient getClient = new SimpleClient(RequestTypes.GET);
+		final IServiceClient getClient = clientFactory.createSimpleClient(this,
+				"vehicles/" + inUsername);
 		final UserVehiclesTask vehicleTask = new UserVehiclesTask(this,
-				getClient, inUsername, inPreparator);
+				getClient, inPreparator);
 		addTask("VEHICLE_TASK", vehicleTask);
 		executeTask("VEHICLE_TASK");
 	}
@@ -249,7 +229,7 @@ public class MainActivity extends AbstractNetworkActivity implements
 			final RequestInfoBuilder builder = new RequestInfoBuilder();
 			builder.sender("temp")
 					.fromPoint("Bansko").toPoint("Sofia")
-
+					.departureDate(new Date(114, 1, 9))
 					.departureDate(new Date())
 					.driverUsername("temp");
 			final RequestInfo request = builder.build();

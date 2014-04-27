@@ -1,20 +1,19 @@
 package org.ai.shared.traveller.task.request;
 
-import java.io.IOException;
-import java.io.OutputStream;
 import java.text.MessageFormat;
 
 import org.ai.shared.traveller.MainActivity;
-import org.ai.shared.traveller.exceptions.ServiceConnectionException;
-import org.ai.shared.traveller.network.connection.rest.client.AbstractPutClient;
+import org.ai.shared.traveller.factory.client.IServiceClientFactory;
+import org.ai.shared.traveller.manager.domain.DomainManager;
+import org.ai.shared.traveller.network.connection.client.IServiceClient;
 import org.ai.shared.traveller.network.connection.task.AbstractNetworkTask;
 import org.shared.traveller.client.domain.request.IRequestInfo;
 import org.shared.traveller.rest.domain.ErrorResponse;
+import org.shared.traveller.utility.InstanceAsserter;
 
+import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * The class represents a task used to send new business requests to the server
@@ -40,7 +39,8 @@ public class NewRequestTask extends AbstractNetworkTask<MainActivity, Void>
 	public NewRequestTask(final MainActivity inActivity,
 			final IRequestInfo inRequestInfo)
 	{
-		super(inActivity, "request/new", prepareRestClient(inRequestInfo),
+		super(inActivity,
+				prepareRestClient(inActivity, "request/new", inRequestInfo),
 				Void.class);
 	}
 
@@ -67,32 +67,27 @@ public class NewRequestTask extends AbstractNetworkTask<MainActivity, Void>
 	 * The method creates the REST client used to create a new travel request
 	 * from the information provided
 	 * 
+	 * @param inContext
+	 *            the request context into which the client is created. It may
+	 *            not be null
+	 * @param inServerPath
+	 *            the path of the service that is called. It may not be null
 	 * @param inRequest
 	 *            the request information used for the new travel request
-	 * @return the new REST client used to make the connection to the server
+	 * @return the new service client used to make the connection to the server
 	 */
-	private static AbstractPutClient prepareRestClient(
+	private static IServiceClient prepareRestClient(
+			final Context inContext, final String inServerPath,
 			final IRequestInfo inRequest)
 	{
-		return new AbstractPutClient()
-		{
-			@Override
-			protected void submitData(final OutputStream inStream)
-					throws ServiceConnectionException
-			{
-				final ObjectMapper writer = new ObjectMapper();
+		InstanceAsserter.assertNotNull(inContext, "context");
+		InstanceAsserter.assertNotNull(inServerPath, "service path");
 
-				try
-				{
-					writer.writeValue(inStream, inRequest);
-				} catch (final IOException ioe)
-				{
-					final String errorMsg = MessageFormat.format(
-							NEW_REQUEST_FAILED, inRequest);
+		final IServiceClientFactory clientFactory =
+				DomainManager.getInstance().getServiceClientFactory();
 
-					throw new ServiceConnectionException(errorMsg, ioe);
-				}
-			}
-		};
+		return clientFactory.createNewResourceClient(inContext, inServerPath,
+				inRequest,
+				MessageFormat.format(NEW_REQUEST_FAILED, inRequest));
 	}
 }

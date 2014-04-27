@@ -8,6 +8,7 @@ import java.util.List;
 import org.shared.traveller.business.authentication.domain.AuthenticatedUser;
 import org.shared.traveller.business.domain.IPersistentAnnouncement;
 import org.shared.traveller.business.domain.IPersistentTraveller;
+import org.shared.traveller.business.exception.IllegalUpdateOperationException;
 import org.shared.traveller.business.exception.IncorrectInputException;
 import org.shared.traveller.business.exception.InfoLookupException;
 import org.shared.traveller.business.exception.InternalBusinessException;
@@ -206,8 +207,14 @@ public class RestRequestService
 	{
 		try
 		{
-			requestService.changeStatus(inRequestId, inNewStatus);
-		} catch (final NonExistingResourceException nepe)
+			if (inNewStatus == RequestStatus.APPROVED)
+			{
+				requestService.accept(inRequestId);
+			} else if (inNewStatus == RequestStatus.REJECTED)
+			{
+				requestService.reject(inRequestId);
+			}
+		} catch (final NonExistingResourceException | IllegalUpdateOperationException nepe)
 		{
 			throw new IncorrectInputException(MessageFormat.format(NO_REQUEST_FOUND, inRequestId), nepe,
 					HttpStatus.NOT_FOUND);
