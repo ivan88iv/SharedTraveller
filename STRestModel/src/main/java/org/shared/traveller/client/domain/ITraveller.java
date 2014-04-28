@@ -11,10 +11,10 @@ import java.io.Serializable;
  */
 public interface ITraveller extends Serializable
 {
-    /**
-     * The method returns the user name of the traveller
-     * 
-     * @return the user name of the traveller
-     */
-    String getUsername();
+	/**
+	 * The method returns the user name of the traveller
+	 * 
+	 * @return the user name of the traveller
+	 */
+	String getUsername();
 }

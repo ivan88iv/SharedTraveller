@@ -8,9 +8,9 @@ import org.shared.traveller.utility.DeepCopier;
 
 /**
  * The class represents a request related information
- *
+ * 
  * @author "Ivan Ivanov"
- *
+ * 
  */
 public class RequestInfo implements IRequestInfo
 {
@@ -37,9 +37,9 @@ public class RequestInfo implements IRequestInfo
 
 	/**
 	 * The class is responsible for building a new request info instance
-	 *
+	 * 
 	 * @author "Ivan Ivanov"
-	 *
+	 * 
 	 */
 	public static class RequestInfoBuilder implements IRequestInfo.IBuilder
 	{
@@ -134,7 +134,7 @@ public class RequestInfo implements IRequestInfo
 	/**
 	 * The constructor creates a request information instance by using the
 	 * special builder class provided
-	 *
+	 * 
 	 * @param inBuilder
 	 */
 	private RequestInfo(final RequestInfoBuilder inBuilder)

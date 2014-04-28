@@ -2,9 +2,9 @@ package org.shared.traveller.client.domain.request;
 
 /**
  * The enumeration represents the possible request statuses
- *
+ * 
  * @author "Ivan Ivanov"
- *
+ * 
  */
 public enum RequestStatus {
 

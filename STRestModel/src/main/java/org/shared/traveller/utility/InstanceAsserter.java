@@ -3,11 +3,11 @@ package org.shared.traveller.utility;
 import java.text.MessageFormat;
 
 /**
- * The class is a utility class which is meant to be used for
- * assertion checks within the code
- *
+ * The class is a utility class which is meant to be used for assertion checks
+ * within the code
+ * 
  * @author "Ivan Ivanov"
- *
+ * 
  */
 public final class InstanceAsserter
 {
@@ -21,11 +21,13 @@ public final class InstanceAsserter
 	}
 
 	/**
-	 * The method checks whether the provided instance is not null
-	 * and if it is an assertion error is thrown
-	 *
-	 * @param inInstance the instance to be checked
-	 * @param inName the name of the instance to be checked
+	 * The method checks whether the provided instance is not null and if it is
+	 * an assertion error is thrown
+	 * 
+	 * @param inInstance
+	 *            the instance to be checked
+	 * @param inName
+	 *            the name of the instance to be checked
 	 */
 	public static void assertNotNull(final Object inInstance,
 			final String inName)
