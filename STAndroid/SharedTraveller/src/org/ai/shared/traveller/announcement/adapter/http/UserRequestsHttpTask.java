@@ -5,6 +5,7 @@ import org.ai.shared.traveller.exceptions.ServiceConnectionException;
 import org.ai.shared.traveller.factory.client.IServiceClientFactory;
 import org.ai.shared.traveller.manager.domain.DomainManager;
 import org.ai.shared.traveller.network.connection.client.IServiceClient;
+import org.ai.shared.traveller.network.connection.path.resolver.PathResolver;
 import org.ai.shared.traveller.network.connection.response.ServerResponse;
 import org.ai.shared.traveller.network.connection.response.ServerResponseParser;
 import org.shared.traveller.client.domain.request.IRequestInfo;
@@ -28,17 +29,17 @@ public class UserRequestsHttpTask
 
 	private String url;
 
-	private final Activity activity;
+	private Activity activity;
 
-	public UserRequestsHttpTask(final Activity activity)
+	public UserRequestsHttpTask(Activity activity)
 	{
 		super();
 		this.activity = activity;
 	}
 
 	@Override
-	public ServerResponse<RequestList> execute(final int fetchSize,
-			final int position)
+	public ServerResponse<RequestList> execute(int fetchSize,
+			int position)
 			throws ParseException, ServiceConnectionException
 	{
 		final IServiceClientFactory clientFactory =
@@ -50,19 +51,22 @@ public class UserRequestsHttpTask
 		return client.callService(parser);
 	}
 
-	@Override
-	public String getUrl()
+	private String buildUrl(int fetchSize, int position)
 	{
-		return url;
-	}
-
-	private String buildUrl(final int fetchSize, final int position)
-	{
-		final StringBuilder builder = new StringBuilder(URL);
+		final PathResolver pathResolver = new PathResolver(activity);
+		final StringBuilder builder = new StringBuilder(
+				pathResolver.resolvePath(URL));
 		builder.append(ParamNames.START).append(URL_EQUALS_SEPARATOR)
 				.append(position).append(URL_AMPERSAND_SEPARATOR)
 				.append(ParamNames.COUNT).append(URL_EQUALS_SEPARATOR)
 				.append(fetchSize);
 		return builder.toString();
 	}
+
+	@Override
+	public String getUrl()
+	{
+		return url;
+	}
+
 }

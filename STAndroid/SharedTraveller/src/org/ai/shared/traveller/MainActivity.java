@@ -82,7 +82,6 @@ public class MainActivity extends AbstractNetworkActivity implements
 	{
 		// No tasks are attached on activity startup
 	}
-
 	@Override
 	protected void onCreate(final Bundle savedInstanceState)
 	{

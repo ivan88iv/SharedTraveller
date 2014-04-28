@@ -38,8 +38,7 @@ public class RestAnnouncementService
 
 	@RequestMapping(value = "/new", method = RequestMethod.PUT)
 	public ResponseEntity<Void> createAnnouncement(
-			@RequestBody Announcement inNewAnnouncement)
-	{
+			@RequestBody Announcement inNewAnnouncement)	{
 		inNewAnnouncement.accept(producer);
 		businessService.createNewAnnouncement(producer.produce());
 
@@ -55,12 +54,10 @@ public class RestAnnouncementService
 		return new ResponseEntity<IAnnouncement>(builder.build(),
 				HttpStatus.CREATED);
 	}
-
 	@RequestMapping(value = "/all", method = RequestMethod.GET)
 	@ResponseBody
 	public ResponseEntity<AnnouncementsList> getAnouncements(
-			@RequestParam(value = ParamNames.START) Integer start,
-			@RequestParam(value = ParamNames.COUNT) Integer count,
+			@RequestParam(value = ParamNames.START) Integer start,			@RequestParam(value = ParamNames.COUNT) Integer count,
 			@RequestParam(required = false, value = ParamNames.FROM) String from,
 			@RequestParam(required = false, value = ParamNames.TO) String to,
 			@RequestParam(required = false, value = ParamNames.SORT_ORDER) SortOrder sortOrder,
@@ -68,7 +65,6 @@ public class RestAnnouncementService
 	{
 		GetAllAnnouncementsRequest request = new GetAllAnnouncementsRequest(start, count, from, to, sortOrder);
 		long allCount = businessService.getAllAnnouncementsCount(request);
-
 		List<? extends IPersistentAnnouncement> announcements = businessService.getAllAnnouncements(request);
 		AnnouncementsList result = new AnnouncementsList(new BigDecimal(allCount).intValueExact(),
 				transformDomains(announcements));
@@ -80,18 +76,11 @@ public class RestAnnouncementService
 		List<IAnnouncement> result = new ArrayList<IAnnouncement>();
 		for (IPersistentAnnouncement anno : source)
 		{
-
-			AnnouncementBuilder builder = new AnnouncementBuilder(anno
-					.getStartPoint().getName(), anno.getEndPoint()
-					.getName(), anno.getDepartureDate(), anno.getFreeSeats(),
-					anno.getDriver().getFirstName() + " "
-							+ anno.getDriver().getLastName());
-			builder.depTime(anno.getDepartureTime())
-					.price(anno.getPrice())
-					.depAddress(anno.getAddress())
-					.intermediatePoints(
-							getInterPoints(anno.getIntermediatePoints()))
-					.status(anno.getStatus());
+			AnnouncementBuilder builder = new AnnouncementBuilder(anno.getStartPoint().getName(), anno.getEndPoint()
+					.getName(), anno.getDepartureDate(), anno.getFreeSeats(), anno.getDriver().getFirstName() + " "
+					+ anno.getDriver().getLastName());
+			builder.depTime(anno.getDepartureTime()).price(anno.getPrice()).depAddress(anno.getAddress())
+					.intermediatePoints(getInterPoints(anno.getIntermediatePoints()));
 			if (anno.getVehicle() != null)
 			{
 				builder.vehicleName(anno.getVehicle().getMake());

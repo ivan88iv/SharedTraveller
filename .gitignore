@@ -69,3 +69,5 @@ bin
 /STAndroid/ViewPagerIndicatorLibrary/gen/com/viewpagerindicator/R.java
 /STServer/.settings/org.eclipse.jpt.core.prefs
 /STServer/.settings
+/STAndroid/SharedTraveller/.settings
+/STRestModel/.settings

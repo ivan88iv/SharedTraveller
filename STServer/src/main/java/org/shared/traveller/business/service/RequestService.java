@@ -59,13 +59,16 @@ public class RequestService implements Serializable
 
 	private static final String NULL_USER = "The user name of the driver may not be null.";
 
+	private static final String NULL_ANNOUNCEMENT = "The announcement may not be null.";
+
+	private static final String NULL_SENDER = "The user name of the request sender may not be null.";
 	private static final String SEARCH_CRITERIA = "start point: {0}, end point: {1}, departure date: {2} and "
 			+ "driver's username: {3}";
 
 	private static final String STATUS_CHANGE = "the request with id {0} for the user {1}.";
 
 	private static final String NON_EXISTING_REQUEST = "'request with id {0} for the user {1}'";
-
+	
 	private static final String NO_FREE_SEATS =
 			"Cannot accept the request with id {0}, because there "
 					+ "are no free seats in the vehicle.";
@@ -73,6 +76,9 @@ public class RequestService implements Serializable
 	private static final String USER_REQUESTS_COUNT_DB_LOOKUP_PROBLEM = "'user with id: {0}'";
 
 	private static final String USER_REQUESTS_DB_LOOKUP_PROBLEM = "'user with id: {0}, startIndes: {1} and count: {2}'";
+
+	private static final String NO_FREE_SEATS = "Cannot accept the request with id {0}, because there "
+			+ "are no free seats in the vehicle.";
 
 	@Autowired
 	private IAnnouncementDAO announcementDAO;
@@ -184,14 +190,12 @@ public class RequestService implements Serializable
 	 *             if a problem occurs while trying to find the request which is
 	 *             later to be updated
 	 * @throws NonExistingResourceException
-	 *             if no such request is found
-	 */
+	 *             if no such request is found	 */
 	public void reject(final Long inRequestId)
 	{
 		assert null != inRequestId : NULL_REQUEST_ID;
 
-		final IPersistentRequest persistentRequest =
-				findRequestToUpdate(inRequestId);
+		final IPersistentRequest persistentRequest = findRequestToUpdate(inRequestId);
 
 		persistentRequest.setStatus(RequestStatus.REJECTED);
 		requestDAO.update(persistentRequest);
@@ -210,13 +214,11 @@ public class RequestService implements Serializable
 	 *             if no such request is found
 	 * @throws IllegalUpdateOperationException
 	 *             if there are no free seats for this request
-	 */
-	public void accept(final Long inRequestId)
+	 */	public void accept(final Long inRequestId)
 	{
 		assert null != inRequestId : NULL_REQUEST_ID;
 
-		final IPersistentRequest persistentRequest =
-				findRequestToUpdate(inRequestId);
+		final IPersistentRequest persistentRequest = findRequestToUpdate(inRequestId);
 
 		if (persistentRequest.getAnnouncement().getFreeSeats() > 0)
 		{
@@ -229,13 +231,41 @@ public class RequestService implements Serializable
 			requestDAO.update(persistentRequest);
 		} else
 		{
-			throw new IllegalUpdateOperationException(
-					MessageFormat.format(NO_FREE_SEATS, inRequestId));
+			throw new IllegalUpdateOperationException(MessageFormat.format(NO_FREE_SEATS, inRequestId));
 		}
 	}
 
-	public RequestList getUserRequests(final AuthenticatedUser inUser,
-			final int inStartIndex, final int inCount)
+/**
+	 * The method accepts the specified request
+	 * 
+	 * @param inRequestId
+	 *            the id of the request to be found. It may not be null
+	 * @return the found request
+	 * @throws UnsuccessfulUpdateException
+	 *             if a problem occurs while trying to find the request which is
+	 *             later to be updated
+	 * @throws NonExistingResourceException
+	 *             if no such request is found
+	 */
+	private IPersistentRequest findRequestToUpdate(final Long inRequestId)	{
+		IPersistentRequest persistentRequest = null;
+
+		try
+		{
+			// TODO replace the hard-coded driver with real one
+			persistentRequest = requestDAO.findRequest("temp", inRequestId);
+		} catch (final DataExtractionException dee)
+		{
+			throw new UnsuccessfulUpdateException(MessageFormat.format(STATUS_CHANGE, inRequestId, "temp"), dee);
+		}
+
+		if (null == persistentRequest)
+		{
+			throw new NonExistingResourceException(MessageFormat.format(NON_EXISTING_REQUEST, inRequestId, "temp"));
+		}
+
+		return persistentRequest;
+	}	public RequestList getUserRequests(final AuthenticatedUser inUser, final int inStartIndex, final int inCount)
 	{
 		assert null != inUser : NULL_USER;
 
@@ -245,7 +275,6 @@ public class RequestService implements Serializable
 		if (userRequestsCount > 0
 				&& inStartIndex < userRequestsCount.intValue())
 		{
-
 			List<? extends IPersistentRequest> userRequestsFromDb = getUserRequestsFromDb(
 					inUser, inStartIndex, inCount);
 
