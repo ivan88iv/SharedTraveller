@@ -20,76 +20,76 @@ import android.widget.Toast;
  */
 public class ScreenRequiredFieldValidator implements IScreenValidator
 {
-    private static final String NULL_CONTEXT =
-            "The context may not be null.";
+	private static final String NULL_CONTEXT =
+			"The context may not be null.";
 
-    private final String templateValidationMsg;
+	private final String templateValidationMsg;
 
-    private final Context context;
+	private final Context context;
 
-    private boolean isValidationSuccessful = true;
+	private boolean isValidationSuccessful = true;
 
-    private String invalidFieldNames;
+	private String invalidFieldNames;
 
-    private final String fieldNamesSeparator;
+	private final String fieldNamesSeparator;
 
-    public ScreenRequiredFieldValidator(final Context inContext)
-    {
-        assert null != inContext : NULL_CONTEXT;
+	public ScreenRequiredFieldValidator(final Context inContext)
+	{
+		assert null != inContext : NULL_CONTEXT;
 
-        context = inContext;
-        templateValidationMsg = context.getResources().getString(
-                R.string.required_validator_template);
-        fieldNamesSeparator = context.getResources().getString(
-                R.string.field_names_separator);
-    }
+		context = inContext;
+		templateValidationMsg = context.getResources().getString(
+				R.string.required_validator_template);
+		fieldNamesSeparator = context.getResources().getString(
+				R.string.field_names_separator);
+	}
 
-    @Override
-    public IScreenValidator validate(final String inValue,
-            final String inFieldName)
-    {
-        if (null == inValue || "".equals(inValue))
-        {
-            invalidValue(inFieldName);
-        }
+	@Override
+	public IScreenValidator validate(final String inValue,
+			final String inFieldName)
+	{
+		if (null == inValue || "".equals(inValue))
+		{
+			invalidValue(inFieldName);
+		}
 
-        return this;
-    }
+		return this;
+	}
 
-    @Override
-    public <T> IScreenValidator validate(final T inValue,
-            final String inFieldName)
-    {
-        if (null == inValue)
-        {
-            invalidValue(inFieldName);
-        }
+	@Override
+	public <T> IScreenValidator validate(final T inValue,
+			final String inFieldName)
+	{
+		if (null == inValue)
+		{
+			invalidValue(inFieldName);
+		}
 
-        return this;
-    }
+		return this;
+	}
 
-    @Override
-    public boolean getResult()
-    {
-        if (!isValidationSuccessful)
-        {
-            Toast.makeText(context,
-                    MessageFormat.format(templateValidationMsg,
-                            invalidFieldNames), Toast.LENGTH_LONG).show();
-        }
+	@Override
+	public boolean getResult()
+	{
+		if (!isValidationSuccessful)
+		{
+			Toast.makeText(context,
+					MessageFormat.format(templateValidationMsg,
+							invalidFieldNames), Toast.LENGTH_LONG).show();
+		}
 
-        return isValidationSuccessful;
-    }
+		return isValidationSuccessful;
+	}
 
-    private void invalidValue(final String inFieldName)
-    {
-        if (isValidationSuccessful)
-        {
-            isValidationSuccessful = false;
-            invalidFieldNames = inFieldName;
-        } else
-        {
-            invalidFieldNames += fieldNamesSeparator + inFieldName;
-        }
-    }
+	private void invalidValue(final String inFieldName)
+	{
+		if (isValidationSuccessful)
+		{
+			isValidationSuccessful = false;
+			invalidFieldNames = inFieldName;
+		} else
+		{
+			invalidFieldNames += fieldNamesSeparator + inFieldName;
+		}
+	}
 }

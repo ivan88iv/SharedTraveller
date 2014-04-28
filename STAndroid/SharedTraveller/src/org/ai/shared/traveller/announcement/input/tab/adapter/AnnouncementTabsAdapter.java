@@ -9,64 +9,64 @@ import android.support.v4.app.FragmentPagerAdapter;
 
 public class AnnouncementTabsAdapter extends FragmentPagerAdapter
 {
-    private final PrimaryTab primaryTab;
+	private final PrimaryTab primaryTab;
 
-    private final SecondaryTab secondaryTab;
+	private final SecondaryTab secondaryTab;
 
-    public AnnouncementTabsAdapter(final FragmentManager inManager)
-    {
-        super(inManager);
+	public AnnouncementTabsAdapter(final FragmentManager inManager)
+	{
+		super(inManager);
 
-        primaryTab = PrimaryTab.newInstance(false, true, null);
-        secondaryTab = new SecondaryTab();
-    }
+		primaryTab = PrimaryTab.newInstance(false, true, null);
+		secondaryTab = new SecondaryTab();
+	}
 
-    @Override
-    public Fragment getItem(final int position)
-    {
-        Fragment fragment = null;
+	@Override
+	public Fragment getItem(final int position)
+	{
+		Fragment fragment = null;
 
-        switch (position)
-        {
-        case 0:
-            fragment = primaryTab;
-            break;
-        case 1:
-            fragment = secondaryTab;
-            break;
-        }
-        return fragment;
-    }
+		switch (position)
+		{
+		case 0:
+			fragment = primaryTab;
+			break;
+		case 1:
+			fragment = secondaryTab;
+			break;
+		}
+		return fragment;
+	}
 
-    @Override
-    public int getCount()
-    {
-        return 2;
-    }
+	@Override
+	public int getCount()
+	{
+		return 2;
+	}
 
-    @Override
-    public CharSequence getPageTitle(final int position)
-    {
-        String title = "";
-        switch (position)
-        {
-        case 0:
-            title = "Primary";
-            break;
-        case 1:
-            title = "Secondary";
-            break;
-        }
-        return title;
-    }
+	@Override
+	public CharSequence getPageTitle(final int position)
+	{
+		String title = "";
+		switch (position)
+		{
+		case 0:
+			title = "Primary";
+			break;
+		case 1:
+			title = "Secondary";
+			break;
+		}
+		return title;
+	}
 
-    public PrimaryTab getPrimaryTab()
-    {
-        return primaryTab;
-    }
+	public PrimaryTab getPrimaryTab()
+	{
+		return primaryTab;
+	}
 
-    public SecondaryTab getSecondaryTab()
-    {
-        return secondaryTab;
-    }
+	public SecondaryTab getSecondaryTab()
+	{
+		return secondaryTab;
+	}
 }

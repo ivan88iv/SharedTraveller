@@ -12,8 +12,10 @@ public class STApplication extends Application
 	{
 		super.onCreate();
 
-		final String connectionPoolingProperty = System.getProperty(CONNECTION_POOLING_PROPERTY);
-		if (!"false".equals(connectionPoolingProperty) && Build.VERSION.SDK_INT < Build.VERSION_CODES.FROYO)
+		final String connectionPoolingProperty = System
+				.getProperty(CONNECTION_POOLING_PROPERTY);
+		if (!"false".equals(connectionPoolingProperty)
+				&& Build.VERSION.SDK_INT < Build.VERSION_CODES.FROYO)
 		{
 			System.setProperty(CONNECTION_POOLING_PROPERTY, "false");
 		}

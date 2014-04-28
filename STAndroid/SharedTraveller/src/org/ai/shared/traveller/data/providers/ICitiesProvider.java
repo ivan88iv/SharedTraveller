@@ -4,5 +4,5 @@ import org.ai.shared.traveller.ui.preparator.ICityComponentsPreparator;
 
 public interface ICitiesProvider
 {
-    void provideCityNames(final ICityComponentsPreparator inPreparator);
+	void provideCityNames(final ICityComponentsPreparator inPreparator);
 }

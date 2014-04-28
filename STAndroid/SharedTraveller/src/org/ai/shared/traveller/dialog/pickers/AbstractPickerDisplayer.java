@@ -8,30 +8,30 @@ import android.widget.TextView;
 
 public abstract class AbstractPickerDisplayer
 {
-    public void display(final FragmentManager inManager, final TextView inView)
-    {
-        // make the field non-editable
-        inView.setKeyListener(null);
-        inView.setOnClickListener(new OnClickListener()
-        {
-            @Override
-            public void onClick(final View v)
-            {
-                showPicker(inManager);
-            }
-        });
-        inView.setOnFocusChangeListener(new OnFocusChangeListener()
-        {
-            @Override
-            public void onFocusChange(final View v, final boolean hasFocus)
-            {
-                if (hasFocus)
-                {
-                    showPicker(inManager);
-                }
-            }
-        });
-    }
+	public void display(final FragmentManager inManager, final TextView inView)
+	{
+		// make the field non-editable
+		inView.setKeyListener(null);
+		inView.setOnClickListener(new OnClickListener()
+		{
+			@Override
+			public void onClick(final View v)
+			{
+				showPicker(inManager);
+			}
+		});
+		inView.setOnFocusChangeListener(new OnFocusChangeListener()
+		{
+			@Override
+			public void onFocusChange(final View v, final boolean hasFocus)
+			{
+				if (hasFocus)
+				{
+					showPicker(inManager);
+				}
+			}
+		});
+	}
 
-    protected abstract void showPicker(final FragmentManager inManager);
+	protected abstract void showPicker(final FragmentManager inManager);
 }

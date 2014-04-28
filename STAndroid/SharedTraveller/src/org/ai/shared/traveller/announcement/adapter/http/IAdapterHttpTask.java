@@ -5,7 +5,8 @@ import org.ai.shared.traveller.exceptions.ServiceConnectionException;
 
 public interface IAdapterHttpTask<T>
 {
-	public T execute(int fetchSize, int position) throws ParseException, ServiceConnectionException;
+	public T execute(int fetchSize, int position) throws ParseException,
+			ServiceConnectionException;
 
 	public String getUrl();
 }

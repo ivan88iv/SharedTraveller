@@ -4,5 +4,5 @@ import org.shared.traveller.client.domain.rest.RequestInfo;
 
 public interface INewRequestCommand
 {
-    void sendRequest(final RequestInfo inEvent);
+	void sendRequest(final RequestInfo inEvent);
 }

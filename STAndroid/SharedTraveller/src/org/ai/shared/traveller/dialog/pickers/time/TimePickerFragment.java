@@ -14,46 +14,46 @@ import android.view.ViewGroup;
 
 public class TimePickerFragment extends DialogFragment
 {
-    public static final String TIME_PICKER_LISTENER = "timePickerListener";
+	public static final String TIME_PICKER_LISTENER = "timePickerListener";
 
-    private int hourOfDay;
+	private int hourOfDay;
 
-    private int minute;
+	private int minute;
 
-    private OnTimeSetListener listener;
+	private OnTimeSetListener listener;
 
-    @Override
-    public View onCreateView(final LayoutInflater inflater,
-            final ViewGroup container, final Bundle savedInstanceState)
-    {
-        // listener = (IOnTimeSetListener) getArguments()
-        // .get(TIME_PICKER_LISTENER);
-        return super.onCreateView(inflater, container, savedInstanceState);
-    }
+	@Override
+	public View onCreateView(final LayoutInflater inflater,
+			final ViewGroup container, final Bundle savedInstanceState)
+	{
+		// listener = (IOnTimeSetListener) getArguments()
+		// .get(TIME_PICKER_LISTENER);
+		return super.onCreateView(inflater, container, savedInstanceState);
+	}
 
-    @Override
-    public Dialog onCreateDialog(final Bundle savedInstanceState)
-    {
-        final Calendar now = Calendar.getInstance();
-        hourOfDay = now.get(Calendar.HOUR_OF_DAY);
-        minute = now.get(Calendar.MINUTE);
+	@Override
+	public Dialog onCreateDialog(final Bundle savedInstanceState)
+	{
+		final Calendar now = Calendar.getInstance();
+		hourOfDay = now.get(Calendar.HOUR_OF_DAY);
+		minute = now.get(Calendar.MINUTE);
 
-        return new TimePickerDialog(getActivity(), listener, hourOfDay, minute,
-                DateFormat.is24HourFormat(getActivity()));
-    }
+		return new TimePickerDialog(getActivity(), listener, hourOfDay, minute,
+				DateFormat.is24HourFormat(getActivity()));
+	}
 
-    // @Override
-    // public void onTimeSet(final TimePicker view, final int inHourOfDay,
-    // final int inMinute)
-    // {
-    // if (null != listener)
-    // {
-    // listener.onTimeSet(view, inHourOfDay, inMinute);
-    // }
-    // }
+	// @Override
+	// public void onTimeSet(final TimePicker view, final int inHourOfDay,
+	// final int inMinute)
+	// {
+	// if (null != listener)
+	// {
+	// listener.onTimeSet(view, inHourOfDay, inMinute);
+	// }
+	// }
 
-    public void setOnTimeSetListener(final OnTimeSetListener inListener)
-    {
-        listener = inListener;
-    }
+	public void setOnTimeSetListener(final OnTimeSetListener inListener)
+	{
+		listener = inListener;
+	}
 }

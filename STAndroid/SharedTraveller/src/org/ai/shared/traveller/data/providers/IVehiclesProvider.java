@@ -4,6 +4,6 @@ import org.ai.shared.traveller.ui.preparator.IVehicleComponentsPreparator;
 
 public interface IVehiclesProvider
 {
-    void provideVehicleNames(final String inUsername,
-            final IVehicleComponentsPreparator inPreparator);
+	void provideVehicleNames(final String inUsername,
+			final IVehicleComponentsPreparator inPreparator);
 }

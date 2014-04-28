@@ -9,28 +9,28 @@ import android.widget.TextView;
 
 public class LabelsFormatter
 {
-    private final View view;
+	private final View view;
 
-    public LabelsFormatter(final View inView)
-    {
-        view = inView;
-    }
+	public LabelsFormatter(final View inView)
+	{
+		view = inView;
+	}
 
-    public void format(final int[] inLabelIds)
-    {
-        for (final int id : inLabelIds)
-        {
-            final TextView currTextView = (TextView) view
-                    .findViewById(id);
-            if (null != currTextView)
-            {
-                final String formatStr =
-                        view.getResources().getString(
-                                R.string.labels_format);
-                currTextView.setText(MessageFormat.format(formatStr,
-                        currTextView
-                                .getText().toString()));
-            }
-        }
-    }
+	public void format(final int[] inLabelIds)
+	{
+		for (final int id : inLabelIds)
+		{
+			final TextView currTextView = (TextView) view
+					.findViewById(id);
+			if (null != currTextView)
+			{
+				final String formatStr =
+						view.getResources().getString(
+								R.string.labels_format);
+				currTextView.setText(MessageFormat.format(formatStr,
+						currTextView
+								.getText().toString()));
+			}
+		}
+	}
 }

@@ -18,7 +18,8 @@ public class AnnouncementRowButtonComposer extends
 	}
 
 	@Override
-	protected IButtonRow<IAnnouncement> getButtonRow(final SwipeListViewContext type)
+	protected IButtonRow<IAnnouncement> getButtonRow(
+			final SwipeListViewContext type)
 	{
 		return AnnouncementButtonRowFactory.getButtonRow(type);
 	}

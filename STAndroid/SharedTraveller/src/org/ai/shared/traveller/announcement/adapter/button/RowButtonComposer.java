@@ -34,7 +34,8 @@ public abstract class RowButtonComposer<T>
 		this.row = getButtonRow(type);
 	}
 
-	protected abstract IButtonRow<T> getButtonRow(final SwipeListViewContext type);
+	protected abstract IButtonRow<T> getButtonRow(
+			final SwipeListViewContext type);
 
 	public void configFirstButton(final Button button)
 	{

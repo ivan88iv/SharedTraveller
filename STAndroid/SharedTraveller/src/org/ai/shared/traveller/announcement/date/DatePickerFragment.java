@@ -18,51 +18,51 @@ import android.view.ViewGroup;
  */
 public class DatePickerFragment extends DialogFragment
 {
-    public static final String DATE_PICKER_LISTENER = "datePickerListener";
+	public static final String DATE_PICKER_LISTENER = "datePickerListener";
 
-    private int year;
+	private int year;
 
-    private int month;
+	private int month;
 
-    private int day;
+	private int day;
 
-    // private IOnDateSetListener listener;
+	// private IOnDateSetListener listener;
 
-    private DatePickerDialog.OnDateSetListener listener;
+	private DatePickerDialog.OnDateSetListener listener;
 
-    @Override
-    public View onCreateView(final LayoutInflater inflater,
-            final ViewGroup container, final Bundle savedInstanceState)
-    {
-        // listener = (IOnDateSetListener) getArguments()
-        // .get(DATE_PICKER_LISTENER);
-        return super.onCreateView(inflater, container, savedInstanceState);
-    }
+	@Override
+	public View onCreateView(final LayoutInflater inflater,
+			final ViewGroup container, final Bundle savedInstanceState)
+	{
+		// listener = (IOnDateSetListener) getArguments()
+		// .get(DATE_PICKER_LISTENER);
+		return super.onCreateView(inflater, container, savedInstanceState);
+	}
 
-    @Override
-    public Dialog onCreateDialog(final Bundle savedInstanceState)
-    {
-        final Calendar now = Calendar.getInstance();
-        year = now.get(Calendar.YEAR);
-        month = now.get(Calendar.MONTH);
-        day = now.get(Calendar.DATE);
+	@Override
+	public Dialog onCreateDialog(final Bundle savedInstanceState)
+	{
+		final Calendar now = Calendar.getInstance();
+		year = now.get(Calendar.YEAR);
+		month = now.get(Calendar.MONTH);
+		day = now.get(Calendar.DATE);
 
-        return new DatePickerDialog(getActivity(), listener, year, month, day);
-    }
+		return new DatePickerDialog(getActivity(), listener, year, month, day);
+	}
 
-    // @Override
-    // public void onDateSet(final DatePicker view, final int year,
-    // final int month, final int day)
-    // {
-    // if (null != listener)
-    // {
-    // listener.onDateSet(view, year, month, day);
-    // }
-    // }
+	// @Override
+	// public void onDateSet(final DatePicker view, final int year,
+	// final int month, final int day)
+	// {
+	// if (null != listener)
+	// {
+	// listener.onDateSet(view, year, month, day);
+	// }
+	// }
 
-    public void setOnDateSetListener(
-            final DatePickerDialog.OnDateSetListener inListener)
-    {
-        listener = inListener;
-    }
+	public void setOnDateSetListener(
+			final DatePickerDialog.OnDateSetListener inListener)
+	{
+		listener = inListener;
+	}
 }
