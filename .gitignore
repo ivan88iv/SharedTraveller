@@ -67,3 +67,5 @@ bin
 .metadata
 /STServer/.classpath
 /STAndroid/ViewPagerIndicatorLibrary/gen/com/viewpagerindicator/R.java
+/STServer/.settings/org.eclipse.jpt.core.prefs
+/STServer/.settings
