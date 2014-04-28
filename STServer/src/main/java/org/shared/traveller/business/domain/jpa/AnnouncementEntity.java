@@ -24,6 +24,7 @@ import org.shared.traveller.business.domain.AbstractEntity;
 import org.shared.traveller.business.domain.IPersistentAnnouncement;
 import org.shared.traveller.client.domain.IAnnouncement.Status;
 import org.shared.traveller.utility.DeepCopier;
+import org.shared.traveller.utility.InstanceAsserter;
 
 @Entity(name = "Announcement")
 @Table(name = "announcement")
@@ -203,9 +204,34 @@ public class AnnouncementEntity extends AbstractEntity implements
 		price = DeepCopier.copy(inBuilder.priceField);
 		freeSeats = inBuilder.freeSeatsField;
 		status = inBuilder.statusField;
-		// TODO deep copy
-		driver = inBuilder.driverField;
+		driver = new TravellerEntity(inBuilder.driverField);
 		interPoints = DeepCopier.copy(inBuilder.interPtsField);
+	}
+
+	/**
+	 * The constructor creates a new copy of the specified announcement
+	 *
+	 * @param inEntity the announcement to be copied. It may not be null.
+	 */
+	public AnnouncementEntity(final AnnouncementEntity inEntity)
+	{
+		InstanceAsserter.assertNotNull(inEntity, "announcement");
+
+		id = inEntity.id;
+		// TODO deep copy
+		startPoint = inEntity.startPoint;
+		// TODO deep copy
+		endPoint = inEntity.endPoint;
+		address = inEntity.address;
+		departureDate = DeepCopier.copy(inEntity.departureDate);
+		departureTime = DeepCopier.copy(inEntity.departureTime);
+		// TODO deep copy
+		vehicle = inEntity.vehicle;
+		price = DeepCopier.copy(inEntity.price);
+		freeSeats = inEntity.freeSeats;
+		status = inEntity.status;
+		driver = new TravellerEntity(inEntity.driver);
+//		interPoints = DeepCopier.copy(inEntity.interPoints);
 	}
 
 	@Override
@@ -280,8 +306,7 @@ public class AnnouncementEntity extends AbstractEntity implements
 	@Override
 	public TravellerEntity getDriver()
 	{
-		// TODO deep copy
-		return driver;
+		return new TravellerEntity(driver);
 	}
 
 	@Override

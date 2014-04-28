@@ -11,7 +11,6 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 import org.shared.traveller.business.domain.AbstractEntity;
-import org.shared.traveller.business.domain.CountryEntity;
 import org.shared.traveller.business.domain.IPersistentCity;
 
 @Entity(name = "city")

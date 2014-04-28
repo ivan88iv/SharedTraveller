@@ -13,7 +13,7 @@ import org.shared.traveller.client.domain.IAnnouncement.Status;
  * @author "Ivan Ivanov"
  *
  */
-public interface IPersistentAnnouncement
+public interface IPersistentAnnouncement extends IPersistent
 {
 	/**
 	 * Returns the settlement the travel will start from

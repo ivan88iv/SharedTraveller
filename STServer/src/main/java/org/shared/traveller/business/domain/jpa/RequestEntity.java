@@ -18,6 +18,7 @@ import org.shared.traveller.business.domain.IPersistentRequest;
 import org.shared.traveller.business.domain.IPersistentTraveller;
 import org.shared.traveller.business.domain.jpa.query.RequestNamedQueryNames;
 import org.shared.traveller.client.domain.request.RequestStatus;
+import org.shared.traveller.utility.InstanceAsserter;
 
 @Entity(name = "Request")
 @Table(name = "request")
@@ -61,12 +62,32 @@ public class RequestEntity extends AbstractEntity implements IPersistentRequest
 		// used beacause of JPA
 	}
 
-	public RequestEntity(final RequestStatus inStatus, final TravellerEntity inTraveller,
+	/**
+	 * The constructor creates a new JPA request entity
+	 *
+	 * @param inStatus the status of the request. It may not be null.
+	 * @param inTraveller the traveller associated with the request.
+	 * It may not be null.
+	 * @param inAnnouncemnet the announcement associated with the request.
+	 * It may not be null.
+	 */
+	public RequestEntity(final RequestStatus inStatus,
+			final TravellerEntity inTraveller,
 			final AnnouncementEntity inAnnouncemnet)
 	{
+		InstanceAsserter.assertNotNull(inStatus, "status");
+		InstanceAsserter.assertNotNull(inTraveller, "traveller");
+		InstanceAsserter.assertNotNull(inAnnouncemnet, "announcement");
+
 		status = inStatus;
 		traveller = inTraveller;
 		announcement = inAnnouncemnet;
+	}
+
+	@Override
+	public Long getId()
+	{
+		return id;
 	}
 
 	@Override
@@ -93,11 +114,5 @@ public class RequestEntity extends AbstractEntity implements IPersistentRequest
 	public void setStatus(RequestStatus inStatus)
 	{
 		status = inStatus;
-	}
-
-	@Override
-	public Long getId()
-	{
-		return id;
 	}
 }

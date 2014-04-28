@@ -1,14 +1,10 @@
 package org.ai.shared.traveller.announcement.fragment;
 
-import java.util.ArrayList;
-
 import org.ai.shared.traveller.announcement.adapter.AllAnnouncementsLazyLoadingAdapter;
-import org.ai.shared.traveller.announcement.adapter.http.AnnouncementListHttpTask;
 import org.ai.shared.traveller.dialog.pickers.AbstractDatePickerDisplayer;
 import org.ai.shared.traveller.dialog.pickers.AbstractPickerDisplayer;
 import org.ai.shared.traveller.list.swipe.SettingsManager;
 import org.ai.sharedtraveller.R;
-import org.shared.traveller.client.domain.IAnnouncement;
 import org.shared.traveller.rest.param.SortOrder;
 
 import android.content.Context;
@@ -62,9 +58,11 @@ public class AnnouncementsSwipeListFragment extends Fragment implements
 	public void onCreate(final Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
-		adapter = new AllAnnouncementsLazyLoadingAdapter(getActivity(),
-				new ArrayList<IAnnouncement>(), new AnnouncementListHttpTask(
-						getActivity()));
+		// TODO correct the mistake here!
+		adapter = null;
+		// new AllAnnouncementsLazyLoadingAdapter(getActivity(),
+		// new ArrayList<IAnnouncement>(),
+		// new AnnouncementListHttpTask(getActivity()));
 		headerViewHolder = new HeaderViewHolder();
 		setHasOptionsMenu(true);
 	}
@@ -236,9 +234,11 @@ public class AnnouncementsSwipeListFragment extends Fragment implements
 		final String from = headerViewHolder.from.getText().toString();
 		final String to = headerViewHolder.to.getText().toString();
 		final String date = headerViewHolder.date.getText().toString();
-		return new AllAnnouncementsLazyLoadingAdapter(getActivity(),
-				new ArrayList<IAnnouncement>(), new AnnouncementListHttpTask(
-						getActivity(), from, to, date, sortOrder));
+		// return new AllAnnouncementsLazyLoadingAdapter(getActivity(),
+		// new ArrayList<IAnnouncement>(), new AnnouncementListHttpTask(
+		// getActivity(), from, to, date, sortOrder));
+		// TODO correct the mistake here
+		return null;
 	}
 
 }

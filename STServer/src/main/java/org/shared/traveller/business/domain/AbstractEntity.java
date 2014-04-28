@@ -1,15 +1,12 @@
 package org.shared.traveller.business.domain;
 
-import java.io.Serializable;
 
-public abstract class AbstractEntity implements Serializable
+public abstract class AbstractEntity implements IPersistent
 {
 	/**
 	 * The serial version UID
 	 */
 	private static final long serialVersionUID = 1106335658717533124L;
-
-	public abstract Long getId();
 
 	@Override
 	public int hashCode()
@@ -34,5 +31,4 @@ public abstract class AbstractEntity implements Serializable
 			return false;
 		return true;
 	}
-
 }

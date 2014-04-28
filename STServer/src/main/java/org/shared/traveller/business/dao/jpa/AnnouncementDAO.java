@@ -24,7 +24,8 @@ import org.shared.traveller.rest.param.SortOrder;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class AnnouncementDAO extends AbstractDAO<IPersistentAnnouncement> implements IAnnouncementDAO
+public class AnnouncementDAO extends AbstractDAO<IPersistentAnnouncement>
+		implements IAnnouncementDAO
 {
 	/**
 	 * The serial version UID
@@ -40,7 +41,8 @@ public class AnnouncementDAO extends AbstractDAO<IPersistentAnnouncement> implem
 	private static final String NULL_DRIVER_USRNAME = "The driver's username may not be null.";
 
 	@Override
-	public List<? extends IPersistentAnnouncement> getAll(GetAllAnnouncementsRequest request)
+	public List<? extends IPersistentAnnouncement> getAll(
+			GetAllAnnouncementsRequest request)
 	{
 		final TypedQuery<AnnouncementEntity> query = createQuery(request);
 		query.setFirstResult(request.getStart());
@@ -56,7 +58,8 @@ public class AnnouncementDAO extends AbstractDAO<IPersistentAnnouncement> implem
 	}
 
 	@Override
-	public AnnouncementEntity loadAnnouncement(final String inStartCity, final String inEndCity, final Date inDepDate,
+	public AnnouncementEntity loadAnnouncement(final String inStartCity,
+			final String inEndCity, final Date inDepDate,
 			final String inDriverUsername)
 	{
 		assert null != inStartCity : NULL_START_CITY;
@@ -64,18 +67,25 @@ public class AnnouncementDAO extends AbstractDAO<IPersistentAnnouncement> implem
 		assert null != inDepDate : NULL_DEP_DATE;
 		assert null != inDriverUsername : NULL_DRIVER_USRNAME;
 
-		DataExtractor<AnnouncementEntity> extractor = new DataExtractor<AnnouncementEntity>()
-		{
-			@Override
-			protected void prepareQuery(TypedQuery<AnnouncementEntity> inQuery)
-			{
-				inQuery.setParameter("startPt", inStartCity).setParameter("endPt", inEndCity)
-						.setParameter("depDate", inDepDate).setParameter("driver", inDriverUsername).setMaxResults(1);
-			}
-		};
+		DataExtractor<AnnouncementEntity> extractor =
+				new DataExtractor<AnnouncementEntity>()
+				{
+					@Override
+					protected void prepareQuery(
+							TypedQuery<AnnouncementEntity> inQuery)
+					{
+						inQuery.setParameter("startPt", inStartCity)
+								.setParameter("endPt", inEndCity)
+								.setParameter("depDate", inDepDate)
+								.setParameter("driver", inDriverUsername)
+								.setMaxResults(1);
+					}
+				};
 
-		final List<AnnouncementEntity> resultList = extractor.execute("Announcement.loadAnnouncement", entityManager,
-				AnnouncementEntity.class, "A problem occurred while trying to extract an announcement.");
+		final List<AnnouncementEntity> resultList = extractor.execute(
+				"Announcement.loadAnnouncement", entityManager,
+				AnnouncementEntity.class,
+				"A problem occurred while trying to extract an announcement.");
 
 		AnnouncementEntity resultEntity = null;
 		if (!resultList.isEmpty())
@@ -92,11 +102,13 @@ public class AnnouncementDAO extends AbstractDAO<IPersistentAnnouncement> implem
 		return AnnouncementEntity.class;
 	}
 
-	private TypedQuery<AnnouncementEntity> createQuery(GetAllAnnouncementsRequest request)
+	private TypedQuery<AnnouncementEntity> createQuery(
+			GetAllAnnouncementsRequest request)
 	{
 		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
 
-		CriteriaQuery<AnnouncementEntity> q = cb.createQuery(AnnouncementEntity.class);
+		CriteriaQuery<AnnouncementEntity> q = cb
+				.createQuery(AnnouncementEntity.class);
 		Root<AnnouncementEntity> c = q.from(AnnouncementEntity.class);
 		c.fetch(AnnouncementEntity_.startPoint, JoinType.LEFT);
 		c.fetch(AnnouncementEntity_.endPoint, JoinType.LEFT);
@@ -122,26 +134,32 @@ public class AnnouncementDAO extends AbstractDAO<IPersistentAnnouncement> implem
 		return entityManager.createQuery(q);
 	}
 
-	private <T> void setWhereClause(GetAllAnnouncementsRequest request, CriteriaBuilder cb, Root<AnnouncementEntity> c,
+	private <T> void setWhereClause(GetAllAnnouncementsRequest request,
+			CriteriaBuilder cb, Root<AnnouncementEntity> c,
 			CriteriaQuery<T> q)
 	{
 		if (request.getFrom() != null && request.getFrom().length() > 0)
 		{
-			Join<AnnouncementEntity, CityEntity> fromJoin = c.join(AnnouncementEntity_.startPoint, JoinType.INNER);
+			Join<AnnouncementEntity, CityEntity> fromJoin = c.join(
+					AnnouncementEntity_.startPoint, JoinType.INNER);
 			Predicate p = cb
-					.like(cb.lower(fromJoin.get(CityEntity_.name)), "%" + request.getFrom().toLowerCase() + "%");
+					.like(cb.lower(fromJoin.get(CityEntity_.name)), "%"
+							+ request.getFrom().toLowerCase() + "%");
 			q.where(p);
 		}
 		if (request.getTo() != null && request.getTo().length() > 0)
 		{
-			Join<AnnouncementEntity, CityEntity> fromJoin = c.join(AnnouncementEntity_.endPoint, JoinType.INNER);
+			Join<AnnouncementEntity, CityEntity> fromJoin = c.join(
+					AnnouncementEntity_.endPoint, JoinType.INNER);
 			Predicate p = cb
-					.like(cb.lower(fromJoin.get(CityEntity_.name)), "%" + request.getFrom().toLowerCase() + "%");
+					.like(cb.lower(fromJoin.get(CityEntity_.name)), "%"
+							+ request.getFrom().toLowerCase() + "%");
 			q.where(p);
 		}
 	}
 
-	private Order getOrder(CriteriaBuilder cb, Root<AnnouncementEntity> c, SortOrder order)
+	private Order getOrder(CriteriaBuilder cb, Root<AnnouncementEntity> c,
+			SortOrder order)
 	{
 		if (order == null)
 		{

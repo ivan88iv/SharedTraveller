@@ -12,7 +12,7 @@ import org.ai.shared.traveller.factory.client.rest.RestServiceClientFactory;
  * @author "Ivan Ivanov"
  * 
  */
-public class DomainManager
+public final class DomainManager
 {
 	/**
 	 * The enumeration represents the different domains available for this

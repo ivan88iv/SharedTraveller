@@ -11,6 +11,13 @@ import org.shared.traveller.utility.InstanceAsserter;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
 
+/**
+ * The class represents a REST announcement instance used
+ * for communication between the client and the server parts
+ *
+ * @author "Ivan Ivanov"
+ *
+ */
 @JsonTypeName("anno")
 public class Announcement implements IAnnouncement
 {
@@ -21,28 +28,28 @@ public class Announcement implements IAnnouncement
 
 	private static final String NULL_VISITOR = "Visitor cannot be null!";
 
-	private String from;
+	private final String from;
 
-	private String to;
+	private final String to;
 
-	private Date departureDate;
+	private final Date departureDate;
 
-	private Date departureTime;
+	private final Date departureTime;
 
-	private BigDecimal price;
+	private final BigDecimal price;
 
-	private short seats;
+	private final short seats;
 
-	private String depAddress;
+	private final String depAddress;
 
-	private String vehicleName;
+	private final String vehicleName;
 
-	private String driverUsername;
+	private final String driverUsername;
 
 
-    private Status status;
+    private final Status status;
 
-	private List<String> intermediatePts;
+	private final List<String> intermediatePts;
 
 	/**
 	 * The class is used to create new announcement instances
@@ -57,7 +64,7 @@ public class Announcement implements IAnnouncement
 		private final String toField;
 
 		private final Date depDateField;
-;
+
 		private Date depTimeField;
 
 		private BigDecimal priceField;
@@ -70,8 +77,8 @@ public class Announcement implements IAnnouncement
 
 		private final String driverUsernameField;
 
+		private Status statusField;
 
-        private Status statusField;
 		private List<String> intermediatePtsField;
 
 		/**
@@ -132,8 +139,9 @@ public class Announcement implements IAnnouncement
 			return this;
 		}
 
-        public AnnouncementBuilder status(final Status inStatus)        @Override
-		public AnnouncementBuilder status(final Status inStatus)        {
+        @Override
+		public AnnouncementBuilder status(final Status inStatus)
+        {
             statusField = inStatus;
             return this;
         }
@@ -152,7 +160,6 @@ public class Announcement implements IAnnouncement
 			return new Announcement(this);
 		}
 	}
-
 
     /**
      * The constructor creates a new announcement using the information

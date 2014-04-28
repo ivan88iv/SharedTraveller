@@ -132,7 +132,7 @@ public class VehicleEntity extends AbstractEntity implements IPersistentVehicle
 	}
 
 	@Override
-	public String getColor()
+	public String getColour()
 	{
 		return color;
 	}
@@ -154,7 +154,7 @@ public class VehicleEntity extends AbstractEntity implements IPersistentVehicle
 	}
 
 	@Override
-	public String getDesc()
+	public String getDescription()
 	{
 		return desc;
 	}

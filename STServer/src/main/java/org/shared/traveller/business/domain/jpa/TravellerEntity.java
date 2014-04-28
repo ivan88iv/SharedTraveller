@@ -14,6 +14,8 @@ import javax.persistence.Table;
 
 import org.shared.traveller.business.domain.AbstractEntity;
 import org.shared.traveller.business.domain.IPersistentTraveller;
+import org.shared.traveller.utility.DeepCopier;
+import org.shared.traveller.utility.InstanceAsserter;
 
 @Entity(name = "traveller")
 @Table(name = "traveller")
@@ -56,7 +58,7 @@ public class TravellerEntity extends AbstractEntity implements IPersistentTravel
 	private Integer ratingCount;
 
 	@Column(name = "rating_sum")
-	private Integer rating_sum;
+	private Integer ratingSum;
 
 	@Column(name = "travel_count")
 	private String travelCount;
@@ -64,8 +66,46 @@ public class TravellerEntity extends AbstractEntity implements IPersistentTravel
 	@OneToMany(mappedBy = "owner")
 	private List<VehicleEntity> vehicles;
 
-	@OneToMany(mappedBy = "traveller")
-	private List<NotificationEntity> notifications;
+	@OneToMany(mappedBy = "receiver")
+	private List<NotificationEntity> receivedNotifications;
+
+	@OneToMany(mappedBy = "sender")
+	private List<NotificationEntity> sentNotifications;
+
+	/**
+	 * The constructor instantiates a new traveller entity
+	 */
+	public TravellerEntity()
+	{
+	}
+
+	/**
+	 * The constructor instantiates a new traveller entity
+	 * by copying a given entity
+	 *
+	 * @param inTraveller the entity to be copied
+	 */
+	public TravellerEntity(final TravellerEntity inTraveller)
+	{
+		InstanceAsserter.assertNotNull(inTraveller, "traveller");
+
+		id = inTraveller.id;
+		username = inTraveller.username;
+		password = inTraveller.password;
+		fbAuthToken = inTraveller.fbAuthToken;
+		phoneNumber = inTraveller.phoneNumber;
+		email = inTraveller.email;
+		firstName = inTraveller.firstName;
+		lastName = inTraveller.lastName;
+		ratingCount = inTraveller.ratingCount;
+		ratingSum = inTraveller.ratingSum;
+		travelCount = inTraveller.travelCount;
+//		vehicles = DeepCopier.copy(inTraveller.vehicles);
+//		receivedNotifications = DeepCopier.copy(
+//				inTraveller.receivedNotifications);
+//		sentNotifications = DeepCopier.copy(
+//				inTraveller.sentNotifications);
+	}
 
 	@Override
 	public Long getId()
@@ -82,11 +122,6 @@ public class TravellerEntity extends AbstractEntity implements IPersistentTravel
 	public String getUsername()
 	{
 		return username;
-	}
-
-	public void setUsername(String username)
-	{
-		this.username = username;
 	}
 
 	@Override
@@ -106,20 +141,10 @@ public class TravellerEntity extends AbstractEntity implements IPersistentTravel
 		return fbAuthToken;
 	}
 
-	public void setFbAuthToken(String fbAuthToken)
-	{
-		this.fbAuthToken = fbAuthToken;
-	}
-
 	@Override
 	public String getPhoneNumber()
 	{
 		return phoneNumber;
-	}
-
-	public void setPhoneNumber(String phoneNumber)
-	{
-		this.phoneNumber = phoneNumber;
 	}
 
 	@Override
@@ -128,20 +153,10 @@ public class TravellerEntity extends AbstractEntity implements IPersistentTravel
 		return email;
 	}
 
-	public void setEmail(String email)
-	{
-		this.email = email;
-	}
-
 	@Override
 	public String getFirstName()
 	{
 		return firstName;
-	}
-
-	public void setFirstName(String firstName)
-	{
-		this.firstName = firstName;
 	}
 
 	@Override
@@ -150,31 +165,16 @@ public class TravellerEntity extends AbstractEntity implements IPersistentTravel
 		return lastName;
 	}
 
-	public void setLastName(String lastName)
-	{
-		this.lastName = lastName;
-	}
-
 	@Override
 	public Integer getRatingCount()
 	{
 		return ratingCount;
 	}
 
-	public void setRatingCount(Integer ratingCount)
-	{
-		this.ratingCount = ratingCount;
-	}
-
 	@Override
-	public Integer getRating_sum()
+	public Integer getRatingSum()
 	{
-		return rating_sum;
-	}
-
-	public void setRating_sum(Integer rating_sum)
-	{
-		this.rating_sum = rating_sum;
+		return ratingSum;
 	}
 
 	@Override
@@ -183,31 +183,22 @@ public class TravellerEntity extends AbstractEntity implements IPersistentTravel
 		return travelCount;
 	}
 
-	public void setTravelCount(String travelCount)
-	{
-		this.travelCount = travelCount;
-	}
-
 	@Override
 	public List<VehicleEntity> getVehicles()
 	{
-		return vehicles;
-	}
-
-	public void setVehicles(List<VehicleEntity> vehicles)
-	{
-		this.vehicles = vehicles;
+		return DeepCopier.copy(vehicles);
 	}
 
 	@Override
-	public List<NotificationEntity> getNotifications()
+	public List<NotificationEntity> getReceivedNotifications()
 	{
-		return notifications;
+		return DeepCopier.copy(receivedNotifications);
 	}
 
-	public void setNotifications(List<NotificationEntity> notifications)
+	@Override
+	public List<NotificationEntity> getSentNotifications()
 	{
-		this.notifications = notifications;
+		return DeepCopier.copy(sentNotifications);
 	}
 
 	public void addVehicle(VehicleEntity vehicle)

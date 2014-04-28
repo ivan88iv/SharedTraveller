@@ -162,13 +162,6 @@ public interface IRequestInfo extends Serializable
 	RequestStatus getStatus();
 
 	/**
-	 * Returns the status of the announcement for which this request has been
-	 * sent
-	 *
-	 * @return the status of the announcement for which this request has been
-	 *         sent	 */
-
-	/**
 	* The method sets the new status for the current request
 	 *
 	 * @param inStatus the new status value to be set

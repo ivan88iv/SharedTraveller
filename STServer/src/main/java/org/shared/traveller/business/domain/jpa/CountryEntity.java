@@ -1,4 +1,4 @@
-package org.shared.traveller.business.domain;
+package org.shared.traveller.business.domain.jpa;
 
 import java.util.List;
 
@@ -9,7 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import org.shared.traveller.business.domain.jpa.CityEntity;
+import org.shared.traveller.business.domain.AbstractEntity;
 
 @Entity(name = "country")
 @Table(name = "country")

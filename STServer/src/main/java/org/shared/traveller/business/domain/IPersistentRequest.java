@@ -9,7 +9,7 @@ import org.shared.traveller.client.domain.request.RequestStatus;
  * @author "Ivan Ivanov"
  *
  */
-public interface IPersistentRequest
+public interface IPersistentRequest extends IPersistent
 {
 	/**
 	 * Returns the identification of the request

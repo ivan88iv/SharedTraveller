@@ -10,29 +10,33 @@ import org.shared.traveller.business.authentication.domain.AuthenticatedUser;
 import org.shared.traveller.business.dao.IAnnouncementDAO;
 import org.shared.traveller.business.dao.IRequestDAO;
 import org.shared.traveller.business.dao.ITravellerDAO;
+import org.shared.traveller.business.domain.BusinessDomainManager;
 import org.shared.traveller.business.domain.IPersistentAnnouncement;
 import org.shared.traveller.business.domain.IPersistentRequest;
 import org.shared.traveller.business.domain.IPersistentTraveller;
 import org.shared.traveller.business.exception.IllegalUpdateOperationException;
+import org.shared.traveller.business.exception.IncorrectDomainTypeException;
 import org.shared.traveller.business.exception.InfoLookupException;
 import org.shared.traveller.business.exception.NonExistingResourceException;
 import org.shared.traveller.business.exception.UnsuccessfulUpdateException;
 import org.shared.traveller.business.exception.persistence.DataExtractionException;
 import org.shared.traveller.business.exception.persistence.DataModificationException;
+import org.shared.traveller.business.factory.IBusinessDomainFactory;
 import org.shared.traveller.client.domain.request.IRequestInfo;
 import org.shared.traveller.client.domain.request.RequestStatus;
 import org.shared.traveller.client.domain.rest.RequestInfo;
 import org.shared.traveller.client.domain.rest.RequestInfo.RequestInfoBuilder;
 import org.shared.traveller.rest.domain.RequestList;
+import org.shared.traveller.utility.InstanceAsserter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
  * The class represents a business service responsible for the business actions
  * concerning request instances
- * 
+ *
  * @author "Ivan Ivanov"
- * 
+ *
  */
 @Service
 public class RequestService implements Serializable
@@ -51,29 +55,20 @@ public class RequestService implements Serializable
 
 	private static final String NULL_DEPARTURE_DATE = "The departure date may not be null.";
 
-
 	private static final String NULL_DRIVER_USERNAME = "The user name of the driver may not be null.";
 
-
 	private static final String NULL_USER = "The user name of the driver may not be null.";
-
-
-	private static final String NULL_ANNOUNCEMENT = "The announcement may not be null.";
-
-
-	private static final String NULL_SENDER = "The user name of the request sender may not be null.";
 
 	private static final String SEARCH_CRITERIA = "start point: {0}, end point: {1}, departure date: {2} and "
 			+ "driver's username: {3}";
 
 	private static final String STATUS_CHANGE = "the request with id {0} for the user {1}.";
 
-
 	private static final String NON_EXISTING_REQUEST = "'request with id {0} for the user {1}'";
 
 	private static final String NO_FREE_SEATS =
 			"Cannot accept the request with id {0}, because there "
-			+ "are no free seats in the vehicle.";
+					+ "are no free seats in the vehicle.";
 
 	private static final String USER_REQUESTS_COUNT_DB_LOOKUP_PROBLEM = "'user with id: {0}'";
 
@@ -89,34 +84,39 @@ public class RequestService implements Serializable
 	private IRequestDAO requestDAO;
 
 	/**
-
 	 * The methods creates a new request, sent by a specific user for a specific
 	 * announcement.
-	 * 
+	 *
 	 * @param inAnnouncement
 	 *            the announcement for which a new request is created.It may not
 	 *            be null.
 	 * @param inSender
 	 *            the user that sent the request. It may not be null.
-	 * 
+	 *
+	 * @throws IncorrectDomainTypeException
+	 *             if the announcement or the sender specified are from a wrong
+	 *             domain
 	 * @throws DataModificationException
 	 *             if an error occurs while trying to save the new request
 	 */
-
-	public void createNewRequest(final IPersistentAnnouncement inAnnouncement, 
+	public void createNewRequest(final IPersistentAnnouncement inAnnouncement,
 			final IPersistentTraveller inSender)
 			throws DataModificationException
 	{
-		assert null != inAnnouncement : NULL_ANNOUNCEMENT;
-		assert null != inSender : NULL_SENDER;
+		InstanceAsserter.assertNotNull(inAnnouncement, "announcement");
+		InstanceAsserter.assertNotNull(inSender, "request sender");
 
-		requestDAO.saveNewRequest(inSender, inAnnouncement);
+		final IBusinessDomainFactory domainFactory =
+				BusinessDomainManager.getInstance().getDomainFactory();
+		final IPersistentRequest newRequest = domainFactory.createRequest(
+				RequestStatus.PENDING, inSender, inAnnouncement);
+		requestDAO.insert(newRequest);
 	}
 
 	/**
 	 * The method loads and returns the request information for the specified
 	 * announcement information
-	 * 
+	 *
 	 * @param inStartPt
 	 *            the start point in the announcement. It may not be null.
 	 * @param inEndPt
@@ -128,11 +128,12 @@ public class RequestService implements Serializable
 	 *            may not be null.
 	 * @return a list of the request information instances that are related to
 	 *         the the specified announcement information
-	 * 
+	 *
 	 * @throws InfoLookupException
 	 *             if the requests cannot be loaded due to a problem in the
 	 *             search process
 	 */
+	public List<? extends IRequestInfo> loadRequests(
 			final String inStartPt, final String inEndPt,
 			final Date inDepDate, final String inDriverUsrname)
 	{
@@ -147,38 +148,43 @@ public class RequestService implements Serializable
 		try
 		{
 			persistentRequests = requestDAO.loadRequests(inStartPt,
-		} catch(final DataExtractionException dee) {
+					inEndPt, inDepDate, inDriverUsrname);
+		} catch (final DataExtractionException dee)
+		{
 			throw new InfoLookupException("requests",
 					MessageFormat.format(SEARCH_CRITERIA,
 							inStartPt, inEndPt,
 							inDepDate, inDriverUsrname));
 		}
 
-		for(final IPersistentRequest request : persistentRequests)
+		for (final IPersistentRequest request : persistentRequests)
 		{
 			final RequestInfoBuilder builder = new RequestInfoBuilder();
 			builder.id(request.getId())
-				.fromPoint(inStartPt)
-				.toPoint(inEndPt)
-				.departureDate(inDepDate)
-				.driverUsername(inDriverUsrname)
-				.driverPhone(request.getSender().getPhoneNumber())
-				.sender(request.getSender().getUsername())
-				.status(request.getStatus());
+					.fromPoint(inStartPt)
+					.toPoint(inEndPt)
+					.departureDate(inDepDate)
+					.driverUsername(inDriverUsrname)
+					.driverPhone(request.getSender().getPhoneNumber())
+					.sender(request.getSender().getUsername())
+					.status(request.getStatus());
 			requestInfo.add(builder.build());
 		}
 
 		return requestInfo;
 	}
 
-	/**	 * The method rejects the specified request
+	/**
+	 * The method rejects the specified request
 	 *
-	 * @param inRequestId the id of the request to be rejected. It
-	 * may not be null.
+	 * @param inRequestId
+	 *            the id of the request to be rejected. It may not be null.
 	 *
-	 * @throws UnsuccessfulUpdateException if a problem occurs while
-	 * trying to find the request which is later to be updated
-	 * @throws NonExistingResourceException if no such request is found
+	 * @throws UnsuccessfulUpdateException
+	 *             if a problem occurs while trying to find the request which is
+	 *             later to be updated
+	 * @throws NonExistingResourceException
+	 *             if no such request is found
 	 */
 	public void reject(final Long inRequestId)
 	{
@@ -193,13 +199,18 @@ public class RequestService implements Serializable
 
 	/**
 	 * The method accepts the specified request
-	 * @param inRequestId the id of the request to be accepted. It
-	 * may not be null.
 	 *
-	 * @throws UnsuccessfulUpdateException if a problem occurs while
-	 * trying to find the request which is later to be updated
-	 * @throws NonExistingResourceException if no such request is found
-	 * @throws IllegalUpdateOperationException if there are no free seats
+	 * @param inRequestId
+	 *            the id of the request to be accepted. It may not be null.
+	 *
+	 * @throws UnsuccessfulUpdateException
+	 *             if a problem occurs while trying to find the request which is
+	 *             later to be updated
+	 * @throws NonExistingResourceException
+	 *             if no such request is found
+	 * @throws IllegalUpdateOperationException
+	 *             if there are no free seats for this request
+	 */
 	public void accept(final Long inRequestId)
 	{
 		assert null != inRequestId : NULL_REQUEST_ID;
@@ -207,10 +218,10 @@ public class RequestService implements Serializable
 		final IPersistentRequest persistentRequest =
 				findRequestToUpdate(inRequestId);
 
-		if(persistentRequest.getAnnouncement().getFreeSeats() > 0)
+		if (persistentRequest.getAnnouncement().getFreeSeats() > 0)
 		{
 			persistentRequest.setStatus(RequestStatus.APPROVED);
-			final short newFreeSeats = (short)(persistentRequest.
+			final short newFreeSeats = (short) (persistentRequest.
 					getAnnouncement().getFreeSeats() - 1);
 			persistentRequest.getAnnouncement().setFreeSeats(
 					Short.valueOf(newFreeSeats));
@@ -223,47 +234,20 @@ public class RequestService implements Serializable
 		}
 	}
 
-	/**
-	 * The method returns a travel request with the specified id. This
-	 * request is meant to be updated.
-	 *
-	 * @param inRequestId the id of the request to be found. It may
-	 * not be null
-	 * @return the found request
-	 * @throws UnsuccessfulUpdateException if a problem occurs while
-	 * trying to find the request which is later to be updated
-	 * @throws NonExistingResourceException if no such request is found
-	 */
-	private IPersistentRequest findRequestToUpdate(final Long inRequestId)
-	{
-		IPersistentRequest persistentRequest = null;
-
-		try
-		{
-			// TODO replace the hard-coded driver with real one
-		} catch(final DataExtractionException dee)
-		{
-							inRequestId, "temp"), dee);
-		}
-
-		if (null == persistentRequest)
-		{
-							inRequestId, "temp"));
-		}
-
-		return persistentRequest;
-
-	public RequestList getUserRequests(final AuthenticatedUser inUser, final int inStartIndex, final int inCount)
+	public RequestList getUserRequests(final AuthenticatedUser inUser,
+			final int inStartIndex, final int inCount)
 	{
 		assert null != inUser : NULL_USER;
 
 		RequestList result = new RequestList();
 
 		Long userRequestsCount = getUserRequestsCount(inUser);
-		if (userRequestsCount > 0 && inStartIndex < userRequestsCount.intValue())
+		if (userRequestsCount > 0
+				&& inStartIndex < userRequestsCount.intValue())
 		{
 
-			List<? extends IPersistentRequest> userRequestsFromDb = getUserRequestsFromDb(inUser, inStartIndex, inCount);
+			List<? extends IPersistentRequest> userRequestsFromDb = getUserRequestsFromDb(
+					inUser, inStartIndex, inCount);
 
 			final List<IRequestInfo> userRequests = new ArrayList<>();
 
@@ -271,10 +255,15 @@ public class RequestService implements Serializable
 			{
 				final RequestInfoBuilder builder = new RequestInfoBuilder();
 				final IPersistentAnnouncement anno = request.getAnnouncement();
-				builder.id(request.getId()).fromPoint(anno.getStartPoint().getName())
-						.toPoint(anno.getEndPoint().getName()).departureDate(anno.getDepartureDate())
-						.driverUsername(request.getAnnouncement().getDriver().getUsername())
-						.sender(request.getSender().getUsername()).status(request.getStatus());
+				builder.id(request.getId())
+						.fromPoint(anno.getStartPoint().getName())
+						.toPoint(anno.getEndPoint().getName())
+						.departureDate(anno.getDepartureDate())
+						.driverUsername(
+								request.getAnnouncement().getDriver()
+										.getUsername())
+						.sender(request.getSender().getUsername())
+						.status(request.getStatus());
 				userRequests.add(builder.build());
 			}
 			result.setCount(userRequestsCount.intValue());
@@ -292,24 +281,67 @@ public class RequestService implements Serializable
 			userRequestscount = requestDAO.findUserRequestsCount(inUser);
 		} catch (final DataExtractionException dee)
 		{
-			throw new InfoLookupException("requests", MessageFormat.format(USER_REQUESTS_COUNT_DB_LOOKUP_PROBLEM,
+			throw new InfoLookupException("requests", MessageFormat.format(
+					USER_REQUESTS_COUNT_DB_LOOKUP_PROBLEM,
 					inUser.getId()));
 		}
 		return userRequestscount;
 	}
 
-	private List<? extends IPersistentRequest> getUserRequestsFromDb(final AuthenticatedUser inUser,
+	private List<? extends IPersistentRequest> getUserRequestsFromDb(
+			final AuthenticatedUser inUser,
 			final int inStartIndex, final int inCount)
 	{
 		List<? extends IPersistentRequest> userRequests = null;
 		try
 		{
-			userRequests = requestDAO.findUserRequests(inUser, inStartIndex, inCount);
+			userRequests = requestDAO.findUserRequests(inUser, inStartIndex,
+					inCount);
 		} catch (final DataExtractionException dee)
 		{
-			throw new InfoLookupException("requests", MessageFormat.format(USER_REQUESTS_DB_LOOKUP_PROBLEM,
+			throw new InfoLookupException("requests", MessageFormat.format(
+					USER_REQUESTS_DB_LOOKUP_PROBLEM,
 					inUser.getId(), inStartIndex, inCount));
 		}
 		return userRequests;
+	}
+
+	/**
+	 * The method returns a travel request with the specified id. This request
+	 * is meant to be updated.
+	 *
+	 * @param inRequestId
+	 *            the id of the request to be found. It may not be null
+	 * @return the found request
+	 * @throws UnsuccessfulUpdateException
+	 *             if a problem occurs while trying to find the request which is
+	 *             later to be updated
+	 * @throws NonExistingResourceException
+	 *             if no such request is found
+	 */
+	private IPersistentRequest findRequestToUpdate(final Long inRequestId)
+	{
+		IPersistentRequest persistentRequest = null;
+
+		try
+		{
+			// TODO replace the hard-coded driver with real one
+			persistentRequest =
+					requestDAO.findRequest("temp", inRequestId);
+		} catch (final DataExtractionException dee)
+		{
+			throw new UnsuccessfulUpdateException(
+					MessageFormat.format(STATUS_CHANGE,
+							inRequestId, "temp"), dee);
+		}
+
+		if (null == persistentRequest)
+		{
+			throw new NonExistingResourceException(
+					MessageFormat.format(NON_EXISTING_REQUEST,
+							inRequestId, "temp"));
+		}
+
+		return persistentRequest;
 	}
 }

@@ -3,7 +3,6 @@ package org.ai.shared.traveller;
 import java.text.MessageFormat;
 import java.util.Date;
 
-
 import org.ai.shared.traveller.announcement.activity.ShowAnnouncementsActivity;
 import org.ai.shared.traveller.announcement.input.InputAnnouncementActivity;
 import org.ai.shared.traveller.call.CallEnder;
@@ -11,6 +10,7 @@ import org.ai.shared.traveller.command.request.INewRequestCommand;
 import org.ai.shared.traveller.command.save.announcement.ISaveAnnouncementCommand;
 import org.ai.shared.traveller.data.providers.ICitiesProvider;
 import org.ai.shared.traveller.data.providers.IVehiclesProvider;
+import org.ai.shared.traveller.dialog.DialogRequestCode;
 import org.ai.shared.traveller.dialog.request.NewRequestDialog;
 import org.ai.shared.traveller.factory.client.IServiceClientFactory;
 import org.ai.shared.traveller.manager.domain.DomainManager;
@@ -33,9 +33,6 @@ import org.shared.traveller.client.domain.rest.RequestInfo.RequestInfoBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-
-import android.telephony.PhoneStateListener;
-import android.telephony.TelephonyManager;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.view.Menu;
@@ -52,7 +49,6 @@ public class MainActivity extends AbstractNetworkActivity implements
 
 	private static final String UNSUCCESSFUL_ANNOUNCEMENT_SUBMIT =
 			"Could not submit the announcement {0}.";
-
 
 	private static final String CREATION_ANNOUNCEMNT_TASK_KEY =
 			"newAnnouncementTask";
@@ -84,10 +80,8 @@ public class MainActivity extends AbstractNetworkActivity implements
 	@Override
 	protected void attachTasks()
 	{
-		final IServiceClient getClient = clientFactory.createSimpleClient(this,
-				"dummy/asdadsad");
-		addTask("DUMMY_TASK", new DummyTaskGet(this, getClient));
-		executeTask("DUMMY_TASK");	}
+		// No tasks are attached on activity startup
+	}
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState)
@@ -126,7 +120,7 @@ public class MainActivity extends AbstractNetworkActivity implements
 			@Override
 			public void onClick(final View v)
 			{
-				Intent intent = new Intent(MainActivity.this,
+				final Intent intent = new Intent(MainActivity.this,
 						ShowAnnouncementsActivity.class);
 				MainActivity.this.startActivity(intent);
 			}
@@ -225,13 +219,12 @@ public class MainActivity extends AbstractNetworkActivity implements
 	@Override
 	public void onPositiveButtonClicked(final int requestCode)
 	{
-		if (requestCode == 0)
+		if (requestCode == DialogRequestCode.NEW_REQUEST.getCode())
 		{
 			final RequestInfoBuilder builder = new RequestInfoBuilder();
 			builder.sender("temp")
 					.fromPoint("Bansko").toPoint("Sofia")
 					.departureDate(new Date(114, 1, 9))
-					.departureDate(new Date())
 					.driverUsername("temp");
 			final RequestInfo request = builder.build();
 			sendRequest(request);

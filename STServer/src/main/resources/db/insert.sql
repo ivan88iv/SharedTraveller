@@ -19,3 +19,14 @@ INSERT INTO VEHICLE(ID, TRAVELLER_ID, DISPLAY_NAME, MAKE, MODEL, YEAR_OF_PRODUCT
 VALUES(1, 1, "Audi", "Audi", "A3", '2003-00-00', "E 2030 AS", "green", 5, "very big", false, false),
 (2, 1, "OPEL", "OPEL", "Kadet", '1993-00-00', "E 2230 AS", "yellow", 5, "very big", false, false),
 (3, 1, "VW", "VW", "Golf", '1997-00-00', "E 2330 AS", "red", 5, "very big", false, false);
+
+INSERT INTO GENERIC_NOTIFICATION(ID, TYPE, TEMPLATE)
+VALUES(1, 'NEW_REQUEST', '{0} wants to travel with you from {1} to {2} on {3}.');
+INSERT INTO GENERIC_NOTIFICATION(ID, TYPE, TEMPLATE)
+VALUES(2, 'REQUEST_REJECTION', '{0} rejected your request for the travel from {1} to {2} on {3}.');
+INSERT INTO GENERIC_NOTIFICATION(ID, TYPE, TEMPLATE)
+VALUES(3, 'REQUEST_ACCEPTANCE', '{0} accepted your request for the travel from {1} to {2} on {3}.');
+INSERT INTO GENERIC_NOTIFICATION(ID, TYPE, TEMPLATE)
+VALUES(4, 'REQUEST_DECLINATION', '{0} declined his/her request for the travel from {1} to {2} on {3}.');
+INSERT INTO GENERIC_NOTIFICATION(ID, TYPE, TEMPLATE)
+VALUES(5, 'TRAVEL_CANCELATION', '{0} cancelled the travel from {1} to {2} on {3}.');

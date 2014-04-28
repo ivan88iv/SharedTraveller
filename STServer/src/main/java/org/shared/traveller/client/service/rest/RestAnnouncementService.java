@@ -37,8 +37,8 @@ public class RestAnnouncementService
 	private IPersistentAnnouncementProducer producer;
 
 	@RequestMapping(value = "/new", method = RequestMethod.PUT)
-
-	public ResponseEntity<Void> createAnnouncement(@RequestBody Announcement inNewAnnouncement)
+	public ResponseEntity<Void> createAnnouncement(
+			@RequestBody Announcement inNewAnnouncement)
 	{
 		inNewAnnouncement.accept(producer);
 		businessService.createNewAnnouncement(producer.produce());
@@ -53,19 +53,19 @@ public class RestAnnouncementService
 		final AnnouncementBuilder builder = new AnnouncementBuilder(null,
 				null, null, (short)0, null);
 		return new ResponseEntity<IAnnouncement>(builder.build(),
-				HttpStatus.CREATED);	}
+				HttpStatus.CREATED);
+	}
 
 	@RequestMapping(value = "/all", method = RequestMethod.GET)
 	@ResponseBody
-
-	public ResponseEntity<AnnouncementsList> getAnouncements(@RequestParam(value = ParamNames.START) Integer start,
+	public ResponseEntity<AnnouncementsList> getAnouncements(
+			@RequestParam(value = ParamNames.START) Integer start,
 			@RequestParam(value = ParamNames.COUNT) Integer count,
 			@RequestParam(required = false, value = ParamNames.FROM) String from,
 			@RequestParam(required = false, value = ParamNames.TO) String to,
 			@RequestParam(required = false, value = ParamNames.SORT_ORDER) SortOrder sortOrder,
 			UriComponentsBuilder builder)
 	{
-
 		GetAllAnnouncementsRequest request = new GetAllAnnouncementsRequest(start, count, from, to, sortOrder);
 		long allCount = businessService.getAllAnnouncementsCount(request);
 
@@ -75,14 +75,13 @@ public class RestAnnouncementService
 		return new ResponseEntity<AnnouncementsList>(result, HttpStatus.OK);
 	}
 
-
 	private List<IAnnouncement> transformDomains(List<? extends IPersistentAnnouncement> source)
 	{
 		List<IAnnouncement> result = new ArrayList<IAnnouncement>();
 		for (IPersistentAnnouncement anno : source)
 		{
 
-AnnouncementBuilder builder = new AnnouncementBuilder(anno
+			AnnouncementBuilder builder = new AnnouncementBuilder(anno
 					.getStartPoint().getName(), anno.getEndPoint()
 					.getName(), anno.getDepartureDate(), anno.getFreeSeats(),
 					anno.getDriver().getFirstName() + " "
@@ -102,7 +101,6 @@ AnnouncementBuilder builder = new AnnouncementBuilder(anno
 		return result;
 	}
 
-
 	private List<String> getInterPoints(List<? extends IPersistentCity> jpaInterPoints)
 	{
 		List<String> interPoints = new ArrayList<String>();
@@ -112,15 +110,4 @@ AnnouncementBuilder builder = new AnnouncementBuilder(anno
 		}
 		return interPoints;
 	}
-private String capitalizeFirstLetter(String original)
-	{
-		String capitalizedString = null;
-		if (original == null || original.length() == 0)
-		{
-			capitalizedString = original;
-		} else
-		{
-			capitalizedString = original.substring(0, 1).toUpperCase() + original.substring(1).toLowerCase();
-		}
-		return capitalizedString;
-	}}
+}

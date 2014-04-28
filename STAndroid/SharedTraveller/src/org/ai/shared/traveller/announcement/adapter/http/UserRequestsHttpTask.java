@@ -1,17 +1,12 @@
 package org.ai.shared.traveller.announcement.adapter.http;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
-import org.ai.shared.traveller.exceptions.IllegalUrlException;
 import org.ai.shared.traveller.exceptions.ParseException;
 import org.ai.shared.traveller.exceptions.ServiceConnectionException;
-import org.ai.shared.traveller.network.connection.path.resolver.PathResolver;
+import org.ai.shared.traveller.factory.client.IServiceClientFactory;
+import org.ai.shared.traveller.manager.domain.DomainManager;
+import org.ai.shared.traveller.network.connection.client.IServiceClient;
 import org.ai.shared.traveller.network.connection.response.ServerResponse;
 import org.ai.shared.traveller.network.connection.response.ServerResponseParser;
-import org.ai.shared.traveller.network.connection.rest.client.AbstractRestClient;
-import org.ai.shared.traveller.network.connection.rest.client.RequestTypes;
-import org.ai.shared.traveller.network.connection.rest.client.SimpleClient;
 import org.shared.traveller.client.domain.request.IRequestInfo;
 import org.shared.traveller.rest.domain.CountedResponseList;
 import org.shared.traveller.rest.domain.RequestList;
@@ -31,47 +26,28 @@ public class UserRequestsHttpTask
 	private final ServerResponseParser<RequestList> parser = new ServerResponseParser<RequestList>(
 			RequestList.class);
 
-	private final AbstractRestClient restClient;
-
 	private String url;
 
-	private Activity activity;
+	private final Activity activity;
 
-	public UserRequestsHttpTask(Activity activity)
+	public UserRequestsHttpTask(final Activity activity)
 	{
 		super();
 		this.activity = activity;
-		restClient = new SimpleClient(RequestTypes.GET);
 	}
 
 	@Override
-	public ServerResponse<RequestList> execute(int fetchSize,
-			int position)
+	public ServerResponse<RequestList> execute(final int fetchSize,
+			final int position)
 			throws ParseException, ServiceConnectionException
 	{
-		String url = buildUrl(fetchSize, position);
-		ServerResponse<RequestList> response = null;
-		try
-		{
-			response = restClient.callService(new URL(url), parser);
-		} catch (final MalformedURLException e)
-		{
-			throw new IllegalUrlException(url, e);
-		}
+		final IServiceClientFactory clientFactory =
+				DomainManager.getInstance().getServiceClientFactory();
+		final String servicePath = buildUrl(fetchSize, position);
+		final IServiceClient client =
+				clientFactory.createSimpleClient(activity, servicePath);
 
-		return response;
-	}
-
-	private String buildUrl(int fetchSize, int position)
-	{
-		final PathResolver pathResolver = new PathResolver(activity);
-		final StringBuilder builder = new StringBuilder(
-				pathResolver.resolvePath(URL));
-		builder.append(ParamNames.START).append(URL_EQUALS_SEPARATOR)
-				.append(position).append(URL_AMPERSAND_SEPARATOR)
-				.append(ParamNames.COUNT).append(URL_EQUALS_SEPARATOR)
-				.append(fetchSize);
-		return builder.toString();
+		return client.callService(parser);
 	}
 
 	@Override
@@ -80,4 +56,13 @@ public class UserRequestsHttpTask
 		return url;
 	}
 
+	private String buildUrl(final int fetchSize, final int position)
+	{
+		final StringBuilder builder = new StringBuilder(URL);
+		builder.append(ParamNames.START).append(URL_EQUALS_SEPARATOR)
+				.append(position).append(URL_AMPERSAND_SEPARATOR)
+				.append(ParamNames.COUNT).append(URL_EQUALS_SEPARATOR)
+				.append(fetchSize);
+		return builder.toString();
+	}
 }

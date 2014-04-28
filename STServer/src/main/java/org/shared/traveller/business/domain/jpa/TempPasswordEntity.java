@@ -1,4 +1,4 @@
-package org.shared.traveller.business.domain;
+package org.shared.traveller.business.domain.jpa;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -8,7 +8,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import org.shared.traveller.business.domain.jpa.TravellerEntity;
+import org.shared.traveller.business.domain.AbstractEntity;
 
 @Entity(name = "tempPassword")
 @Table(name = "temp_password")
