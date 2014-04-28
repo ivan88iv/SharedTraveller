@@ -198,7 +198,7 @@ public class RestRequestService
 	}
 
 	@RequestMapping(value = "/users", method = RequestMethod.GET)
-	@ResponseBody\
+	@ResponseBody
 	public ResponseEntity<RequestList> getUserRequests(
 			@RequestParam(value = "start") final Long inStartIndex,
 			@RequestParam(value = "count") final Long inCount)
