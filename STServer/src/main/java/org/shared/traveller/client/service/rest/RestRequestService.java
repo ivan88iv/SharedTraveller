@@ -14,9 +14,9 @@ import org.shared.traveller.business.exception.IncorrectInputException;
 import org.shared.traveller.business.exception.InfoLookupException;
 import org.shared.traveller.business.exception.InternalBusinessException;
 import org.shared.traveller.business.exception.NonExistingResourceException;
+import org.shared.traveller.business.exception.UnsuccessfulResourceCreationException;
 import org.shared.traveller.business.exception.UnsuccessfulUpdateException;
 import org.shared.traveller.business.exception.persistence.DataExtractionException;
-import org.shared.traveller.business.exception.persistence.DataModificationException;
 import org.shared.traveller.business.service.AnnouncementService;
 import org.shared.traveller.business.service.NotificationService;
 import org.shared.traveller.business.service.RequestService;
@@ -48,8 +48,6 @@ public class RestRequestService
 	private static final String TRAVEL_REQUEST_SEND_PROBLEM =
 			"Could not send a new travel request: {0}.";
 
-
-
 	private static final String INCORRECT_REQUEST_INPUT =
 			"The request input is not correct: {0}.";
 
@@ -77,10 +75,11 @@ public class RestRequestService
 	@Autowired
 	private NotificationService notificationService;
 
-	/**	 * The method is a rest service method that is responsible for the creation
-	 * of a new request business object. It uses a special event object for this
-	 * purpose.
-	 *
+	/**
+	 * * The method is a rest service method that is responsible for the
+	 * creation of a new request business object. It uses a special event object
+	 * for this purpose.
+	 * 
 	 * @param inRequest
 	 *            the {@link RequestInfo} instance used for the particular
 	 *            request creation
@@ -91,11 +90,13 @@ public class RestRequestService
 	 */
 	@RequestMapping(value = "/new", method = RequestMethod.PUT)
 	public ResponseEntity<Void> sendTravelRequest(
-			@RequestBody final RequestInfo inRequest)	{
+			@RequestBody final RequestInfo inRequest)
+	{
 		if (null == inRequest)
 		{
 			throw new IncorrectInputException(NULL_NEW_REQUEST_EVENT,
-					HttpStatus.NOT_FOUND);		}
+					HttpStatus.NOT_FOUND);
+		}
 
 		IPersistentAnnouncement loadedAnnouncement = null;
 		IPersistentTraveller sender = null;
@@ -123,19 +124,21 @@ public class RestRequestService
 			requestService.createNewRequest(loadedAnnouncement, sender);
 			notificationService.createNewNotification(Type.NEW_REQUEST,
 					sender, loadedAnnouncement.getDriver(), loadedAnnouncement);
-		} catch (final IncorrectDomainTypeException |
-				DataModificationException dme)		{
+		} catch (final IncorrectDomainTypeException | InfoLookupException |
+				UnsuccessfulResourceCreationException urce)
+		{
 			throw new InternalBusinessException(MessageFormat.format(
-					TRAVEL_REQUEST_SEND_PROBLEM, inRequest), dme);
+					TRAVEL_REQUEST_SEND_PROBLEM, inRequest), urce);
 		}
 
 		ResponseEntity<Void> response = new ResponseEntity<>(HttpStatus.CREATED);
 		return response;
 	}
 
-	/**	 * The method finds and returns all the request information that has been
+	/**
+	 * * The method finds and returns all the request information that has been
 	 * generated for the specified announcement
-	 *
+	 * 
 	 * @param inAnnouncement
 	 *            the announcement instance for which the request information is
 	 *            returned.
@@ -166,25 +169,33 @@ public class RestRequestService
 		}
 
 		return new ResponseEntity<List<? extends IRequestInfo>>(requestInfos,
-				HttpStatus.OK);	}
+				HttpStatus.OK);
+	}
 
 	/**
-	 * The method rejects the provided request	 * @param inRequestId
+	 * The method rejects the provided request
+	 * 
+	 * @param inRequestId
 	 *            the id of the request to be rejected
-	 * @return an empty result	 * @throws IncorrectInputException
-	 *             if the specified request does not exist
+	 * 
+	 * @return an empty result * @throws IncorrectInputException if the
+	 *         specified request does not exist
 	 * @throws InternalBusinessException
 	 *             if a problem occurs while trying to perform the status change
 	 */
 	@RequestMapping(value = "/reject", method = RequestMethod.POST)
 	public ResponseEntity<Void> rejectRequest(
-			@RequestParam(value = "id") final Long inRequestId)	{
+			@RequestParam(value = "id") final Long inRequestId)
+	{
 		return changeRequestStatus(inRequestId, RequestStatus.REJECTED);
 	}
 
 	/**
-	 * The method accepts the provided request	 * @param inRequestId
+	 * The method accepts the provided request
+	 * 
+	 * @param inRequestId
 	 *            the id of the request to be accepted
+	 * 
 	 * @return an empty result
 	 * @throws IncorrectInputException
 	 *             if the specified request does not exist
@@ -193,8 +204,28 @@ public class RestRequestService
 	 */
 	@RequestMapping(value = "/accept", method = RequestMethod.POST)
 	public ResponseEntity<Void> acceptRequest(
-			@RequestParam(value = "id") final Long inRequestId)	{
+			@RequestParam(value = "id") final Long inRequestId)
+	{
 		return changeRequestStatus(inRequestId, RequestStatus.APPROVED);
+	}
+
+	/**
+	 * The method declines the provided request
+	 * 
+	 * @param inRequestId
+	 *            the id of the request to be declined
+	 * 
+	 * @return an empty result
+	 * @throws IncorrectInputException
+	 *             if the specified request does not exist
+	 * @throws InternalBusinessException
+	 *             if a problem occurs while trying to perform the status change
+	 */
+	@RequestMapping(value = "/decline", method = RequestMethod.POST)
+	public ResponseEntity<Void> declineRequest(
+			@RequestParam(value = "id") final Long inRequestId)
+	{
+		return changeRequestStatus(inRequestId, RequestStatus.DECLINED);
 	}
 
 	@RequestMapping(value = "/users", method = RequestMethod.GET)
@@ -211,35 +242,51 @@ public class RestRequestService
 	}
 
 	/**
-	 * The method changes the status of the provided request	 * @param inRequestId
-	 *            the id of the request which status is to be changed
+	 * The method changes the status of the provided request * @param
+	 * inRequestId the id of the request which status is to be changed
+	 * 
 	 * @param inNewStatus
 	 *            the new status to use
 	 * @return the response entity returned from the corresponding REST service
 	 *         that uses this method
-	 *
+	 * 
 	 * @throws IncorrectInputException
 	 *             if the specified request does not exist
 	 * @throws InternalBusinessException
 	 *             if a problem occurs while trying to perform the status change
 	 */
 	private ResponseEntity<Void> changeRequestStatus(final Long inRequestId,
-			final RequestStatus inNewStatus)	{
+			final RequestStatus inNewStatus)
+	{
 		try
 		{
 			if (inNewStatus == RequestStatus.APPROVED)
 			{
 				requestService.accept(inRequestId);
+				notificationService.createNewRequestNotification(
+						inRequestId, Type.REQUEST_ACCEPTANCE);
 			} else if (inNewStatus == RequestStatus.REJECTED)
 			{
 				requestService.reject(inRequestId);
+				notificationService.createNewRequestNotification(
+						inRequestId, Type.REQUEST_REJECTION);
+			} else if (inNewStatus == RequestStatus.DECLINED)
+			{
+				// TODO call a suitable request service method that declines
+				// the current request
+				notificationService.createNewRequestNotification(
+						inRequestId, Type.REQUEST_DECLINATION);
 			}
 		} catch (final NonExistingResourceException |
-				IllegalUpdateOperationException nepe)		{
-			throw new IncorrectInputException(MessageFormat.format(NO_REQUEST_FOUND, inRequestId), nepe,
+				IllegalUpdateOperationException nepe)
+		{
+			throw new IncorrectInputException(MessageFormat.format(
+					NO_REQUEST_FOUND, inRequestId), nepe,
 					HttpStatus.NOT_FOUND);
 
-		} catch (final UnsuccessfulUpdateException uue)
+		} catch (final InfoLookupException |
+				UnsuccessfulResourceCreationException |
+				UnsuccessfulUpdateException uue)
 		{
 			throw new InternalBusinessException(MessageFormat.format(
 					REQUEST_ACCEPTANCE_PROBLEM, inRequestId), uue);

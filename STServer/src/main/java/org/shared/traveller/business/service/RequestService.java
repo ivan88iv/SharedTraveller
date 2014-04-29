@@ -18,6 +18,7 @@ import org.shared.traveller.business.exception.IllegalUpdateOperationException;
 import org.shared.traveller.business.exception.IncorrectDomainTypeException;
 import org.shared.traveller.business.exception.InfoLookupException;
 import org.shared.traveller.business.exception.NonExistingResourceException;
+import org.shared.traveller.business.exception.UnsuccessfulResourceCreationException;
 import org.shared.traveller.business.exception.UnsuccessfulUpdateException;
 import org.shared.traveller.business.exception.persistence.DataExtractionException;
 import org.shared.traveller.business.exception.persistence.DataModificationException;
@@ -95,19 +96,28 @@ public class RequestService implements Serializable
 	 * @throws IncorrectDomainTypeException
 	 *             if the announcement or the sender specified are from a wrong
 	 *             domain
-	 * @throws DataModificationException
+	 * @throws UnsuccessfulResourceCreationException
 	 *             if an error occurs while trying to save the new request
 	 */
-	public void createNewRequest(final IPersistentAnnouncement inAnnouncement, final IPersistentTraveller inSender)
+	public void createNewRequest(final IPersistentAnnouncement inAnnouncement,
+			final IPersistentTraveller inSender)
 			throws DataModificationException
 	{
 		InstanceAsserter.assertNotNull(inAnnouncement, "announcement");
 		InstanceAsserter.assertNotNull(inSender, "request sender");
 
-		final IBusinessDomainFactory domainFactory = BusinessDomainManager.getInstance().getDomainFactory();
-		final IPersistentRequest newRequest = domainFactory.createRequest(RequestStatus.PENDING, inSender,
-				inAnnouncement);
-		requestDAO.insert(newRequest);
+		final IBusinessDomainFactory domainFactory =
+				BusinessDomainManager.getInstance().getDomainFactory();
+		final IPersistentRequest newRequest = domainFactory.createRequest(
+				RequestStatus.PENDING, inSender, inAnnouncement);
+		try
+		{
+			requestDAO.insert(newRequest);
+		} catch (final DataModificationException dme)
+		{
+			throw new UnsuccessfulResourceCreationException("the request "
+					+ newRequest.toString(), dme);
+		}
 	}
 
 	/**
@@ -130,7 +140,8 @@ public class RequestService implements Serializable
 	 *             if the requests cannot be loaded due to a problem in the
 	 *             search process
 	 */
-	public List<? extends IRequestInfo> loadRequests(final String inStartPt, final String inEndPt,
+	public List<? extends IRequestInfo> loadRequests(final String inStartPt,
+			final String inEndPt,
 			final Date inDepDate, final String inDriverUsrname)
 	{
 		assert null != inStartPt : NULL_START_PT;
@@ -143,19 +154,24 @@ public class RequestService implements Serializable
 
 		try
 		{
-			persistentRequests = requestDAO.loadRequests(inStartPt, inEndPt, inDepDate, inDriverUsrname);
+			persistentRequests = requestDAO.loadRequests(inStartPt, inEndPt,
+					inDepDate, inDriverUsrname);
 		} catch (final DataExtractionException dee)
 		{
-			throw new InfoLookupException("requests", MessageFormat.format(SEARCH_CRITERIA, inStartPt, inEndPt,
+			throw new InfoLookupException("requests", MessageFormat.format(
+					SEARCH_CRITERIA, inStartPt, inEndPt,
 					inDepDate, inDriverUsrname));
 		}
 
 		for (final IPersistentRequest request : persistentRequests)
 		{
 			final RequestInfoBuilder builder = new RequestInfoBuilder();
-			builder.id(request.getId()).fromPoint(inStartPt).toPoint(inEndPt).departureDate(inDepDate)
-					.driverUsername(inDriverUsrname).driverPhone(request.getSender().getPhoneNumber())
-					.sender(request.getSender().getUsername()).status(request.getStatus());
+			builder.id(request.getId()).fromPoint(inStartPt).toPoint(inEndPt)
+					.departureDate(inDepDate)
+					.driverUsername(inDriverUsrname)
+					.driverPhone(request.getSender().getPhoneNumber())
+					.sender(request.getSender().getUsername())
+					.status(request.getStatus());
 			requestInfo.add(builder.build());
 		}
 
@@ -207,13 +223,16 @@ public class RequestService implements Serializable
 		if (persistentRequest.getAnnouncement().getFreeSeats() > 0)
 		{
 			persistentRequest.setStatus(RequestStatus.APPROVED);
-			final short newFreeSeats = (short) (persistentRequest.getAnnouncement().getFreeSeats() - 1);
-			persistentRequest.getAnnouncement().setFreeSeats(Short.valueOf(newFreeSeats));
+			final short newFreeSeats = (short) (persistentRequest
+					.getAnnouncement().getFreeSeats() - 1);
+			persistentRequest.getAnnouncement().setFreeSeats(
+					Short.valueOf(newFreeSeats));
 			announcementDAO.update(persistentRequest.getAnnouncement());
 			requestDAO.update(persistentRequest);
 		} else
 		{
-			throw new IllegalUpdateOperationException(MessageFormat.format(NO_FREE_SEATS, inRequestId));
+			throw new IllegalUpdateOperationException(MessageFormat.format(
+					NO_FREE_SEATS, inRequestId));
 		}
 	}
 
@@ -239,27 +258,32 @@ public class RequestService implements Serializable
 			persistentRequest = requestDAO.findRequest("temp", inRequestId);
 		} catch (final DataExtractionException dee)
 		{
-			throw new UnsuccessfulUpdateException(MessageFormat.format(STATUS_CHANGE, inRequestId, "temp"), dee);
+			throw new UnsuccessfulUpdateException(MessageFormat.format(
+					STATUS_CHANGE, inRequestId, "temp"), dee);
 		}
 
 		if (null == persistentRequest)
 		{
-			throw new NonExistingResourceException(MessageFormat.format(NON_EXISTING_REQUEST, inRequestId, "temp"));
+			throw new NonExistingResourceException(MessageFormat.format(
+					NON_EXISTING_REQUEST, inRequestId, "temp"));
 		}
 
 		return persistentRequest;
 	}
 
-	public RequestList getUserRequests(final AuthenticatedUser inUser, final int inStartIndex, final int inCount)
+	public RequestList getUserRequests(final AuthenticatedUser inUser,
+			final int inStartIndex, final int inCount)
 	{
 		assert null != inUser : NULL_USER;
 
 		RequestList result = new RequestList();
 
 		Long userRequestsCount = getUserRequestsCount(inUser);
-		if (userRequestsCount > 0 && inStartIndex < userRequestsCount.intValue())
+		if (userRequestsCount > 0
+				&& inStartIndex < userRequestsCount.intValue())
 		{
-			List<? extends IPersistentRequest> userRequestsFromDb = getUserRequestsFromDb(inUser, inStartIndex, inCount);
+			List<? extends IPersistentRequest> userRequestsFromDb = getUserRequestsFromDb(
+					inUser, inStartIndex, inCount);
 
 			final List<IRequestInfo> userRequests = new ArrayList<>();
 
@@ -267,10 +291,15 @@ public class RequestService implements Serializable
 			{
 				final RequestInfoBuilder builder = new RequestInfoBuilder();
 				final IPersistentAnnouncement anno = request.getAnnouncement();
-				builder.id(request.getId()).fromPoint(anno.getStartPoint().getName())
-						.toPoint(anno.getEndPoint().getName()).departureDate(anno.getDepartureDate())
-						.driverUsername(request.getAnnouncement().getDriver().getUsername())
-						.sender(request.getSender().getUsername()).status(request.getStatus());
+				builder.id(request.getId())
+						.fromPoint(anno.getStartPoint().getName())
+						.toPoint(anno.getEndPoint().getName())
+						.departureDate(anno.getDepartureDate())
+						.driverUsername(
+								request.getAnnouncement().getDriver()
+										.getUsername())
+						.sender(request.getSender().getUsername())
+						.status(request.getStatus());
 				userRequests.add(builder.build());
 			}
 			result.setCount(userRequestsCount.intValue());
@@ -288,22 +317,26 @@ public class RequestService implements Serializable
 			userRequestscount = requestDAO.findUserRequestsCount(inUser);
 		} catch (final DataExtractionException dee)
 		{
-			throw new InfoLookupException("requests", MessageFormat.format(USER_REQUESTS_COUNT_DB_LOOKUP_PROBLEM,
+			throw new InfoLookupException("requests", MessageFormat.format(
+					USER_REQUESTS_COUNT_DB_LOOKUP_PROBLEM,
 					inUser.getId()));
 		}
 		return userRequestscount;
 	}
 
-	private List<? extends IPersistentRequest> getUserRequestsFromDb(final AuthenticatedUser inUser,
+	private List<? extends IPersistentRequest> getUserRequestsFromDb(
+			final AuthenticatedUser inUser,
 			final int inStartIndex, final int inCount)
 	{
 		List<? extends IPersistentRequest> userRequests = null;
 		try
 		{
-			userRequests = requestDAO.findUserRequests(inUser, inStartIndex, inCount);
+			userRequests = requestDAO.findUserRequests(inUser, inStartIndex,
+					inCount);
 		} catch (final DataExtractionException dee)
 		{
-			throw new InfoLookupException("requests", MessageFormat.format(USER_REQUESTS_DB_LOOKUP_PROBLEM,
+			throw new InfoLookupException("requests", MessageFormat.format(
+					USER_REQUESTS_DB_LOOKUP_PROBLEM,
 					inUser.getId(), inStartIndex, inCount));
 		}
 		return userRequests;

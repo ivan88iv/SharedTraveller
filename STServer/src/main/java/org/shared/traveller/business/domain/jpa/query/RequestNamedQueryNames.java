@@ -8,9 +8,23 @@ public abstract class RequestNamedQueryNames
 			"Request.get.count.for.user";
 
 	/**
-	 * The name of the query for finding a notification description
-	 * template by the notification's type
+	 * The name of the query for finding a notification description template by
+	 * the notification's type
 	 */
 	public static final String FIND_NOTIFICATION_TEMPLATE_BY_TYPE =
 			"GenericNotification.findByType";
+
+	/**
+	 * The name of the query that loads all of the requests for a particular
+	 * announcement
+	 */
+	public static final String LOAD_ANNOUNCEMENT_REQUESTS =
+			"Request.loadAnnouncementRequests";
+
+	/**
+	 * The name of the query that loads an announcement (with its requests) by
+	 * its id
+	 */
+	public static final String LOAD_ANNOUNCEMENT_WITH_REQUESTS =
+			"Announcement.loadAnnouncementWithRequests";
 }

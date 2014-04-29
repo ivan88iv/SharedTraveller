@@ -43,7 +43,7 @@ public interface INotification
 		/**
 		 * Notification for cancelation of the travel
 		 */
-		TRAVEL_CANCELATION;
+		TRIP_CANCELLATION;
 	}
 
 	/**

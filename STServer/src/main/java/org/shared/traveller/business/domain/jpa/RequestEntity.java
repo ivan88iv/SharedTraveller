@@ -25,10 +25,16 @@ import org.shared.traveller.utility.InstanceAsserter;
 @NamedQueries(
 {
 		@NamedQuery(name = "Request.loadRequests", query = "SELECT r FROM Request r "
-				+ "INNER JOIN r.announcement ann " + "WHERE ann.startPoint.name = :startPt AND "
-				+ "ann.endPoint.name = :endPt AND " + "ann.departureDate = :depDate AND "
+				+ "INNER JOIN r.announcement ann "
+				+ "WHERE ann.startPoint.name = :startPt AND "
+				+ "ann.endPoint.name = :endPt AND "
+				+ "ann.departureDate = :depDate AND "
 				+ "ann.driver.username = :driver"),
-		@NamedQuery(name = "Request.find", query = "SELECT r FROM Request r " + "INNER JOIN r.announcement ann "
+		@NamedQuery(name = RequestNamedQueryNames.LOAD_ANNOUNCEMENT_REQUESTS,
+				query = "SELECT r FROM Request r INNER JOIN r.announcement ann "
+						+ "WHERE ann.id = :announcementId"),
+		@NamedQuery(name = "Request.find", query = "SELECT r FROM Request r "
+				+ "INNER JOIN r.announcement ann "
 				+ "WHERE ann.driver.username = :driver AND " + "r.id = :id"),
 		@NamedQuery(name = RequestNamedQueryNames.GET_REQUESTS_FOR_USER, query = "SELECT r from Request r inner join fetch r.announcement "
 				+ " inner join fetch r.traveller  where r.traveller = :traveller"),
@@ -64,12 +70,14 @@ public class RequestEntity extends AbstractEntity implements IPersistentRequest
 
 	/**
 	 * The constructor creates a new JPA request entity
-	 *
-	 * @param inStatus the status of the request. It may not be null.
-	 * @param inTraveller the traveller associated with the request.
-	 * It may not be null.
-	 * @param inAnnouncemnet the announcement associated with the request.
-	 * It may not be null.
+	 * 
+	 * @param inStatus
+	 *            the status of the request. It may not be null.
+	 * @param inTraveller
+	 *            the traveller associated with the request. It may not be null.
+	 * @param inAnnouncemnet
+	 *            the announcement associated with the request. It may not be
+	 *            null.
 	 */
 	public RequestEntity(final RequestStatus inStatus,
 			final TravellerEntity inTraveller,

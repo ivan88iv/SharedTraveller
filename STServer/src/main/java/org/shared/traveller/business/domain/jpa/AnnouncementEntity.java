@@ -15,6 +15,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -22,19 +23,25 @@ import javax.persistence.TemporalType;
 
 import org.shared.traveller.business.domain.AbstractEntity;
 import org.shared.traveller.business.domain.IPersistentAnnouncement;
+import org.shared.traveller.business.domain.IPersistentRequest;
+import org.shared.traveller.business.domain.jpa.query.RequestNamedQueryNames;
 import org.shared.traveller.client.domain.IAnnouncement.Status;
 import org.shared.traveller.utility.DeepCopier;
 import org.shared.traveller.utility.InstanceAsserter;
 
 @Entity(name = "Announcement")
 @Table(name = "announcement")
-@NamedQueries({
-	@NamedQuery(name = "Announcement.loadAnnouncement",
-			query = "SELECT ann FROM Announcement ann "
-				+ "WHERE ann.startPoint.name = :startPt AND "
-				+ "ann.endPoint.name = :endPt "
-				+ "AND ann.departureDate = :depDate AND "
-				+ "ann.driver.username = :driver")
+@NamedQueries(
+{
+		@NamedQuery(name = "Announcement.loadAnnouncement",
+				query = "SELECT ann FROM Announcement ann "
+						+ "WHERE ann.startPoint.name = :startPt AND "
+						+ "ann.endPoint.name = :endPt "
+						+ "AND ann.departureDate = :depDate AND "
+						+ "ann.driver.username = :driver"),
+		@NamedQuery(name = RequestNamedQueryNames.LOAD_ANNOUNCEMENT_WITH_REQUESTS,
+				query = "SELECT ann FROM Announcement ann JOIN FETCH ann.requests "
+						+ "WHERE ann.id = :id")
 })
 public class AnnouncementEntity extends AbstractEntity implements
 		IPersistentAnnouncement
@@ -91,6 +98,9 @@ public class AnnouncementEntity extends AbstractEntity implements
 	{ @JoinColumn(name = "city_id") })
 	private List<CityEntity> interPoints;
 
+	@OneToMany(mappedBy = "announcement")
+	private List<RequestEntity> requests;
+
 	public static class BusinessAnnouncementBuilder
 	{
 		private Long idField;
@@ -116,6 +126,8 @@ public class AnnouncementEntity extends AbstractEntity implements
 		private final TravellerEntity driverField;
 
 		private List<CityEntity> interPtsField;
+
+		private List<RequestEntity> requestsField;
 
 		public BusinessAnnouncementBuilder(final CityEntity inStartPt,
 				final CityEntity inEndPt, final Date inDepDate,
@@ -178,6 +190,13 @@ public class AnnouncementEntity extends AbstractEntity implements
 			return this;
 		}
 
+		public BusinessAnnouncementBuilder requests(
+				final List<RequestEntity> inRequests)
+		{
+			requestsField = DeepCopier.copy(inRequests);
+			return this;
+		}
+
 		public AnnouncementEntity build()
 		{
 			return new AnnouncementEntity(this);
@@ -206,12 +225,14 @@ public class AnnouncementEntity extends AbstractEntity implements
 		status = inBuilder.statusField;
 		driver = new TravellerEntity(inBuilder.driverField);
 		interPoints = DeepCopier.copy(inBuilder.interPtsField);
+		requests = DeepCopier.copy(inBuilder.requestsField);
 	}
 
 	/**
 	 * The constructor creates a new copy of the specified announcement
-	 *
-	 * @param inEntity the announcement to be copied. It may not be null.
+	 * 
+	 * @param inEntity
+	 *            the announcement to be copied. It may not be null.
 	 */
 	public AnnouncementEntity(final AnnouncementEntity inEntity)
 	{
@@ -231,7 +252,8 @@ public class AnnouncementEntity extends AbstractEntity implements
 		freeSeats = inEntity.freeSeats;
 		status = inEntity.status;
 		driver = new TravellerEntity(inEntity.driver);
-//		interPoints = DeepCopier.copy(inEntity.interPoints);
+		// interPoints = DeepCopier.copy(inEntity.interPoints);
+		// requests = DeepCopier.copy(requests);
 	}
 
 	@Override
@@ -313,5 +335,11 @@ public class AnnouncementEntity extends AbstractEntity implements
 	public List<CityEntity> getIntermediatePoints()
 	{
 		return DeepCopier.copy(interPoints);
+	}
+
+	@Override
+	public List<? extends IPersistentRequest> getRequests()
+	{
+		return DeepCopier.copy(requests);
 	}
 }

@@ -18,9 +18,9 @@ import org.springframework.stereotype.Repository;
 /**
  * The class is used for data access operations that manage request entities.
  * These operations are performed using JPA.
- *
+ * 
  * @author "Ivan Ivanov"
- *
+ * 
  */
 @Repository
 public class RequestDAO extends AbstractDAO<IPersistentRequest> implements
@@ -47,6 +47,10 @@ public class RequestDAO extends AbstractDAO<IPersistentRequest> implements
 			+ "the request information for the announcement data: "
 			+ "start point: {0}\nend point: {1}\ndeparture date: {2}\n"
 			+ "driver user name: {3}";
+
+	private static final String LOAD_REQUEST_PROBLEM =
+			"A problem occurred while trying to load requests for announcement with "
+					+ "id {0}";
 
 	private static final String FIND_REQUEST_BY_ID_ERROR = "A problem occurred while searching for request with id {0} "
 			+ "for driver {1}.";
@@ -150,7 +154,26 @@ public class RequestDAO extends AbstractDAO<IPersistentRequest> implements
 				RequestEntity.class,
 				MessageFormat.format(FIND_USER_REQUESTS_ERROR,
 						inUser.getUsername()));
+	}
 
+	@Override
+	public List<? extends IPersistentRequest> loadRequests(
+			final Long inAnnouncementId)
+	{
+		final DataExtractor<RequestEntity> extractor =
+				new DataExtractor<RequestEntity>()
+				{
+					@Override
+					protected void prepareQuery(
+							TypedQuery<RequestEntity> inQuery)
+					{
+						inQuery.setParameter("announcementId", inAnnouncementId);
+					}
+				};
+		return extractor.execute(
+				RequestNamedQueryNames.LOAD_ANNOUNCEMENT_REQUESTS,
+				entityManager, RequestEntity.class,
+				MessageFormat.format(LOAD_REQUEST_PROBLEM, inAnnouncementId));
 	}
 
 	@Override

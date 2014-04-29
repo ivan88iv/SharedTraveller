@@ -11,16 +11,16 @@ import org.shared.traveller.business.exception.persistence.DataExtractionExcepti
 /**
  * The class is responsible for the data access operations with regard to the
  * persistent request instances used throughout the application
- *
+ * 
  * @author "Ivan Ivanov"
- *
+ * 
  */
 public interface IRequestDAO extends IDAO<IPersistentRequest>
 {
 	/**
 	 * The method loads all the requests for the specified announcement
 	 * information
-	 *
+	 * 
 	 * @param inStartPt
 	 *            the start settlement point for the announcement. It may not be
 	 *            null.
@@ -36,13 +36,27 @@ public interface IRequestDAO extends IDAO<IPersistentRequest>
 	 * @throws DataExtractionException
 	 *             if a problem occurs while extracting the requests
 	 */
-	List<? extends IPersistentRequest> loadRequests(final String inStartPt, final String inEndPt, final Date inDepDate,
+	List<? extends IPersistentRequest> loadRequests(final String inStartPt,
+			final String inEndPt, final Date inDepDate,
 			final String inDriverUsrname);
+
+	/**
+	 * The method loads all requests which have been made for the current
+	 * announcement
+	 * 
+	 * @param inAnnouncementId
+	 *            the id of the announcement whose requests are to be loaded
+	 * @return the loaded announcement requests
+	 * 
+	 * @throws DataExtractionException
+	 *             if a problem occurs while extracting the requests
+	 */
+	List<? extends IPersistentRequest> loadRequests(final Long inAnnouncementId);
 
 	/**
 	 * The method finds and returns a request by the user name of the driver and
 	 * the identification of the request
-	 *
+	 * 
 	 * @param inDriver
 	 *            the user name of the driver to whom the searched request was
 	 *            sent. It may not be null.
@@ -50,7 +64,7 @@ public interface IRequestDAO extends IDAO<IPersistentRequest>
 	 *            the identification of the request. It may not be null
 	 * @return the request with the provided identification that belongs to the
 	 *         specified driver or null if none is found
-	 *
+	 * 
 	 * @throws DataExtractionException
 	 *             if a problem occurs while trying to extract the requests
 	 */
@@ -58,5 +72,6 @@ public interface IRequestDAO extends IDAO<IPersistentRequest>
 
 	Long findUserRequestsCount(final AuthenticatedUser inUser);
 
-	List<RequestEntity> findUserRequests(final AuthenticatedUser inUser, final int inStartIndex, final int inMaxResult);
+	List<RequestEntity> findUserRequests(final AuthenticatedUser inUser,
+			final int inStartIndex, final int inMaxResult);
 }

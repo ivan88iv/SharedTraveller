@@ -3,15 +3,14 @@ package org.shared.traveller.business.exception;
 import java.text.MessageFormat;
 
 /**
- * The class represents exception that is thrown when the update
- * operation performed was not successful
- *
+ * The class represents exception that is thrown when the update operation
+ * performed was not successful
+ * 
  * @author "Ivan Ivanov"
- *
+ * 
  */
 public class UnsuccessfulUpdateException extends BusinessException
 {
-
 	/**
 	 * The serial version UID
 	 */
@@ -22,8 +21,9 @@ public class UnsuccessfulUpdateException extends BusinessException
 
 	/**
 	 * Creates a new exception for unsuccessful update operations
-	 *
-	 * @param inItem the name of the item that was unsuccessfully updated
+	 * 
+	 * @param inItem
+	 *            the name of the item that was unsuccessfully updated
 	 */
 	public UnsuccessfulUpdateException(final String inItem)
 	{
@@ -32,9 +32,11 @@ public class UnsuccessfulUpdateException extends BusinessException
 
 	/**
 	 * Creates a new exception for unsuccessful update operations
-	 *
-	 * @param inItem the name of the item that was unsuccessfully updated
-	 * @param inCause the cause of the problem
+	 * 
+	 * @param inItem
+	 *            the name of the item that was unsuccessfully updated
+	 * @param inCause
+	 *            the cause of the problem
 	 */
 	public UnsuccessfulUpdateException(final String inItem,
 			final Throwable inCause)

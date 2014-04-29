@@ -1,5 +1,6 @@
 package org.shared.traveller.business.dao.jpa;
 
+import java.text.MessageFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -19,8 +20,10 @@ import org.shared.traveller.business.domain.jpa.AnnouncementEntity;
 import org.shared.traveller.business.domain.jpa.AnnouncementEntity_;
 import org.shared.traveller.business.domain.jpa.CityEntity;
 import org.shared.traveller.business.domain.jpa.CityEntity_;
+import org.shared.traveller.business.domain.jpa.query.RequestNamedQueryNames;
 import org.shared.traveller.business.service.dto.GetAllAnnouncementsRequest;
 import org.shared.traveller.rest.param.SortOrder;
+import org.shared.traveller.utility.InstanceAsserter;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -39,6 +42,9 @@ public class AnnouncementDAO extends AbstractDAO<IPersistentAnnouncement>
 	private static final String NULL_DEP_DATE = "The departure date may not be null.";
 
 	private static final String NULL_DRIVER_USRNAME = "The driver's username may not be null.";
+
+	private static final String ANNOUNCEMENT_LOAD_PROBLEM =
+			"A problem occurred while loading an announcement with id {0}.";
 
 	@Override
 	public List<? extends IPersistentAnnouncement> getAll(
@@ -179,5 +185,35 @@ public class AnnouncementDAO extends AbstractDAO<IPersistentAnnouncement>
 			return cb.asc(c.get(AnnouncementEntity_.startPoint));
 
 		}
+	}
+
+	@Override
+	public IPersistentAnnouncement loadAnnouncementWithRequests(final Long inId)
+	{
+		InstanceAsserter.assertNotNull(inId, "announcement id");
+
+		final DataExtractor<AnnouncementEntity> extractor =
+				new DataExtractor<AnnouncementEntity>()
+				{
+					@Override
+					protected void prepareQuery(
+							TypedQuery<AnnouncementEntity> inQuery)
+					{
+						inQuery.setParameter("id", inId).setMaxResults(1);
+					}
+				};
+
+		final List<AnnouncementEntity> resultList = extractor.execute(
+				RequestNamedQueryNames.LOAD_ANNOUNCEMENT_WITH_REQUESTS,
+				entityManager, AnnouncementEntity.class,
+				MessageFormat.format(ANNOUNCEMENT_LOAD_PROBLEM, inId));
+		AnnouncementEntity announcement = null;
+
+		if (!resultList.isEmpty())
+		{
+			announcement = resultList.get(0);
+		}
+
+		return announcement;
 	}
 }
