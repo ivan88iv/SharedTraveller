@@ -29,7 +29,13 @@
     <string name="newRequest">New Request</string>
     <string name="requests">Requests</string>
     <string name="my_requests">My Requests</string>
-
+    <string name="send_request_declination_notification">
+        Send notification after request declination
+    </string>
+	<string name="send_notificaiton_on_travel_cancelation">
+	    Send notification after a travel was cancelled
+	</string>
+    
     <!-- Swipe list view buttons constants -->
     <string name="btn_map">Map</string>
     <string name="btn_detils">Details</string>

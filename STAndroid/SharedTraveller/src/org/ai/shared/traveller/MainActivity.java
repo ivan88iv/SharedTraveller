@@ -11,7 +11,10 @@ import org.ai.shared.traveller.command.save.announcement.ISaveAnnouncementComman
 import org.ai.shared.traveller.data.providers.ICitiesProvider;
 import org.ai.shared.traveller.data.providers.IVehiclesProvider;
 import org.ai.shared.traveller.dialog.DialogRequestCode;
+import org.ai.shared.traveller.dialog.STDialogFragment;
 import org.ai.shared.traveller.dialog.request.NewRequestDialog;
+import org.ai.shared.traveller.dialog.request.RequestStatusNotificationFactory;
+import org.ai.shared.traveller.dialog.trip.TripCancellationNotificationFactory;
 import org.ai.shared.traveller.factory.client.IServiceClientFactory;
 import org.ai.shared.traveller.manager.domain.DomainManager;
 import org.ai.shared.traveller.network.connection.AbstractNetworkActivity;
@@ -22,7 +25,9 @@ import org.ai.shared.traveller.settings.SettingsActivity;
 import org.ai.shared.traveller.task.AllCitiesTask;
 import org.ai.shared.traveller.task.UserVehiclesTask;
 import org.ai.shared.traveller.task.announcement.NewAnnouncementTask;
+import org.ai.shared.traveller.task.request.DeclineRequestTask;
 import org.ai.shared.traveller.task.request.NewRequestTask;
+import org.ai.shared.traveller.task.trip.CancelTripTask;
 import org.ai.shared.traveller.ui.preparator.ICityComponentsPreparator;
 import org.ai.shared.traveller.ui.preparator.IVehicleComponentsPreparator;
 import org.ai.sharedtraveller.R;
@@ -39,14 +44,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 import eu.inmite.android.lib.dialogs.ISimpleDialogListener;
 
 public class MainActivity extends AbstractNetworkActivity implements
 		ISaveAnnouncementCommand, INewRequestCommand,
 		ICitiesProvider, IVehiclesProvider, ISimpleDialogListener
 {
-	private static final String FRAGMENT_TAG = "FRAGMENT_TAG";
-
 	private static final String UNSUCCESSFUL_ANNOUNCEMENT_SUBMIT =
 			"Could not submit the announcement {0}.";
 
@@ -54,6 +58,24 @@ public class MainActivity extends AbstractNetworkActivity implements
 			"newAnnouncementTask";
 
 	private static final String NEW_REQUEST_TASK_KEY = "sendRequestTask";
+
+	private static final String REQUEST_DECLINATION_TASK_KEY =
+			"declineRequestTask";
+
+	private static final String TRIP_CANCELLATION_TASK_KEY =
+			"tripCancellation";
+
+	private static final String SUCCESSFUL_REQUEST_DECLINATION =
+			"The request was successfully declined.";
+
+	private static final String REQUEST_DECLINATION_PROBLEM =
+			"A problem occurred while trying to decline the request.";
+
+	private static final String SUCCESSFUL_TRIP_CANCELLATION =
+			"The trip was cancelled successfully.";
+
+	private static final String TRIP_CANCELLATION_PROBLEM =
+			"A problem occurred while trying to cancel the trip.";
 
 	private final IServiceClientFactory clientFactory =
 			DomainManager.getInstance().getServiceClientFactory();
@@ -101,8 +123,10 @@ public class MainActivity extends AbstractNetworkActivity implements
 				R.id.show_requests);
 		final Button showMyRequestsBtn = (Button) findViewById(
 				R.id.show_my_requests);
-
-		final MainActivity activity = this;
+		final Button requestDeclinationBtn = (Button) findViewById(
+				R.id.send_request_declination_notification);
+		final Button travelCancelationBtn = (Button) findViewById(
+				R.id.travel_cancelation_notification);
 
 		showViewPagerIndicator.setOnClickListener(new View.OnClickListener()
 		{
@@ -131,7 +155,7 @@ public class MainActivity extends AbstractNetworkActivity implements
 			@Override
 			public void onClick(final View v)
 			{
-				NewRequestDialog.show(activity);
+				NewRequestDialog.show(MainActivity.this);
 			}
 		});
 
@@ -140,17 +164,38 @@ public class MainActivity extends AbstractNetworkActivity implements
 			@Override
 			public void onClick(final View v)
 			{
-				startActivity(new Intent(activity,
+				startActivity(new Intent(MainActivity.this,
 						AnnouncementRequestActivity.class));
 			}
 		});
+
 		showMyRequestsBtn.setOnClickListener(new View.OnClickListener()
 		{
 			@Override
 			public void onClick(final View v)
 			{
-				startActivity(new Intent(activity,
+				startActivity(new Intent(MainActivity.this,
 						UserRequestsActivity.class));
+			}
+		});
+
+		requestDeclinationBtn.setOnClickListener(new View.OnClickListener()
+		{
+			@Override
+			public void onClick(View v)
+			{
+				STDialogFragment.show(new RequestStatusNotificationFactory(
+						MainActivity.this, "request_declination_notification"));
+			}
+		});
+
+		travelCancelationBtn.setOnClickListener(new View.OnClickListener()
+		{
+			@Override
+			public void onClick(View v)
+			{
+				STDialogFragment.show(new TripCancellationNotificationFactory(
+						MainActivity.this, "travel_cancelation_notification"));
 			}
 		});
 	}
@@ -228,13 +273,79 @@ public class MainActivity extends AbstractNetworkActivity implements
 					.driverUsername("temp");
 			final RequestInfo request = builder.build();
 			sendRequest(request);
+		} else if (requestCode == DialogRequestCode.REQUEST_NOTIFICATION
+				.getCode())
+		{
+			// TODO replace the hard-coded request id
+			addTask(REQUEST_DECLINATION_TASK_KEY, new DeclineRequestTask(
+					this, Long.valueOf(31)));
+			executeTask(REQUEST_DECLINATION_TASK_KEY);
+		} else if (requestCode == DialogRequestCode.CANCEL_TRAVEL_NOTIFICATION
+				.getCode())
+		{
+			// TODO replace the hard-coded announcement id
+			addTask(TRIP_CANCELLATION_TASK_KEY, new CancelTripTask(
+					this, Long.valueOf(1)));
+			executeTask(TRIP_CANCELLATION_TASK_KEY);
 		}
 	}
 
 	@Override
 	public void onNegativeButtonClicked(final int requestCode)
 	{
-		// TODO Auto-generated method stub
+		if (requestCode == DialogRequestCode.REQUEST_NOTIFICATION.getCode())
+		{
+			// TODO replace the hard-coded request id
+			addTask(REQUEST_DECLINATION_TASK_KEY, new DeclineRequestTask(
+					MainActivity.this, Long.valueOf(31)));
+			executeTask(REQUEST_DECLINATION_TASK_KEY);
+		} else if (requestCode == DialogRequestCode.CANCEL_TRAVEL_NOTIFICATION
+				.getCode())
+		{
+			// TODO replace the hard-coded announcement id
+			addTask(TRIP_CANCELLATION_TASK_KEY, new CancelTripTask(
+					this, Long.valueOf(1)));
+			executeTask(TRIP_CANCELLATION_TASK_KEY);
+		}
+	}
+
+	/**
+	 * The method is called when a request has been declined successfully
+	 */
+	public void onSuccessfulRequestDeclination()
+	{
+		Toast.makeText(this, SUCCESSFUL_REQUEST_DECLINATION,
+				Toast.LENGTH_SHORT).show();
+	}
+
+	/**
+	 * The method is called when a problem occurs in the process of a request
+	 * declination
+	 * 
+	 */
+	public void onRequestDeclinationProblem()
+	{
+		Toast.makeText(this, REQUEST_DECLINATION_PROBLEM, Toast.LENGTH_SHORT)
+				.show();
+	}
+
+	/**
+	 * The method is called when a trip is successfully cancelled
+	 */
+	public void onSuccessfulTripCancellation()
+	{
+		Toast.makeText(this, SUCCESSFUL_TRIP_CANCELLATION,
+				Toast.LENGTH_SHORT).show();
+	}
+
+	/**
+	 * The method is called when there was a problem while trying to cancel a
+	 * trip
+	 */
+	public void onTripCancellationProblem()
+	{
+		Toast.makeText(this, TRIP_CANCELLATION_PROBLEM, Toast.LENGTH_SHORT)
+				.show();
 	}
 
 	/**

@@ -250,12 +250,12 @@ public class RequestsAdapter extends ArrayAdapter<IRequestInfo>
 			final ViewHolder inHolder,
 			final IRequestInfo inRequest)
 	{
-		if (!Status.ACTIVE.equals(announcement.getStatus()))
-		{
-			preparePastTravelRequest(inHolder, inRequest);
-		} else
+		if (Status.ACTIVE.equals(announcement.getStatus()))
 		{
 			prepareFutureTravelRequest(inPosition, inHolder, inRequest);
+		} else
+		{
+			preparePastTravelRequest(inHolder, inRequest);
 		}
 
 		inHolder.callBtn.setOnClickListener(new View.OnClickListener()

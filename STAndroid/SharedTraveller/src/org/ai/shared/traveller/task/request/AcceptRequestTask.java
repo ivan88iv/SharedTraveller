@@ -12,17 +12,22 @@ import android.util.Log;
  * @author "Ivan Ivanov"
  * 
  */
-public class AcceptRequestTask extends ChangeRequestStatusTask
+public class AcceptRequestTask
+		extends ChangeRequestStatusTask<AnnouncementRequestActivity>
 {
 	/**
 	 * The constructor initializes a new request acceptance asynchronous task
 	 * 
 	 * @param inActivity
-	 *            the activity to which the task is associated
+	 *            the activity to which the task is associated. It may not be
+	 *            null
+	 * @param inRequestId
+	 *            the id of the request to be accepted. It may not be null
 	 */
-	public AcceptRequestTask(final AnnouncementRequestActivity inActivity)
+	public AcceptRequestTask(final AnnouncementRequestActivity inActivity,
+			final Long inRequestId)
 	{
-		super(inActivity, "request/accept");
+		super(inActivity, "request/accept", inRequestId);
 	}
 
 	@Override

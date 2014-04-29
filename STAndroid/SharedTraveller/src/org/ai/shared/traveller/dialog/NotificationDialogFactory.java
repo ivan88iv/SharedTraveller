@@ -1,6 +1,5 @@
-package org.ai.shared.traveller.dialog.request;
+package org.ai.shared.traveller.dialog;
 
-import org.ai.shared.traveller.dialog.DialogRequestCode;
 import org.ai.shared.traveller.dialog.STDialogFragment.AbstractDialogFactory;
 import org.ai.sharedtraveller.R;
 
@@ -15,8 +14,7 @@ import android.view.View;
  * @author "Ivan Ivanov"
  * 
  */
-public class NotificationDialogFactory
-		extends AbstractDialogFactory
+public abstract class NotificationDialogFactory extends AbstractDialogFactory
 {
 	/**
 	 * Instantiates a new dialog factory
@@ -65,11 +63,5 @@ public class NotificationDialogFactory
 				getActivity().getLayoutInflater();
 		return inflater.inflate(R.layout.notification_dialog_content,
 				null);
-	}
-
-	@Override
-	protected int loadRequestCode()
-	{
-		return DialogRequestCode.REQUEST_NOTIFICATION.getCode();
 	}
 }

@@ -7,7 +7,7 @@ import org.ai.shared.traveller.call.CallerActivity;
 import org.ai.shared.traveller.command.request.IRequestExtractionCommand;
 import org.ai.shared.traveller.dialog.DialogRequestCode;
 import org.ai.shared.traveller.dialog.STDialogFragment;
-import org.ai.shared.traveller.dialog.request.NotificationDialogFactory;
+import org.ai.shared.traveller.dialog.request.RequestStatusNotificationFactory;
 import org.ai.shared.traveller.factory.builder.IBuilderFactory;
 import org.ai.shared.traveller.manager.domain.DomainManager;
 import org.ai.shared.traveller.task.request.AcceptRequestTask;
@@ -108,14 +108,16 @@ public class AnnouncementRequestActivity extends CallerActivity
 	@Override
 	public void onPositiveButtonClicked(final int requestCode)
 	{
-		if (requestCode == DialogRequestCode.ACCEPT_REQUEST_CODE.getCode())
+		if (requestCode == DialogRequestCode.ACCEPT_REQUEST.getCode())
 		{
-			STDialogFragment.show(new NotificationDialogFactory(this,
+			STDialogFragment.show(new RequestStatusNotificationFactory(
+					this,
 					"notification_accept_request"));
-		} else if (requestCode == DialogRequestCode.REJECT_REQUEST_CODE
+		} else if (requestCode == DialogRequestCode.REJECT_REQUEST
 				.getCode())
 		{
-			STDialogFragment.show(new NotificationDialogFactory(this,
+			STDialogFragment.show(new RequestStatusNotificationFactory(
+					this,
 					"notification_reject_request"));
 		} else if (requestCode == DialogRequestCode.REQUEST_NOTIFICATION
 				.getCode())
@@ -143,24 +145,6 @@ public class AnnouncementRequestActivity extends CallerActivity
 	public void onRequestSelect(final int inRequestInd)
 	{
 		lastSelectedRequestInd = inRequestInd;
-	}
-
-	/**
-	 * The method returns the id of the lastly selected request
-	 * 
-	 * @return the id of the lastly selected request or null if none is selected
-	 */
-	public Long getLastSelectedRequestId()
-	{
-		final ArrayAdapter<IRequestInfo> adapter = loadAdapter();
-		Long requestId = null;
-		final IRequestInfo selectedRequest =
-				adapter.getItem(lastSelectedRequestInd);
-		if (selectedRequest != null)
-		{
-			requestId = selectedRequest.getId();
-		}
-		return requestId;
 	}
 
 	/**
@@ -246,14 +230,16 @@ public class AnnouncementRequestActivity extends CallerActivity
 	 */
 	private void changeRequestStatus(final int inRequestCode)
 	{
-		if (inRequestCode == DialogRequestCode.ACCEPT_REQUEST_CODE.getCode())
+		if (inRequestCode == DialogRequestCode.ACCEPT_REQUEST.getCode())
 		{
-			addTask(ACCEPT_REQUEST_TASK, new AcceptRequestTask(this));
+			addTask(ACCEPT_REQUEST_TASK, new AcceptRequestTask(this,
+					getLastSelectedRequestId()));
 			executeTask(ACCEPT_REQUEST_TASK);
-		} else if (inRequestCode == DialogRequestCode.REJECT_REQUEST_CODE
+		} else if (inRequestCode == DialogRequestCode.REJECT_REQUEST
 				.getCode())
 		{
-			addTask(REJECT_REQUEST_TASK, new RejectRequestTask(this));
+			addTask(REJECT_REQUEST_TASK, new RejectRequestTask(this,
+					getLastSelectedRequestId()));
 			executeTask(REJECT_REQUEST_TASK);
 		}
 	}
@@ -295,5 +281,23 @@ public class AnnouncementRequestActivity extends CallerActivity
 						R.id.requests_fragment_container);
 
 		return fragment.getAdapter();
+	}
+
+	/**
+	 * The method returns the id of the lastly selected request
+	 * 
+	 * @return the id of the lastly selected request or null if none is selected
+	 */
+	private Long getLastSelectedRequestId()
+	{
+		final ArrayAdapter<IRequestInfo> adapter = loadAdapter();
+		Long requestId = null;
+		final IRequestInfo selectedRequest =
+				adapter.getItem(lastSelectedRequestInd);
+		if (selectedRequest != null)
+		{
+			requestId = selectedRequest.getId();
+		}
+		return requestId;
 	}
 }

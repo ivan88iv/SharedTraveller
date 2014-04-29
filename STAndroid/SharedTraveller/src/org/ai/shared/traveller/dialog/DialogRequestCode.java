@@ -22,18 +22,28 @@ public enum DialogRequestCode {
 	/**
 	 * The request code for accepting a travel request
 	 */
-	ACCEPT_REQUEST_CODE(1),
+	ACCEPT_REQUEST(1),
 
 	/**
 	 * The request code for rejecting a travel request
 	 */
-	REJECT_REQUEST_CODE(2),
+	REJECT_REQUEST(2),
 
 	/**
-	 * The request code for sending a notification when a travel request is
-	 * accepted/rejected
+	 * The request code for sending a notification when a travel request's
+	 * status is changed
 	 */
-	REQUEST_NOTIFICATION(3);
+	REQUEST_NOTIFICATION(3),
+
+	/**
+	 * The request code for canceling a travel
+	 */
+	CANCEL_TRAVEL(4),
+
+	/**
+	 * The request code for notifications after canceling a travel
+	 */
+	CANCEL_TRAVEL_NOTIFICATION(5);
 
 	private final int code;
 

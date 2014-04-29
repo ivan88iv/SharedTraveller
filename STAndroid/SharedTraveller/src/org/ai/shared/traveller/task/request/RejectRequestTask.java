@@ -11,17 +11,22 @@ import android.util.Log;
  * @author "Ivan Ivanov"
  * 
  */
-public class RejectRequestTask extends ChangeRequestStatusTask
+public class RejectRequestTask
+		extends ChangeRequestStatusTask<AnnouncementRequestActivity>
 {
 	/**
 	 * Instantiates a new reject requests task
 	 * 
 	 * @param inActivity
-	 *            the activity to which the current request is associated
+	 *            the activity to which the current request is associated. It
+	 *            may not be null
+	 * @param inRequestId
+	 *            the id of the request to be rejected. It may not be null
 	 */
-	public RejectRequestTask(final AnnouncementRequestActivity inActivity)
+	public RejectRequestTask(final AnnouncementRequestActivity inActivity,
+			final Long inRequestId)
 	{
-		super(inActivity, "request/reject");
+		super(inActivity, "request/reject", inRequestId);
 	}
 
 	@Override

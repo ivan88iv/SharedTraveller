@@ -7,31 +7,40 @@ import org.ai.shared.traveller.factory.client.IServiceClientFactory;
 import org.ai.shared.traveller.manager.domain.DomainManager;
 import org.ai.shared.traveller.network.connection.client.IServiceClient;
 import org.ai.shared.traveller.network.connection.task.AbstractNetworkTask;
-import org.ai.shared.traveller.request.AnnouncementRequestActivity;
+import org.shared.traveller.utility.InstanceAsserter;
+
+import android.app.Activity;
 
 /**
- * The class represents the common functionality for tasks that change a
- * request's status
+ * The class represents the common functionality for tasks that change the
+ * status of a selected request
+ * 
+ * @param <T>
+ *            the concrete activity type into which the task is used
  * 
  * @author "Ivan Ivanov"
  * 
  */
-public abstract class ChangeRequestStatusTask
-		extends AbstractNetworkTask<AnnouncementRequestActivity, Void>
+public abstract class ChangeRequestStatusTask<T extends Activity>
+		extends AbstractNetworkTask<T, Void>
 {
 	/**
 	 * The constructor initializes a new request acceptance asynchronous task
 	 * 
 	 * @param inActivity
-	 *            the activity to which the task is associated
-	 * @param inUrl
-	 *            the URL of the service being called on the server side
+	 *            the activity to which the task is associated. It may not be
+	 *            null.
+	 * @param inPath
+	 *            the path of the service being called. It may not be null.
+	 * @param inRequestId
+	 *            the id of the request whose status is to be changed. It may
+	 *            not be null
 	 */
-	public ChangeRequestStatusTask(
-			final AnnouncementRequestActivity inActivity,
-			final String inUrl)
+	public ChangeRequestStatusTask(final T inActivity,
+			final String inPath, final Long inRequestId)
 	{
-		super(inActivity, createServiceClient(inActivity, inUrl), Void.class);
+		super(inActivity, createServiceClient(inActivity, inPath, inRequestId),
+				Void.class);
 	}
 
 	/**
@@ -40,19 +49,22 @@ public abstract class ChangeRequestStatusTask
 	 * 
 	 * @param inActivity
 	 *            the activity which holds information about the specified
-	 *            request whose status is to be changed
+	 *            request whose status is to be changed. It may not be null.
 	 * @param inPath
-	 *            the service path of the request
+	 *            the service path of the request. It may not be null.
+	 * @param inRequestId
+	 *            the id of the request to be changed. It may not be null.
 	 * @return the created POST REST client
 	 */
 	private static IServiceClient createServiceClient(
-			final AnnouncementRequestActivity inActivity,
-			final String inPath)
+			final Activity inActivity,
+			final String inPath, final Long inRequestId)
 	{
+		InstanceAsserter.assertNotNull(inRequestId, "request id");
+
 		final Map<String, String> parameters =
 				new HashMap<String, String>();
-		parameters.put("id",
-				String.valueOf(inActivity.getLastSelectedRequestId()));
+		parameters.put("id", String.valueOf(inRequestId));
 		final IServiceClientFactory clientFactory =
 				DomainManager.getInstance().getServiceClientFactory();
 

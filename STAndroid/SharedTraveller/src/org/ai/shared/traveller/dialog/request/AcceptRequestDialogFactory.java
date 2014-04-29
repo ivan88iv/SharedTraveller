@@ -75,6 +75,6 @@ public class AcceptRequestDialogFactory
 	@Override
 	protected int loadRequestCode()
 	{
-		return DialogRequestCode.ACCEPT_REQUEST_CODE.getCode();
+		return DialogRequestCode.ACCEPT_REQUEST.getCode();
 	}
 }

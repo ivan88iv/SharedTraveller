@@ -72,6 +72,6 @@ public class RejectRequestDialogFactory extends AbstractDialogFactory
 	@Override
 	protected int loadRequestCode()
 	{
-		return DialogRequestCode.REJECT_REQUEST_CODE.getCode();
+		return DialogRequestCode.REJECT_REQUEST.getCode();
 	}
 }
