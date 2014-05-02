@@ -10,7 +10,7 @@ import org.ai.shared.traveller.network.connection.response.ServerResponseParser;
 import org.shared.traveller.rest.domain.ErrorResponse;
 import org.shared.traveller.utility.InstanceAsserter;
 
-import android.app.Activity;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -22,13 +22,13 @@ import com.fasterxml.jackson.core.type.TypeReference;
  * 
  * @author "Ivan Ivanov"
  * 
- * @param <A>
- *            the concrete type of the activity related to this task
+ * @param <T>
+ *            the concrete type of the context related to this task
  * @param <Result>
  *            the type of the body contained in the server response that is
  *            received after making the call to the server
  */
-public abstract class AbstractNetworkTask<A extends Activity, Result> extends
+public abstract class AbstractNetworkTask<T extends Context, Result> extends
 		AsyncTask<Void, Void, ServerResponse<Result>> implements INetworkTask
 {
 	private static final String UNABLE_TO_PARSE_RESULT =
@@ -41,31 +41,30 @@ public abstract class AbstractNetworkTask<A extends Activity, Result> extends
 
 	private final ServerResponseParser<Result> parser;
 
-	private A activity;
+	private T context;
 
 	/**
 	 * The constructor creates a new abstract network task
 	 * 
-	 * @param inActivity
-	 *            the activity for which the task is executed. It may not be
-	 *            null
+	 * @param inContext
+	 *            the context for which the task is executed. It may not be null
 	 * @param inClient
 	 *            the client used to make the REST service calls. It may not be
 	 *            null.
 	 * @param inClass
 	 *            the class of the server response body type. It may not be null
 	 */
-	public AbstractNetworkTask(final A inActivity,
+	public AbstractNetworkTask(final T inContext,
 			final IServiceClient inClient,
 			final Class<Result> inClass)
 	{
 		super();
 
-		InstanceAsserter.assertNotNull(inActivity, "activity");
+		InstanceAsserter.assertNotNull(inContext, "context");
 		InstanceAsserter.assertNotNull(inClient, "client");
 		InstanceAsserter.assertNotNull(inClass, "class instance");
 
-		activity = inActivity;
+		context = inContext;
 		serviceClient = inClient;
 		parser = new ServerResponseParser<Result>(inClass);
 	}
@@ -73,9 +72,8 @@ public abstract class AbstractNetworkTask<A extends Activity, Result> extends
 	/**
 	 * The constructor creates a new abstract network task
 	 * 
-	 * @param inActivity
-	 *            the activity for which the task is executed. It may not be
-	 *            null
+	 * @param inContext
+	 *            the context for which the task is executed. It may not be null
 	 * @param inClient
 	 *            the client used to make the REST service calls. It may not be
 	 *            null
@@ -83,17 +81,17 @@ public abstract class AbstractNetworkTask<A extends Activity, Result> extends
 	 *            the reference of the server response body type. It may not be
 	 *            null
 	 */
-	public AbstractNetworkTask(final A inActivity,
+	public AbstractNetworkTask(final T inContext,
 			final IServiceClient inClient,
 			final TypeReference<Result> inRef)
 	{
 		super();
-		InstanceAsserter.assertNotNull(inActivity, "activity");
+		InstanceAsserter.assertNotNull(inContext, "context");
 		InstanceAsserter.assertNotNull(inClient, "client");
 		InstanceAsserter.assertNotNull(inRef,
 				"reference of the response body type");
 
-		activity = inActivity;
+		context = inContext;
 		serviceClient = inClient;
 		parser = new ServerResponseParser<Result>(inRef);
 	}
@@ -128,7 +126,7 @@ public abstract class AbstractNetworkTask<A extends Activity, Result> extends
 	public void unbind()
 	{
 		cancel(true);
-		activity = null;
+		context = null;
 	}
 
 	@Override
@@ -141,17 +139,17 @@ public abstract class AbstractNetworkTask<A extends Activity, Result> extends
 		} catch (final ParseException pe)
 		{
 			Log.d("AbstractNetwTask", UNABLE_TO_PARSE_RESULT, pe);
-			final ErrorResponse content = new ErrorResponse();
-			content.setMessage(UNABLE_TO_PARSE_RESULT);
+			final ErrorResponse content = new ErrorResponse(
+					UNABLE_TO_PARSE_RESULT);
 			response = new ServerResponse<Result>(400, content);
 		} catch (final ServiceConnectionException sce)
 		{
 			Log.d("AbstractNetworkTask",
 					MessageFormat.format(UNABLE_TO_CONNECT,
 							serviceClient.getServiceAddress()), sce);
-			final ErrorResponse content = new ErrorResponse();
-			content.setMessage(MessageFormat.format(
-					UNABLE_TO_CONNECT, serviceClient.getServiceAddress()));
+			final ErrorResponse content = new ErrorResponse(
+					MessageFormat.format(UNABLE_TO_CONNECT,
+							serviceClient.getServiceAddress()));
 			response = new ServerResponse<Result>(400, content);
 		}
 		return response;
@@ -173,12 +171,12 @@ public abstract class AbstractNetworkTask<A extends Activity, Result> extends
 	}
 
 	/**
-	 * Returns the activity associated with the network task
+	 * Returns the context associated with the network task
 	 * 
-	 * @return the activity associated with the network task
+	 * @return the context associated with the network task
 	 */
-	protected A getActivity()
+	protected T getContext()
 	{
-		return activity;
+		return context;
 	}
 }
