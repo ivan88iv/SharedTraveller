@@ -4,15 +4,15 @@ import java.util.Date;
 import java.util.List;
 
 import org.ai.shared.traveller.call.CallerActivity;
+import org.ai.shared.traveller.client.factory.builder.IBuilderFactory;
 import org.ai.shared.traveller.command.request.IRequestExtractionCommand;
 import org.ai.shared.traveller.dialog.DialogRequestCode;
 import org.ai.shared.traveller.dialog.STDialogFragment;
 import org.ai.shared.traveller.dialog.request.RequestStatusNotificationFactory;
-import org.ai.shared.traveller.factory.builder.IBuilderFactory;
 import org.ai.shared.traveller.manager.domain.DomainManager;
-import org.ai.shared.traveller.task.request.AcceptRequestTask;
-import org.ai.shared.traveller.task.request.RejectRequestTask;
-import org.ai.shared.traveller.task.request.RequestsExtractionTask;
+import org.ai.shared.traveller.network.connection.task.request.AcceptRequestTask;
+import org.ai.shared.traveller.network.connection.task.request.RejectRequestTask;
+import org.ai.shared.traveller.network.connection.task.request.RequestsExtractionTask;
 import org.ai.sharedtraveller.R;
 import org.shared.traveller.client.domain.IAnnouncement;
 import org.shared.traveller.client.domain.IAnnouncement.Status;
@@ -83,7 +83,7 @@ public class AnnouncementRequestActivity extends CallerActivity
 	 *            It may not be null.
 	 */
 	public void onRequestsExtractionSuccess(
-			final List<IRequestInfo> inNewRequests,
+			final List<? extends IRequestInfo> inNewRequests,
 			final RequestsAdapter inAdapter)
 	{
 		InstanceAsserter.assertNotNull(inAdapter, "adapter");

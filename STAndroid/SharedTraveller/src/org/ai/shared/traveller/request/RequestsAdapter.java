@@ -61,7 +61,7 @@ public class RequestsAdapter extends ArrayAdapter<IRequestInfo>
 
 	private IAnnouncement announcement;
 
-	private List<IRequestInfo> requests = new ArrayList<IRequestInfo>();
+	private List<? extends IRequestInfo> requests = new ArrayList<IRequestInfo>();
 
 	private final IRequestSelectionListener requestSelectionListener;
 
@@ -97,7 +97,7 @@ public class RequestsAdapter extends ArrayAdapter<IRequestInfo>
 	 *            the requests to be displayed in the view that the current
 	 *            adapter is responsible for
 	 */
-	public void setRequests(final List<IRequestInfo> inRequests)
+	public void setRequests(final List<? extends IRequestInfo> inRequests)
 	{
 		clear();
 		if (inRequests == null)
