@@ -8,11 +8,11 @@
 	    <item>once a day</item>
 	</string-array>
 	
-	<integer-array name="notifiactionIntervalVals">
+	<string-array name="notifiactionIntervalVals">
 	    <item>1</item>
 	    <item>2</item>
 	    <item>3</item>
 	    <item>4</item>
 	    <item>5</item>
-	</integer-array>
+	</string-array>
 </resources>
