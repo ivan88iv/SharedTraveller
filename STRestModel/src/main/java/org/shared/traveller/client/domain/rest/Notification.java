@@ -4,7 +4,17 @@ import java.util.Date;
 
 import org.shared.traveller.client.domain.INotification;
 import org.shared.traveller.utility.DeepCopier;
+import org.shared.traveller.utility.InstanceAsserter;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+/**
+ * The class represents a REST client domain instance
+ * 
+ * @author "Ivan Ivanov"
+ * 
+ */
 public class Notification implements INotification
 {
 	private final Date creationDate;
@@ -13,45 +23,27 @@ public class Notification implements INotification
 
 	private final Type type;
 
-	private final Traveller traveller;
-
-	public static class NotificationBuilder
+	/**
+	 * Creates a new REST notification
+	 * 
+	 * @param inType
+	 *            the type of the notification. It may not be null.
+	 * @param inCreationDate
+	 *            the creation date of the notification. It may not be null.
+	 * @param inDescription
+	 *            the description of the notification
+	 */
+	@JsonCreator
+	public Notification(@JsonProperty("type") final Type inType,
+			@JsonProperty("creationDate") final Date inCreationDate,
+			@JsonProperty("description") final String inDescription)
 	{
-		private final Date creationDateField;
+		InstanceAsserter.assertNotNull(inType, "type");
+		InstanceAsserter.assertNotNull(inCreationDate, "creation date");
 
-		private String descriptionField;
-
-		private final Type typeField;
-
-		private final Traveller travellerField;
-
-		public NotificationBuilder(final Type inType,
-				final Traveller inTraveller,
-				final Date inCreationDate)
-		{
-			typeField = inType;
-			travellerField = inTraveller;
-			creationDateField = DeepCopier.copy(inCreationDate);
-		}
-
-		public NotificationBuilder descrition(final String inDescription)
-		{
-			descriptionField = inDescription;
-			return this;
-		}
-
-		public Notification build()
-		{
-			return new Notification(this);
-		}
-	}
-
-	private Notification(final NotificationBuilder inBuilder)
-	{
-		creationDate = DeepCopier.copy(inBuilder.creationDateField);
-		description = inBuilder.descriptionField;
-		type = inBuilder.typeField;
-		traveller = inBuilder.travellerField;
+		type = inType;
+		creationDate = DeepCopier.copy(inCreationDate);
+		description = inDescription;
 	}
 
 	@Override
@@ -73,8 +65,15 @@ public class Notification implements INotification
 	}
 
 	@Override
-	public Traveller getTraveller()
+	public String toString()
 	{
-		return traveller;
+		final StringBuilder builder = new StringBuilder();
+		builder.append("--------------------- Notification -------------------\n");
+		builder.append("creation date: ").append(creationDate).append("\n");
+		builder.append("description: ").append(description).append("\n");
+		builder.append("type: ").append(type).append("\n");
+		builder.append("------------------------------------------------------\n");
+
+		return builder.toString();
 	}
 }

@@ -66,11 +66,4 @@ public interface INotification
 	 * @return the type of the notification
 	 */
 	Type getType();
-
-	/**
-	 * Returns the traveller this notification is connected to
-	 * 
-	 * @return the traveller this notification is connected to
-	 */
-	ITraveller getTraveller();
 }

@@ -6,15 +6,12 @@ import java.util.Date;
 import org.shared.traveller.client.domain.rest.RequestInfo;
 import org.shared.traveller.client.domain.rest.RequestInfo.RequestInfoBuilder;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-
 /**
  * The event is used to represent the information for an announcement's request
  * 
  * @author "Ivan Ivanov"
  * 
  */
-@JsonDeserialize(as = RequestInfo.class)
 public interface IRequestInfo extends Serializable
 {
 	/**
