@@ -6,20 +6,21 @@
     <string name="action_main">Main</string>
     <string name="hello_world">Hello world!</string>
 
-    <!-- Preferences -->
+    <!-- ===================== Preferences ============================ -->
     <string name="server_url">Server Url:</string>
+    <string name="notif_intervals">Notificaiton Intervals:</string>
 
-    <!-- Common -->
+    <!-- ===================== Common ============================ -->
     <string name="call_btn">Call</string>
 
-    <!-- Requests swipe list view cosntants -->
+    <!-- ===================== Requests swipe list view cosntants ========== -->
     <string name="request_status_icon_descr">An icon for the
         status of a request</string>
     <string name="accept_request_btn">Accept</string>
     <string name="reject_request_btn">Reject</string>
     <string name="rate_request_btn">Rate</string>
 
-    <!-- Swipe list view constants -->
+    <!-- ===================== Swipe list view constants ==================== -->
     <string name="loading_img_view_content_desc">Loading</string>
     <string name="newTag">New!</string>
     <string name="map">Map</string>
