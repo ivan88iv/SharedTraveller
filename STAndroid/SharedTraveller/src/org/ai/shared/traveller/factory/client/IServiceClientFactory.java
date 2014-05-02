@@ -70,4 +70,17 @@ public interface IServiceClientFactory
 	<T> IServiceClient createNewResourceClient(final Context inContext,
 			final String inServicePath,
 			final T inNewInstance, final String inErrorMsg);
+
+	/**
+	 * The method creates a new client responsible for resource deletion in the
+	 * server part
+	 * 
+	 * @param inContext
+	 *            the context used in the creation. It may not be null.
+	 * @param inServicePath
+	 *            the path of the deletion service called. It may not be null.
+	 * @return the newly created service client
+	 */
+	IServiceClient createResourceDeletionClient(final Context inContext,
+			final String inServicePath);
 }

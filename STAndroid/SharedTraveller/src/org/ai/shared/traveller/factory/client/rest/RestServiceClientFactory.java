@@ -30,10 +30,7 @@ public class RestServiceClientFactory implements IServiceClientFactory
 	public IServiceClient createSimpleClient(final Context inContext,
 			final String inServicePath)
 	{
-		InstanceAsserter.assertNotNull(inContext, "context");
-		InstanceAsserter.assertNotNull(inServicePath, "service path");
-
-		return new SimpleClient(inContext, RequestType.GET, inServicePath);
+		return createSimpleClient(inContext, inServicePath, RequestType.GET);
 	}
 
 	@Override
@@ -81,5 +78,35 @@ public class RestServiceClientFactory implements IServiceClientFactory
 				}
 			}
 		};
+	}
+
+	@Override
+	public IServiceClient createResourceDeletionClient(final Context inContext,
+			final String inServicePath)
+	{
+		return createSimpleClient(inContext, inServicePath, RequestType.DELETE);
+	}
+
+	/**
+	 * The method creates a new simple client for the specified context, service
+	 * path and request type
+	 * 
+	 * @param inContext
+	 *            the context for which a new REST client is created. It may not
+	 *            be null.
+	 * @param inServicePath
+	 *            the service path for which the current client is responsible.
+	 *            It may not be null.
+	 * @param inRequestType
+	 *            the type of the Http request performed by this client.
+	 * @return the newly created simple client
+	 */
+	private SimpleClient createSimpleClient(final Context inContext,
+			final String inServicePath, final RequestType inRequestType)
+	{
+		InstanceAsserter.assertNotNull(inContext, "context");
+		InstanceAsserter.assertNotNull(inServicePath, "service path");
+
+		return new SimpleClient(inContext, inRequestType, inServicePath);
 	}
 }

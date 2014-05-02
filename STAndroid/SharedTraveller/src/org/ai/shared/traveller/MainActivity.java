@@ -19,15 +19,16 @@ import org.ai.shared.traveller.factory.client.IServiceClientFactory;
 import org.ai.shared.traveller.manager.domain.DomainManager;
 import org.ai.shared.traveller.network.connection.AbstractNetworkActivity;
 import org.ai.shared.traveller.network.connection.client.IServiceClient;
+import org.ai.shared.traveller.network.connection.task.AllCitiesTask;
+import org.ai.shared.traveller.network.connection.task.UserVehiclesTask;
+import org.ai.shared.traveller.network.connection.task.announcement.NewAnnouncementTask;
+import org.ai.shared.traveller.network.connection.task.request.DeclineRequestTask;
+import org.ai.shared.traveller.network.connection.task.request.NewRequestTask;
+import org.ai.shared.traveller.network.connection.task.trip.CancelTripTask;
+import org.ai.shared.traveller.notification.NotificationServiceConfigurator;
 import org.ai.shared.traveller.request.AnnouncementRequestActivity;
 import org.ai.shared.traveller.request.UserRequestsActivity;
 import org.ai.shared.traveller.settings.SettingsActivity;
-import org.ai.shared.traveller.task.AllCitiesTask;
-import org.ai.shared.traveller.task.UserVehiclesTask;
-import org.ai.shared.traveller.task.announcement.NewAnnouncementTask;
-import org.ai.shared.traveller.task.request.DeclineRequestTask;
-import org.ai.shared.traveller.task.request.NewRequestTask;
-import org.ai.shared.traveller.task.trip.CancelTripTask;
 import org.ai.shared.traveller.ui.preparator.ICityComponentsPreparator;
 import org.ai.shared.traveller.ui.preparator.IVehicleComponentsPreparator;
 import org.ai.sharedtraveller.R;
@@ -204,6 +205,9 @@ public class MainActivity extends AbstractNetworkActivity implements
 	protected void onResume()
 	{
 		super.onResume();
+		final NotificationServiceConfigurator serviceConfig =
+				new NotificationServiceConfigurator(getApplicationContext());
+		serviceConfig.configure();
 	}
 
 	@Override

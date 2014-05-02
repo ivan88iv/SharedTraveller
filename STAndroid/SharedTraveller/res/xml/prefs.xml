@@ -3,4 +3,10 @@
     <EditTextPreference android:key="server_url"
         android:title="@string/server_url"
         android:defaultValue="http://192.168.1.132:8080"/>
+    
+    <ListPreference android:title="@string/notif_intervals" 
+        android:key="notification_intervals" 
+        android:defaultValue="3" 
+        android:entries="@array/notificationIntervals"
+        android:entryValues="@array/notifiactionIntervalVals"/>
 </PreferenceScreen>

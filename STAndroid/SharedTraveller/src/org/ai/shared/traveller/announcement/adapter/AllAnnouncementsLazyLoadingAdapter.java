@@ -119,16 +119,15 @@ public class AllAnnouncementsLazyLoadingAdapter extends
 		} catch (final ParseException pe)
 		{
 			Log.d("AbstractNetwTask", UNABLE_TO_PARSE_RESULT, pe);
-			errorResponse = new ErrorResponse();
-			errorResponse.setMessage(UNABLE_TO_PARSE_RESULT);
+			errorResponse = new ErrorResponse(UNABLE_TO_PARSE_RESULT);
 			throw pe;
 		} catch (final ServiceConnectionException sce)
 		{
 			Log.d("AbstractNetwTask",
 					MessageFormat.format(UNABLE_TO_CONNECT, httpTask.getUrl()),
 					sce);
-			errorResponse = new ErrorResponse();
-			errorResponse.setMessage(MessageFormat.format(UNABLE_TO_CONNECT,
+			errorResponse = new ErrorResponse(MessageFormat.format(
+					UNABLE_TO_CONNECT,
 					httpTask.getUrl()));
 			throw sce;
 		}
