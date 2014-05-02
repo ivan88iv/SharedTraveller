@@ -1,4 +1,4 @@
-package org.shared.traveller.business.exception;
+package org.shared.traveller.client.exception.rest;
 
 import org.springframework.http.HttpStatus;
 

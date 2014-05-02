@@ -1,6 +1,6 @@
 package org.shared.traveller.rest.exception.handler;
 
-import org.shared.traveller.business.exception.RestServiceException;
+import org.shared.traveller.client.exception.rest.RestServiceException;
 import org.shared.traveller.rest.domain.ErrorResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;

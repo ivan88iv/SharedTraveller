@@ -10,19 +10,31 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 import org.shared.traveller.business.domain.AbstractEntity;
 import org.shared.traveller.business.domain.IPersistentAnnouncement;
 import org.shared.traveller.business.domain.IPersistentNotification;
 import org.shared.traveller.business.domain.IPersistentTraveller;
+import org.shared.traveller.business.domain.jpa.query.RequestNamedQueryNames;
 import org.shared.traveller.business.domain.visitor.INotificationVisitor;
 import org.shared.traveller.client.domain.INotification.Type;
 import org.shared.traveller.utility.DeepCopier;
 import org.shared.traveller.utility.InstanceAsserter;
 
-@Entity(name = "notification")
+@Entity(name = "Notification")
 @Table(name = "notification")
+@NamedQueries(
+{
+		@NamedQuery(name = RequestNamedQueryNames.LOAD_USER_NOTIFICATIONS,
+				query = "SELECT n FROM Notification n "
+						+ "WHERE n.receiver.id = :receiverId"),
+		@NamedQuery(name = RequestNamedQueryNames.REMOVE_NOTIFICATIONS,
+				query = "DELETE FROM Notification n "
+						+ "WHERE n.id IN (:notificationIds)")
+})
 public class NotificationEntity extends AbstractEntity implements
 		IPersistentNotification
 {
@@ -62,7 +74,7 @@ public class NotificationEntity extends AbstractEntity implements
 	private AnnouncementEntity announcement;
 
 	public static class BusinessNotificationBuilder
-		implements IPersistentNotificationBuilder
+			implements IPersistentNotificationBuilder
 	{
 		private Long idField;
 

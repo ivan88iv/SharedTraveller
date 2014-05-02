@@ -2,13 +2,13 @@ package org.shared.traveller.client.service.rest;
 
 import java.text.MessageFormat;
 
-import org.shared.traveller.business.exception.IncorrectInputException;
 import org.shared.traveller.business.exception.InfoLookupException;
-import org.shared.traveller.business.exception.InternalBusinessException;
 import org.shared.traveller.business.exception.NonExistingResourceException;
 import org.shared.traveller.business.exception.UnsuccessfulResourceCreationException;
 import org.shared.traveller.business.service.NotificationService;
 import org.shared.traveller.client.domain.INotification.Type;
+import org.shared.traveller.client.exception.rest.IncorrectInputException;
+import org.shared.traveller.client.exception.rest.InternalBusinessException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

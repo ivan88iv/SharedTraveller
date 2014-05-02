@@ -27,4 +27,17 @@ public abstract class RequestNamedQueryNames
 	 */
 	public static final String LOAD_ANNOUNCEMENT_WITH_REQUESTS =
 			"Announcement.loadAnnouncementWithRequests";
+
+	/**
+	 * The name of the query that loads the notifications for a specified
+	 * receiver
+	 */
+	public static final String LOAD_USER_NOTIFICATIONS =
+			"Notification.loadUserNotifications";
+
+	/**
+	 * The name of the query used for notification deletion
+	 */
+	public static final String REMOVE_NOTIFICATIONS =
+			"Notifications.delete";
 }

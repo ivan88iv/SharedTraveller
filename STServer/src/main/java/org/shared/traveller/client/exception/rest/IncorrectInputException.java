@@ -1,13 +1,12 @@
-package org.shared.traveller.business.exception;
+package org.shared.traveller.client.exception.rest;
 
 import org.springframework.http.HttpStatus;
 
 /**
- * The exception is thrown when an incorrect input is provided to
- * a REST service
- *
+ * The exception is thrown when an incorrect input is provided to a REST service
+ * 
  * @author "Ivan Ivanov"
- *
+ * 
  */
 public class IncorrectInputException extends RestServiceException
 {
@@ -18,10 +17,13 @@ public class IncorrectInputException extends RestServiceException
 
 	/**
 	 * Creates a new incorrect input exception
-	 *
-	 * @param message the message of the exception
-	 * @param cause the cause of the exception
-	 * @param statusCode the status code for this exception
+	 * 
+	 * @param message
+	 *            the message of the exception
+	 * @param cause
+	 *            the cause of the exception
+	 * @param statusCode
+	 *            the status code for this exception
 	 */
 	public IncorrectInputException(String message, Throwable cause,
 			HttpStatus statusCode)
@@ -31,9 +33,11 @@ public class IncorrectInputException extends RestServiceException
 
 	/**
 	 * Creates a new incorrect input exception
-	 *
-	 * @param message the message of the exception
-	 * @param statusCode the status code for theis exception
+	 * 
+	 * @param message
+	 *            the message of the exception
+	 * @param statusCode
+	 *            the status code for theis exception
 	 */
 	public IncorrectInputException(String message, HttpStatus statusCode)
 	{

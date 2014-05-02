@@ -1,9 +1,11 @@
 package org.shared.traveller.business.service;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.ai.shared.traveller.client.factory.IDomainFactory;
 import org.shared.traveller.business.dao.IAnnouncementDAO;
 import org.shared.traveller.business.dao.IGenericNotificationDAO;
 import org.shared.traveller.business.dao.INotificationDAO;
@@ -19,9 +21,12 @@ import org.shared.traveller.business.exception.IncorrectDomainTypeException;
 import org.shared.traveller.business.exception.InfoLookupException;
 import org.shared.traveller.business.exception.NonExistingResourceException;
 import org.shared.traveller.business.exception.UnsuccessfulResourceCreationException;
+import org.shared.traveller.business.exception.UnsuccessfulResourceDeletionException;
 import org.shared.traveller.business.exception.persistence.DataExtractionException;
 import org.shared.traveller.business.exception.persistence.DataModificationException;
 import org.shared.traveller.business.factory.builder.IBusinessBuilderFactory;
+import org.shared.traveller.client.domain.ClientDomainManager;
+import org.shared.traveller.client.domain.INotification;
 import org.shared.traveller.client.domain.INotification.Type;
 import org.shared.traveller.utility.InstanceAsserter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -196,6 +201,75 @@ public class NotificationService implements Serializable
 			persistNewNotification(inNotificationType, notificaitonSender,
 					notificationReceiver, announcement);
 		}
+	}
+
+	/**
+	 * The method loads and removes the notifications for the specified receiver
+	 * from the persistent layer
+	 * 
+	 * @param inUserId
+	 *            the is of the receiver. It may not be null.
+	 * @return the notification instances that correspond to the specified
+	 *         receiver
+	 * 
+	 * @throws InfoLookupException
+	 *             if a problem occurs while trying to load the notifications
+	 * @throws UnsuccessfulResourceDeletionException
+	 *             if a problem occurs while trying to delete the specified
+	 *             notifications
+	 */
+	public List<? extends INotification> loadAndRemoveUserNotifications(
+			final Long inUserId)
+	{
+		List<? extends IPersistentNotification> persistentNotifications = null;
+
+		try
+		{
+			persistentNotifications = notificationDAO
+					.extractUserNotifications(inUserId);
+		} catch (final DataExtractionException dee)
+		{
+			throw new InfoLookupException("notifications", "receiver id: "
+					+ inUserId);
+		}
+
+		try
+		{
+			notificationDAO.remove(persistentNotifications);
+		} catch (final DataModificationException dme)
+		{
+			throw new UnsuccessfulResourceDeletionException("notifications",
+					dme);
+		}
+
+		return convertNotifications(persistentNotifications);
+	}
+
+	/**
+	 * The method converts the persistent notifications to their client domain
+	 * counterparts
+	 * 
+	 * @param inPersistentNotifications
+	 *            the persistent notifications to be converted. It may not be
+	 *            null.
+	 * @return the converted client domain notifications
+	 */
+	private List<? extends INotification> convertNotifications(
+			final List<? extends IPersistentNotification> inPersistentNotifications)
+	{
+		final IDomainFactory clientDomainFactory = ClientDomainManager
+				.getInstance().getDomainFactory();
+		final List<INotification> clientNotifications = new ArrayList<>();
+
+		for (final IPersistentNotification currNot : inPersistentNotifications)
+		{
+			final INotification notification = clientDomainFactory
+					.createNotification(currNot.getType(),
+							currNot.getCreationDate(), currNot.getDescription());
+			clientNotifications.add(notification);
+		}
+
+		return clientNotifications;
 	}
 
 	/**

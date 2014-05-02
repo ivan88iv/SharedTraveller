@@ -33,7 +33,7 @@ public class UnsuccessfulResourceCreationException extends BusinessException
 	 * Creates a new exception for unsuccessful creation operations
 	 * 
 	 * @param inResourceItem
-	 *            information about the item that was unsuccessfully updated
+	 *            information about the item that was unsuccessfully created
 	 * @param inCause
 	 *            the cause of the problem
 	 */

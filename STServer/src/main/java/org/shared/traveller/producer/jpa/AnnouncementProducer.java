@@ -13,9 +13,9 @@ import org.shared.traveller.business.domain.jpa.AnnouncementEntity.BusinessAnnou
 import org.shared.traveller.business.domain.jpa.CityEntity;
 import org.shared.traveller.business.domain.jpa.TravellerEntity;
 import org.shared.traveller.business.domain.jpa.VehicleEntity;
-import org.shared.traveller.business.exception.IncorrectInputException;
 import org.shared.traveller.client.domain.IAnnouncement;
 import org.shared.traveller.client.domain.IAnnouncement.Status;
+import org.shared.traveller.client.exception.rest.IncorrectInputException;
 import org.shared.traveller.transformer.IPersistentAnnouncementProducer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
