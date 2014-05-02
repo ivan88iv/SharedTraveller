@@ -5,6 +5,7 @@ import java.io.PushbackInputStream;
 import java.lang.reflect.Type;
 
 import org.ai.shared.traveller.exceptions.ParseException;
+import org.ai.shared.traveller.manager.domain.DomainManager;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,6 +23,10 @@ public class ServerResponseParser<T>
 {
 	private static final String NULL_IS = "The input stream cannot be null.";
 
+	private static final IResponseParserOptions options =
+			DomainManager.getInstance().getParserOptionsFactory()
+					.createOptions();
+
 	private final TypeReference<T> elemTypeRef;
 
 	final ObjectMapper mapper = new ObjectMapper();
@@ -34,6 +39,7 @@ public class ServerResponseParser<T>
 	 */
 	public ServerResponseParser(final Class<T> inClass)
 	{
+		mapper.registerModule(options.getTypeMappings());
 		elemTypeRef = new TypeReference<T>()
 		{
 			@Override
@@ -53,6 +59,7 @@ public class ServerResponseParser<T>
 	 */
 	public ServerResponseParser(final TypeReference<T> inTypeReference)
 	{
+		mapper.registerModule(options.getTypeMappings());
 		elemTypeRef = inTypeReference;
 	}
 
@@ -88,9 +95,6 @@ public class ServerResponseParser<T>
 		} catch (final IOException ioe)
 		{
 			throw new ParseException("Could not parse service response.", ioe);
-		} catch (Exception e)
-		{
-			System.out.println();
 		}
 
 		return parsedResponse;

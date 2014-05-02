@@ -1,14 +1,7 @@
 package org.ai.shared.traveller.network.connection;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
 import org.ai.shared.traveller.network.connection.task.INetworkTask;
 
-import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.support.v7.app.ActionBarActivity;
 
 /**
@@ -20,14 +13,7 @@ import android.support.v7.app.ActionBarActivity;
  */
 public abstract class AbstractNetworkActivity extends ActionBarActivity
 {
-	private static final String NULL_TASK_KEY =
-			"The task key cannot be null.";
-
-	private static final String NULL_TASK =
-			"The task cannot be null";
-
-	private final Map<String, INetworkTask> tasks =
-			new HashMap<String, INetworkTask>();
+	private final TaskBinder taskBinder = new TaskBinder(this);
 
 	/**
 	 * The method is called to attach the tasks related to the activity, which
@@ -35,28 +21,6 @@ public abstract class AbstractNetworkActivity extends ActionBarActivity
 	 * resume
 	 */
 	protected abstract void attachTasks();
-
-	/**
-	 * The method executes all attached network tasks
-	 */
-	protected final void executeTasks()
-	{
-		final ConnectivityManager connManager =
-				(ConnectivityManager) getSystemService(
-				Context.CONNECTIVITY_SERVICE);
-		final NetworkInfo netInfo = connManager.getActiveNetworkInfo();
-
-		if (null != netInfo && netInfo.isConnected())
-		{
-			final Set<Map.Entry<String, INetworkTask>> entrySet = tasks
-					.entrySet();
-
-			for (final Map.Entry<String, INetworkTask> entry : entrySet)
-			{
-				entry.getValue().perform();
-			}
-		}
-	}
 
 	@Override
 	protected void onResume()
@@ -68,8 +32,16 @@ public abstract class AbstractNetworkActivity extends ActionBarActivity
 	@Override
 	protected void onPause()
 	{
-		unbindTasks();
+		taskBinder.unbindTasks();
 		super.onPause();
+	}
+
+	/**
+	 * Execute all tasks previously associated with this activity
+	 */
+	protected final void executeTasks()
+	{
+		taskBinder.executeTasks();
 	}
 
 	/**
@@ -85,13 +57,7 @@ public abstract class AbstractNetworkActivity extends ActionBarActivity
 	protected void addTask(final String inKey,
 			final INetworkTask inTask)
 	{
-		assert null != inKey : NULL_TASK_KEY;
-		assert null != inTask : NULL_TASK;
-
-		if (null != tasks)
-		{
-			tasks.put(inKey, inTask);
-		}
+		taskBinder.addTask(inKey, inTask);
 	}
 
 	/**
@@ -104,27 +70,6 @@ public abstract class AbstractNetworkActivity extends ActionBarActivity
 	 */
 	protected void executeTask(final String inTaskKey)
 	{
-		assert null != inTaskKey : NULL_TASK_KEY;
-
-		final INetworkTask task = tasks.get(inTaskKey);
-		if (null != task)
-		{
-			task.perform();
-		}
-	}
-
-	/**
-	 * The method unbinds all previously associated tasks with the activity
-	 */
-	private void unbindTasks()
-	{
-		final Set<Map.Entry<String, INetworkTask>> taskEntries =
-				tasks.entrySet();
-
-		for (final Map.Entry<String, INetworkTask> taskEntry : taskEntries)
-		{
-			taskEntry.getValue().unbind();
-		}
-		tasks.clear();
+		taskBinder.executeTask(inTaskKey);
 	}
 }
