@@ -1,4 +1,4 @@
-package org.shared.traveller.client.domain;
+package org.shared.traveller.client.domain.traveller;
 
 import java.io.Serializable;
 

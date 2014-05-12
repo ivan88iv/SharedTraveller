@@ -28,6 +28,8 @@ public class Announcement implements IAnnouncement
 
 	private static final String NULL_VISITOR = "Visitor cannot be null!";
 
+	private final Long id;
+
 	private final String from;
 
 	private final String to;
@@ -58,6 +60,8 @@ public class Announcement implements IAnnouncement
 	 */
 	public static class AnnouncementBuilder implements IAnnouncement.IBuilder
 	{
+		private Long idField;
+
 		private final String fromField;
 
 		private final String toField;
@@ -112,6 +116,13 @@ public class Announcement implements IAnnouncement
 			depDateField = DeepCopier.copy(inDepDate);
 			seatsField = inSeats;
 			driverUsernameField = inDriverUsername;
+		}
+
+		@Override
+		public IBuilder id(Long inId)
+		{
+			idField = inId;
+			return this;
 		}
 
 		@Override
@@ -173,6 +184,7 @@ public class Announcement implements IAnnouncement
 	 */
 	private Announcement(final AnnouncementBuilder inBuilder)
 	{
+		id = inBuilder.idField;
 		from = inBuilder.fromField;
 		to = inBuilder.toField;
 		departureDate = DeepCopier.copy(inBuilder.depDateField);
@@ -184,6 +196,12 @@ public class Announcement implements IAnnouncement
 		driverUsername = inBuilder.driverUsernameField;
 		intermediatePts = DeepCopier.copy(inBuilder.intermediatePtsField);
 		status = inBuilder.statusField;
+	}
+
+	@Override
+	public Long getId()
+	{
+		return id;
 	}
 
 	@Override

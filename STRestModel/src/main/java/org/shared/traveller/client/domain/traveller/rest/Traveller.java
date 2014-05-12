@@ -1,6 +1,6 @@
-package org.shared.traveller.client.domain.rest;
+package org.shared.traveller.client.domain.traveller.rest;
 
-import org.shared.traveller.client.domain.ITraveller;
+import org.shared.traveller.client.domain.traveller.ITraveller;
 
 /**
  * The class represents a traveller REST domain object

@@ -1,11 +1,10 @@
 package org.ai.shared.traveller.client.factory.rest;
 
-import java.util.Date;
-
 import org.ai.shared.traveller.client.factory.IDomainFactory;
-import org.shared.traveller.client.domain.INotification;
-import org.shared.traveller.client.domain.INotification.Type;
-import org.shared.traveller.client.domain.rest.Notification;
+import org.shared.traveller.client.domain.request.IPlainRequest;
+import org.shared.traveller.client.domain.request.RequestStatus;
+import org.shared.traveller.client.domain.request.rest.PlainRequest;
+import org.shared.traveller.client.domain.traveller.INotificationTraveller;
 
 /**
  * The class represents a REST factory for creating simple client instances
@@ -16,9 +15,9 @@ import org.shared.traveller.client.domain.rest.Notification;
 public class RestDomainFactory implements IDomainFactory
 {
 	@Override
-	public INotification createNotification(Type inType, Date inCreationDate,
-			String inDescription)
+	public IPlainRequest createRequest(Long inId, RequestStatus inStatus,
+			final INotificationTraveller inSender)
 	{
-		return new Notification(inType, inCreationDate, inDescription);
+		return new PlainRequest(inId, inStatus, inSender);
 	}
 }

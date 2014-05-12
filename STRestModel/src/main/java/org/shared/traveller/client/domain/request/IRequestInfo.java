@@ -3,8 +3,8 @@ package org.shared.traveller.client.domain.request;
 import java.io.Serializable;
 import java.util.Date;
 
-import org.shared.traveller.client.domain.rest.RequestInfo;
-import org.shared.traveller.client.domain.rest.RequestInfo.RequestInfoBuilder;
+import org.shared.traveller.client.domain.request.rest.RequestInfo;
+import org.shared.traveller.client.domain.traveller.INotificationTraveller;
 
 /**
  * The event is used to represent the information for an announcement's request
@@ -30,7 +30,7 @@ public interface IRequestInfo extends Serializable
 		 *            the new value to be set
 		 * @return the current request info builder
 		 */
-		RequestInfoBuilder id(final Long inId);
+		IBuilder id(final Long inId);
 
 		/**
 		 * Sets a new user name to the sender field
@@ -39,7 +39,7 @@ public interface IRequestInfo extends Serializable
 		 *            the new sender user name
 		 * @return the builder
 		 */
-		RequestInfoBuilder sender(final String inSender);
+		IBuilder sender(final String inSender);
 
 		/**
 		 * Sets a new settlement for a start point of the travel
@@ -48,7 +48,7 @@ public interface IRequestInfo extends Serializable
 		 *            the new start point
 		 * @return the builder
 		 */
-		RequestInfoBuilder fromPoint(final String inFrom);
+		IBuilder fromPoint(final String inFrom);
 
 		/**
 		 * Sets a new settlement for a end point of the travel
@@ -57,7 +57,7 @@ public interface IRequestInfo extends Serializable
 		 *            the new end point
 		 * @return the builder
 		 */
-		RequestInfoBuilder toPoint(final String inTo);
+		IBuilder toPoint(final String inTo);
 
 		/**
 		 * Sets a new date for the departure
@@ -66,25 +66,16 @@ public interface IRequestInfo extends Serializable
 		 *            the new departure date
 		 * @return the builder
 		 */
-		RequestInfoBuilder departureDate(final Date inDepDate);
+		IBuilder departureDate(final Date inDepDate);
 
 		/**
-		 * Sets a new value for the user name of the driver
+		 * Sets a new value for the request's driver
 		 * 
-		 * @param inUsername
-		 *            the new driver's user name
+		 * @param inDriver
+		 *            the new request's driver
 		 * @return the builder
 		 */
-		RequestInfoBuilder driverUsername(final String inUsername);
-
-		/**
-		 * The method sets the new driver's phone number
-		 * 
-		 * @param inDriverPhone
-		 *            the new phone number of the driver
-		 * @return the builder
-		 */
-		RequestInfoBuilder driverPhone(final String inDriverPhone);
+		IBuilder driver(final INotificationTraveller inDriver);
 
 		/**
 		 * Sets a new status value for the request
@@ -93,7 +84,7 @@ public interface IRequestInfo extends Serializable
 		 *            the new request's status
 		 * @return the builder
 		 */
-		RequestInfoBuilder status(final RequestStatus inStatus);
+		IBuilder status(final RequestStatus inStatus);
 
 		/**
 		 * The method builds a new request information instance
@@ -139,18 +130,11 @@ public interface IRequestInfo extends Serializable
 	Date getDepartureDate();
 
 	/**
-	 * Returns the user name of the driver
+	 * Returns the driver for the request
 	 * 
-	 * @return the user name of the driver
+	 * @return the driver for the request
 	 */
-	String getDriver();
-
-	/**
-	 * Returns the telephone of the request's driver
-	 * 
-	 * @return the telephone of the request's driver
-	 */
-	String getDriverPhone();
+	INotificationTraveller getDriver();
 
 	/**
 	 * Returns the status of the request
@@ -158,12 +142,4 @@ public interface IRequestInfo extends Serializable
 	 * @return the status of the request
 	 */
 	RequestStatus getStatus();
-
-	/**
-	 * The method sets the new status for the current request
-	 * 
-	 * @param inStatus
-	 *            the new status value to be set
-	 */
-	void setStatus(final RequestStatus inStatus);
 }

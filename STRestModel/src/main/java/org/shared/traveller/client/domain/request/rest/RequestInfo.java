@@ -1,10 +1,16 @@
-package org.shared.traveller.client.domain.rest;
+package org.shared.traveller.client.domain.request.rest;
 
 import java.util.Date;
 
 import org.shared.traveller.client.domain.request.IRequestInfo;
 import org.shared.traveller.client.domain.request.RequestStatus;
+import org.shared.traveller.client.domain.traveller.INotificationTraveller;
+import org.shared.traveller.client.domain.traveller.rest.NotificationTraveller;
 import org.shared.traveller.utility.DeepCopier;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 /**
  * The class represents a request related information
@@ -19,21 +25,20 @@ public class RequestInfo implements IRequestInfo
 	 */
 	private static final long serialVersionUID = -3391106766190335044L;
 
-	private Long id;
+	private final Long id;
 
-	private String sender;
+	private final String sender;
 
-	private String fromPoint;
+	private final String fromPoint;
 
-	private String toPoint;
+	private final String toPoint;
 
-	private Date departureDate;
+	private final Date departureDate;
 
-	private String driver;
+	@JsonDeserialize(as = NotificationTraveller.class)
+	private final INotificationTraveller driver;
 
-	private String driverPhone;
-
-	private RequestStatus status;
+	private final RequestStatus status;
 
 	/**
 	 * The class is responsible for building a new request info instance
@@ -53,9 +58,7 @@ public class RequestInfo implements IRequestInfo
 
 		private Date departureDateField;
 
-		private String driverField;
-
-		private String driverPhoneField;
+		private INotificationTraveller driverField;
 
 		private RequestStatus statusField;
 
@@ -95,16 +98,9 @@ public class RequestInfo implements IRequestInfo
 		}
 
 		@Override
-		public RequestInfoBuilder driverUsername(final String inUsername)
+		public RequestInfoBuilder driver(final INotificationTraveller inDriver)
 		{
-			driverField = inUsername;
-			return this;
-		}
-
-		@Override
-		public RequestInfoBuilder driverPhone(final String inDriverPhone)
-		{
-			driverPhoneField = inDriverPhone;
+			driverField = inDriver;
 			return this;
 		}
 
@@ -123,15 +119,6 @@ public class RequestInfo implements IRequestInfo
 	}
 
 	/**
-	 * This constructor is merely intended to be used for deserialization
-	 * purposes. It should not be used by any user code.
-	 */
-	protected RequestInfo()
-	{
-		// used for JSON deserialization purposes
-	}
-
-	/**
 	 * The constructor creates a request information instance by using the
 	 * special builder class provided
 	 * 
@@ -139,14 +126,46 @@ public class RequestInfo implements IRequestInfo
 	 */
 	private RequestInfo(final RequestInfoBuilder inBuilder)
 	{
-		id = inBuilder.idField;
-		sender = inBuilder.senderField;
-		fromPoint = inBuilder.fromField;
-		toPoint = inBuilder.toField;
-		departureDate = DeepCopier.copy(inBuilder.departureDateField);
-		driver = inBuilder.driverField;
-		driverPhone = inBuilder.driverPhoneField;
-		status = inBuilder.statusField;
+		this(inBuilder.idField, inBuilder.senderField, inBuilder.fromField,
+				inBuilder.toField, inBuilder.departureDateField,
+				inBuilder.driverField, inBuilder.statusField);
+	}
+
+	/**
+	 * The constructor creates a new request info instance
+	 * 
+	 * @param inId
+	 *            the id of the request
+	 * @param inSender
+	 *            the user name of the request's sender
+	 * @param inFrom
+	 *            the start point of the travel for which the request is posted
+	 * @param inTo
+	 *            the end point of the travel for which the request is posted
+	 * @param inDepDate
+	 *            the departure date of the travel
+	 * @param inDriver
+	 *            the driver for the request
+	 * @param inStatus
+	 *            the status of the request
+	 */
+	@JsonCreator
+	private RequestInfo(
+			@JsonProperty(value = "id") final Long inId,
+			@JsonProperty(value = "sender") final String inSender,
+			@JsonProperty(value = "fromPoint") final String inFrom,
+			@JsonProperty(value = "toPoint") final String inTo,
+			@JsonProperty(value = "departureDate") final Date inDepDate,
+			@JsonProperty(value = "driver") final INotificationTraveller inDriver,
+			@JsonProperty(value = "status") final RequestStatus inStatus)
+	{
+		id = inId;
+		sender = inSender;
+		fromPoint = inFrom;
+		toPoint = inTo;
+		departureDate = DeepCopier.copy(inDepDate);
+		driver = inDriver;
+		status = inStatus;
 	}
 
 	@Override
@@ -180,15 +199,9 @@ public class RequestInfo implements IRequestInfo
 	}
 
 	@Override
-	public String getDriver()
+	public INotificationTraveller getDriver()
 	{
 		return driver;
-	}
-
-	@Override
-	public String getDriverPhone()
-	{
-		return driverPhone;
 	}
 
 	@Override
@@ -198,22 +211,17 @@ public class RequestInfo implements IRequestInfo
 	}
 
 	@Override
-	public void setStatus(RequestStatus inStatus)
-	{
-		status = inStatus;
-	}
-
-	@Override
 	public String toString()
 	{
 		final StringBuilder builder = new StringBuilder();
 
 		builder.append("------------- Requst Info -----------------\n");
+		builder.append("id: ").append(id).append("\n");
 		builder.append("sender name: " + sender + "\n");
 		builder.append("from settlement: " + fromPoint + "\n");
 		builder.append("to settlement: " + toPoint + "\n");
 		builder.append("departure date: " + departureDate + "\n");
-		builder.append("driver name: " + driver + "\n");
+		builder.append("driver: " + driver + "\n");
 		builder.append("status: " + status + "\n");
 		builder.append("-------------------------------------------\n");
 		return builder.toString();

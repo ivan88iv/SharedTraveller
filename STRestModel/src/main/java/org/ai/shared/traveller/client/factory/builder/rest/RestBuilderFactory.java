@@ -4,9 +4,13 @@ import java.util.Date;
 
 import org.ai.shared.traveller.client.factory.builder.IBuilderFactory;
 import org.shared.traveller.client.domain.IAnnouncement;
+import org.shared.traveller.client.domain.INotification.IBuilder;
 import org.shared.traveller.client.domain.request.IRequestInfo;
+import org.shared.traveller.client.domain.request.rest.RequestInfo;
 import org.shared.traveller.client.domain.rest.Announcement.AnnouncementBuilder;
-import org.shared.traveller.client.domain.rest.RequestInfo;
+import org.shared.traveller.client.domain.rest.Notification;
+import org.shared.traveller.client.domain.rest.RequestedAnnouncement;
+import org.shared.traveller.client.domain.traveller.rest.NotificationTraveller;
 import org.shared.traveller.utility.InstanceAsserter;
 
 /**
@@ -36,5 +40,25 @@ public class RestBuilderFactory implements IBuilderFactory
 	public IRequestInfo.IBuilder createRequestInfoBuilder()
 	{
 		return new RequestInfo.RequestInfoBuilder();
+	}
+
+	@Override
+	public IBuilder createNotificationBuilder()
+	{
+		return new Notification.Builder();
+	}
+
+	@Override
+	public org.shared.traveller.client.domain.IRequestedAnnouncement.IBuilder
+			createRequestedAnnouncementBuilder()
+	{
+		return new RequestedAnnouncement.Builder();
+	}
+
+	@Override
+	public org.shared.traveller.client.domain.traveller.INotificationTraveller.IBuilder
+			createNotificationTravellerBuilder()
+	{
+		return new NotificationTraveller.Builder();
 	}
 }

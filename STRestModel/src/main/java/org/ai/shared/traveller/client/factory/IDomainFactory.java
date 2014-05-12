@@ -1,9 +1,8 @@
 package org.ai.shared.traveller.client.factory;
 
-import java.util.Date;
-
-import org.shared.traveller.client.domain.INotification;
-import org.shared.traveller.client.domain.INotification.Type;
+import org.shared.traveller.client.domain.request.IPlainRequest;
+import org.shared.traveller.client.domain.request.RequestStatus;
+import org.shared.traveller.client.domain.traveller.INotificationTraveller;
 
 /**
  * The interface represents the common functionality a factory for creating
@@ -15,16 +14,17 @@ import org.shared.traveller.client.domain.INotification.Type;
 public interface IDomainFactory
 {
 	/**
-	 * The method creates a new notification instance
+	 * The method creates a new plain request instance
 	 * 
-	 * @param inType
-	 *            the type of the notification. It may not be null.
-	 * @param inCreationDate
-	 *            the date the notification was created. It may not be null.
-	 * @param inDescription
-	 *            the description of the notification
-	 * @return the newly created notification
+	 * @param inId
+	 *            the id of the new request to be created.
+	 * @param inStatus
+	 *            the status of the new request
+	 * @param inSender
+	 *            the sender associated with the new request
+	 * 
+	 * @return the newly created request
 	 */
-	INotification createNotification(final Type inType,
-			final Date inCreationDate, final String inDescription);
+	IPlainRequest createRequest(final Long inId, final RequestStatus inStatus,
+			final INotificationTraveller inSender);
 }

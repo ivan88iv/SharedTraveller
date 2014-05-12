@@ -6,7 +6,6 @@ import java.util.Date;
 import java.util.List;
 
 import org.shared.traveller.client.domain.rest.Announcement;
-import org.shared.traveller.client.domain.rest.Announcement.AnnouncementBuilder;
 import org.shared.traveller.client.domain.visitor.IAnnouncementVisitor;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
@@ -56,6 +55,15 @@ public interface IAnnouncement extends Serializable
 	public static interface IBuilder
 	{
 		/**
+		 * Sets the new id of the announcement to be built
+		 * 
+		 * @param inId
+		 *            the new id value
+		 * @return the builder instance
+		 */
+		IBuilder id(final Long inId);
+
+		/**
 		 * The method sets the new value for the departure time of the built
 		 * announcement
 		 * 
@@ -63,7 +71,7 @@ public interface IAnnouncement extends Serializable
 		 *            the new departure time value
 		 * @return the builder used
 		 */
-		AnnouncementBuilder depTime(final Date inDepTime);
+		IBuilder depTime(final Date inDepTime);
 
 		/**
 		 * The method sets the new value for the price of the built announcement
@@ -72,7 +80,7 @@ public interface IAnnouncement extends Serializable
 		 *            the new price value
 		 * @return the builder used
 		 */
-		AnnouncementBuilder price(final BigDecimal inPrice);
+		IBuilder price(final BigDecimal inPrice);
 
 		/**
 		 * The method sets the new value for the departure address of the built
@@ -82,7 +90,7 @@ public interface IAnnouncement extends Serializable
 		 *            the new departure address value
 		 * @return the builder used
 		 */
-		AnnouncementBuilder depAddress(final String inDepAddress);
+		IBuilder depAddress(final String inDepAddress);
 
 		/**
 		 * The method sets the new value for the name of the vehicle of the
@@ -92,7 +100,7 @@ public interface IAnnouncement extends Serializable
 		 *            the new vehicle name
 		 * @return the builder used
 		 */
-		AnnouncementBuilder vehicleName(final String inVehName);
+		IBuilder vehicleName(final String inVehName);
 
 		/**
 		 * The method sets the new value for the status of the built
@@ -102,7 +110,7 @@ public interface IAnnouncement extends Serializable
 		 *            the new status value
 		 * @return the builder used
 		 */
-		AnnouncementBuilder status(final Status inStatus);
+		IBuilder status(final Status inStatus);
 
 		/**
 		 * The method sets the new intermediate points for the built
@@ -112,7 +120,7 @@ public interface IAnnouncement extends Serializable
 		 *            the new intermediate points
 		 * @return the builder used
 		 */
-		AnnouncementBuilder intermediatePoints(
+		IBuilder intermediatePoints(
 				final List<String> inIntermediatePts);
 
 		/**
@@ -122,6 +130,13 @@ public interface IAnnouncement extends Serializable
 		 */
 		Announcement build();
 	}
+
+	/**
+	 * Returns the id of the current announcement
+	 * 
+	 * @return the id of the current announcement
+	 */
+	Long getId();
 
 	/**
 	 * Returns the from settlement of the announcement
