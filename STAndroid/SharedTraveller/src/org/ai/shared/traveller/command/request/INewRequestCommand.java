@@ -1,8 +1,21 @@
 package org.ai.shared.traveller.command.request;
 
-import org.shared.traveller.client.domain.rest.RequestInfo;
+import org.shared.traveller.client.domain.request.rest.RequestInfo;
 
+/**
+ * The interface should be implemented by instances sending new travel requests
+ * to the server
+ * 
+ * @author "Ivan Ivanov"
+ * 
+ */
 public interface INewRequestCommand
 {
-	void sendRequest(final RequestInfo inEvent);
+	/**
+	 * The method sends the specified request to the server
+	 * 
+	 * @param inRequest
+	 *            the request to be sent
+	 */
+	void sendRequest(final RequestInfo inRequest);
 }

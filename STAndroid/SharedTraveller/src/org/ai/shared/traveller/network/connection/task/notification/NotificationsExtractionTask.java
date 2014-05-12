@@ -3,8 +3,6 @@ package org.ai.shared.traveller.network.connection.task.notification;
 import java.text.MessageFormat;
 import java.util.List;
 
-import org.ai.shared.traveller.factory.client.IServiceClientFactory;
-import org.ai.shared.traveller.manager.domain.DomainManager;
 import org.ai.shared.traveller.network.connection.client.IServiceClient;
 import org.ai.shared.traveller.network.connection.task.AbstractNetworkTask;
 import org.ai.shared.traveller.notification.NotificationService;
@@ -55,15 +53,14 @@ public class NotificationsExtractionTask extends
 	@Override
 	protected void onSuccess(List<? extends INotification> inResult)
 	{
-		// TODO Auto-generated method stub
 		Log.d("NotificationsExtractionTask", MessageFormat.format(
 				EXTRACTION_SUCCESS, inResult));
+		getContext().onSuccessfulExtraction(inResult);
 	}
 
 	@Override
 	protected void onError(int inStatusCode, ErrorResponse inError)
 	{
-		// TODO Auto-generated method stub
 		Log.e("NotificationsExtractionTask", MessageFormat.format(
 				EXTRACTION_FAILUERE, inStatusCode, inError));
 	}
@@ -82,9 +79,8 @@ public class NotificationsExtractionTask extends
 	private static IServiceClient constructClient(final Context inContext,
 			final Long inReceiverId)
 	{
-		final IServiceClientFactory factory = DomainManager.getInstance()
-				.getServiceClientFactory();
-		return factory.createResourceDeletionClient(inContext,
-				"notification/all/" + inReceiverId);
+		// TODO specify the auth token
+		return clientFactory.createFormSubmitionClient(inContext,
+				"notification/all/" + inReceiverId, null);
 	}
 }

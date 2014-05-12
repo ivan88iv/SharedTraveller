@@ -1,11 +1,14 @@
 package org.ai.shared.traveller;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.ai.shared.traveller.announcement.activity.ShowAnnouncementsActivity;
 import org.ai.shared.traveller.announcement.input.InputAnnouncementActivity;
 import org.ai.shared.traveller.call.CallEnder;
+import org.ai.shared.traveller.client.factory.builder.IBuilderFactory;
 import org.ai.shared.traveller.command.request.INewRequestCommand;
 import org.ai.shared.traveller.command.save.announcement.ISaveAnnouncementCommand;
 import org.ai.shared.traveller.data.providers.ICitiesProvider;
@@ -13,8 +16,8 @@ import org.ai.shared.traveller.data.providers.IVehiclesProvider;
 import org.ai.shared.traveller.dialog.DialogRequestCode;
 import org.ai.shared.traveller.dialog.STDialogFragment;
 import org.ai.shared.traveller.dialog.request.NewRequestDialog;
-import org.ai.shared.traveller.dialog.request.RequestStatusNotificationFactory;
-import org.ai.shared.traveller.dialog.trip.TripCancellationNotificationFactory;
+import org.ai.shared.traveller.dialog.request.RequestStatusNotificationContext;
+import org.ai.shared.traveller.dialog.trip.TripCancellationNotificationContext;
 import org.ai.shared.traveller.factory.client.IServiceClientFactory;
 import org.ai.shared.traveller.manager.domain.DomainManager;
 import org.ai.shared.traveller.network.connection.AbstractNetworkActivity;
@@ -26,15 +29,25 @@ import org.ai.shared.traveller.network.connection.task.request.DeclineRequestTas
 import org.ai.shared.traveller.network.connection.task.request.NewRequestTask;
 import org.ai.shared.traveller.network.connection.task.trip.CancelTripTask;
 import org.ai.shared.traveller.notification.NotificationServiceConfigurator;
+import org.ai.shared.traveller.notification.social.CancelledTripNotification;
+import org.ai.shared.traveller.notification.social.DeclinedRequestNotification;
+import org.ai.shared.traveller.notification.social.SocialNotificationSender;
 import org.ai.shared.traveller.request.AnnouncementRequestActivity;
 import org.ai.shared.traveller.request.UserRequestsActivity;
 import org.ai.shared.traveller.settings.SettingsActivity;
+import org.ai.shared.traveller.ui.blocker.UIBlocker;
 import org.ai.shared.traveller.ui.preparator.ICityComponentsPreparator;
 import org.ai.shared.traveller.ui.preparator.IVehicleComponentsPreparator;
 import org.ai.sharedtraveller.R;
+import org.shared.traveller.client.domain.IAnnouncement.Status;
+import org.shared.traveller.client.domain.IRequestedAnnouncement;
+import org.shared.traveller.client.domain.request.IPlainRequest;
+import org.shared.traveller.client.domain.request.IRequestInfo;
+import org.shared.traveller.client.domain.request.IRequestInfo.IBuilder;
+import org.shared.traveller.client.domain.request.RequestStatus;
+import org.shared.traveller.client.domain.request.rest.RequestInfo;
 import org.shared.traveller.client.domain.rest.Announcement;
-import org.shared.traveller.client.domain.rest.RequestInfo;
-import org.shared.traveller.client.domain.rest.RequestInfo.RequestInfoBuilder;
+import org.shared.traveller.client.domain.traveller.INotificationTraveller;
 
 import android.content.Context;
 import android.content.Intent;
@@ -81,6 +94,18 @@ public class MainActivity extends AbstractNetworkActivity implements
 	private final IServiceClientFactory clientFactory =
 			DomainManager.getInstance().getServiceClientFactory();
 
+	private RequestStatusNotificationContext declineNotificationContext;
+
+	private TripCancellationNotificationContext cancelTripNotificationContext;
+
+	private IRequestInfo declinationRequestInfo;
+
+	private IRequestedAnnouncement tripToCancel;
+
+	private boolean sendNotification;
+
+	private UIBlocker uiBlocker;
+
 	@Override
 	public boolean onCreateOptionsMenu(final Menu menu)
 	{
@@ -111,6 +136,8 @@ public class MainActivity extends AbstractNetworkActivity implements
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+
+		uiBlocker = new UIBlocker(findViewById(R.id.trips_progress_indicator));
 
 		attachCallListener();
 
@@ -165,8 +192,13 @@ public class MainActivity extends AbstractNetworkActivity implements
 			@Override
 			public void onClick(final View v)
 			{
-				startActivity(new Intent(MainActivity.this,
-						AnnouncementRequestActivity.class));
+				final Intent requestsIntent = new Intent(MainActivity.this,
+						AnnouncementRequestActivity.class);
+				// TODO replace the hard-coded announcement id
+				requestsIntent.putExtra(
+						AnnouncementRequestActivity.ANNOUNCEMENT_ID_KEY, 1l);
+
+				startActivity(requestsIntent);
 			}
 		});
 
@@ -180,23 +212,63 @@ public class MainActivity extends AbstractNetworkActivity implements
 			}
 		});
 
+		// TODO replace hard-coded values
+		final IBuilderFactory builderFactory = DomainManager.getInstance()
+				.getBuilderFactory();
+		final INotificationTraveller.IBuilder travellerBuilder =
+				builderFactory.createNotificationTravellerBuilder();
+		final INotificationTraveller driver =
+				travellerBuilder.phoneNumber("0888888888")
+						.email("temp@temp.com")
+						.allowEmailNotifications(true)
+						.allowSmsNotifications(true)
+						.build();
+		final IBuilder declineRequestBuilder = builderFactory
+				.createRequestInfoBuilder();
+		declinationRequestInfo = declineRequestBuilder.id(31l)
+				.sender("temp").driver(driver).build();
+
 		requestDeclinationBtn.setOnClickListener(new View.OnClickListener()
 		{
 			@Override
 			public void onClick(View v)
 			{
-				STDialogFragment.show(new RequestStatusNotificationFactory(
-						MainActivity.this, "request_declination_notification"));
+				declineNotificationContext = new RequestStatusNotificationContext(
+						MainActivity.this, "request_declination_notification",
+						declinationRequestInfo.getDriver()
+								.isSmsNotificationAllowed(),
+						declinationRequestInfo.getDriver()
+								.isEmailNotificationAllowed());
+				STDialogFragment.show(declineNotificationContext);
 			}
 		});
+
+		// TODO replace the hard-coded data
+		final INotificationTraveller.IBuilder senderBuilder =
+				builderFactory.createNotificationTravellerBuilder();
+		final INotificationTraveller requestSender =
+				senderBuilder.allowEmailNotifications(true)
+						.allowSmsNotifications(true)
+						.username("temp").phoneNumber("0888888888")
+						.email("temp@temp.com").build();
+		final List<IPlainRequest> requests = new ArrayList<IPlainRequest>();
+		requests.add(DomainManager.getInstance().getDomainFactory()
+				.createRequest(31l, RequestStatus.PENDING, requestSender));
+		final org.shared.traveller.client.domain.IRequestedAnnouncement.IBuilder annBuilder = DomainManager
+				.getInstance().getBuilderFactory()
+				.createRequestedAnnouncementBuilder();
+		tripToCancel = annBuilder.id(1l).departureDate(new Date(114, 1, 9))
+				.seats((short) 5).status(Status.ACTIVE)
+				.requests(requests).build();
 
 		travelCancelationBtn.setOnClickListener(new View.OnClickListener()
 		{
 			@Override
 			public void onClick(View v)
 			{
-				STDialogFragment.show(new TripCancellationNotificationFactory(
-						MainActivity.this, "travel_cancelation_notification"));
+				cancelTripNotificationContext = new TripCancellationNotificationContext(
+						MainActivity.this, "travel_cancelation_notification");
+				STDialogFragment.show(cancelTripNotificationContext);
 			}
 		});
 	}
@@ -270,27 +342,36 @@ public class MainActivity extends AbstractNetworkActivity implements
 	{
 		if (requestCode == DialogRequestCode.NEW_REQUEST.getCode())
 		{
-			final RequestInfoBuilder builder = new RequestInfoBuilder();
-			builder.sender("temp")
-					.fromPoint("Bansko").toPoint("Sofia")
+			final IBuilderFactory factory =
+					DomainManager.getInstance().getBuilderFactory();
+			final INotificationTraveller.IBuilder travellerBuilder =
+					factory.createNotificationTravellerBuilder();
+			final INotificationTraveller traveller =
+					travellerBuilder.username("temp").build();
+
+			final IRequestInfo.IBuilder builder = factory
+					.createRequestInfoBuilder();
+			builder.sender("temp").fromPoint("Bansko").toPoint("Sofia")
 					.departureDate(new Date(114, 1, 9))
-					.driverUsername("temp");
+					.driver(traveller);
 			final RequestInfo request = builder.build();
 			sendRequest(request);
 		} else if (requestCode == DialogRequestCode.REQUEST_NOTIFICATION
 				.getCode())
 		{
-			// TODO replace the hard-coded request id
 			addTask(REQUEST_DECLINATION_TASK_KEY, new DeclineRequestTask(
-					this, Long.valueOf(31)));
+					this, declinationRequestInfo.getId()));
 			executeTask(REQUEST_DECLINATION_TASK_KEY);
+			sendNotification = true;
+			uiBlocker.block(true);
 		} else if (requestCode == DialogRequestCode.CANCEL_TRAVEL_NOTIFICATION
 				.getCode())
 		{
-			// TODO replace the hard-coded announcement id
 			addTask(TRIP_CANCELLATION_TASK_KEY, new CancelTripTask(
-					this, Long.valueOf(1)));
+					this, tripToCancel.getId()));
 			executeTask(TRIP_CANCELLATION_TASK_KEY);
+			sendNotification = true;
+			uiBlocker.block(true);
 		}
 	}
 
@@ -299,10 +380,11 @@ public class MainActivity extends AbstractNetworkActivity implements
 	{
 		if (requestCode == DialogRequestCode.REQUEST_NOTIFICATION.getCode())
 		{
-			// TODO replace the hard-coded request id
 			addTask(REQUEST_DECLINATION_TASK_KEY, new DeclineRequestTask(
-					MainActivity.this, Long.valueOf(31)));
+					MainActivity.this, declinationRequestInfo.getId()));
 			executeTask(REQUEST_DECLINATION_TASK_KEY);
+			sendNotification = false;
+			uiBlocker.block(true);
 		} else if (requestCode == DialogRequestCode.CANCEL_TRAVEL_NOTIFICATION
 				.getCode())
 		{
@@ -310,6 +392,8 @@ public class MainActivity extends AbstractNetworkActivity implements
 			addTask(TRIP_CANCELLATION_TASK_KEY, new CancelTripTask(
 					this, Long.valueOf(1)));
 			executeTask(TRIP_CANCELLATION_TASK_KEY);
+			sendNotification = false;
+			uiBlocker.block(true);
 		}
 	}
 
@@ -318,6 +402,29 @@ public class MainActivity extends AbstractNetworkActivity implements
 	 */
 	public void onSuccessfulRequestDeclination()
 	{
+		if (sendNotification)
+		{
+			String phoneNumber = null;
+			Long recipientId = null;
+			if (declineNotificationContext.isSmsNotificationOn())
+			{
+				phoneNumber = declinationRequestInfo.getDriver()
+						.getPhoneNumber();
+			}
+
+			if (declineNotificationContext.isEmailNotificationOn())
+			{
+				recipientId = declinationRequestInfo.getDriver().getId();
+			}
+
+			final SocialNotificationSender notificationSender =
+					new SocialNotificationSender(this,
+							new DeclinedRequestNotification(
+									this, declinationRequestInfo));
+			notificationSender.send(phoneNumber, recipientId);
+		}
+
+		uiBlocker.block(false);
 		Toast.makeText(this, SUCCESSFUL_REQUEST_DECLINATION,
 				Toast.LENGTH_SHORT).show();
 	}
@@ -329,6 +436,7 @@ public class MainActivity extends AbstractNetworkActivity implements
 	 */
 	public void onRequestDeclinationProblem()
 	{
+		uiBlocker.block(false);
 		Toast.makeText(this, REQUEST_DECLINATION_PROBLEM, Toast.LENGTH_SHORT)
 				.show();
 	}
@@ -338,6 +446,36 @@ public class MainActivity extends AbstractNetworkActivity implements
 	 */
 	public void onSuccessfulTripCancellation()
 	{
+		if (sendNotification)
+		{
+			final boolean isSmsNotificationOn =
+					cancelTripNotificationContext.isSmsNotificationOn();
+			final boolean isEmailNotificationOn =
+					cancelTripNotificationContext.isEmailNotificationOn();
+
+			for (final IPlainRequest tripRequest : tripToCancel.getRequests())
+			{
+				String phoneNumber = null;
+				Long recipientId = null;
+				if (isSmsNotificationOn)
+				{
+					phoneNumber = tripRequest.getSender().getPhoneNumber();
+				}
+
+				if (isEmailNotificationOn)
+				{
+					recipientId = tripRequest.getSender().getId();
+				}
+
+				final SocialNotificationSender notificationSender =
+						new SocialNotificationSender(this,
+								new CancelledTripNotification(this,
+										tripToCancel));
+				notificationSender.send(phoneNumber, recipientId);
+			}
+		}
+
+		uiBlocker.block(false);
 		Toast.makeText(this, SUCCESSFUL_TRIP_CANCELLATION,
 				Toast.LENGTH_SHORT).show();
 	}
@@ -348,6 +486,7 @@ public class MainActivity extends AbstractNetworkActivity implements
 	 */
 	public void onTripCancellationProblem()
 	{
+		uiBlocker.block(false);
 		Toast.makeText(this, TRIP_CANCELLATION_PROBLEM, Toast.LENGTH_SHORT)
 				.show();
 	}

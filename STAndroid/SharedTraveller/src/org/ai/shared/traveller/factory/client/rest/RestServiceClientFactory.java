@@ -6,7 +6,10 @@ import java.util.Map;
 
 import org.ai.shared.traveller.exceptions.ServiceConnectionException;
 import org.ai.shared.traveller.factory.client.IServiceClientFactory;
+import org.ai.shared.traveller.manager.domain.DomainManager;
 import org.ai.shared.traveller.network.connection.client.IServiceClient;
+import org.ai.shared.traveller.network.connection.response.IResponseParserOptions;
+import org.ai.shared.traveller.network.connection.rest.client.AbstractParameterizedClient;
 import org.ai.shared.traveller.network.connection.rest.client.AbstractPostClient;
 import org.ai.shared.traveller.network.connection.rest.client.AbstractPutClient;
 import org.ai.shared.traveller.network.connection.rest.client.RequestType;
@@ -40,7 +43,7 @@ public class RestServiceClientFactory implements IServiceClientFactory
 		InstanceAsserter.assertNotNull(inContext, "context");
 		InstanceAsserter.assertNotNull(inServicePath, "service path");
 
-		return new AbstractPostClient(inContext, inServicePath)
+		return new AbstractParameterizedClient(inContext, inServicePath)
 		{
 			@Override
 			protected Map<String, String>
@@ -85,6 +88,38 @@ public class RestServiceClientFactory implements IServiceClientFactory
 			final String inServicePath)
 	{
 		return createSimpleClient(inContext, inServicePath, RequestType.DELETE);
+	}
+
+	@Override
+	public <T> IServiceClient createResourceSubmittionClient(
+			final Context inContext, final String inServicePath,
+			final T inResource, final String inErrorMsg)
+	{
+		InstanceAsserter.assertNotNull(inContext, "context");
+		InstanceAsserter.assertNotNull(inServicePath, "service path");
+
+		return new AbstractPostClient(inContext, inServicePath)
+		{
+			@Override
+			protected void submitData(OutputStream inOutStream)
+					throws ServiceConnectionException
+			{
+				final ObjectMapper writer = new ObjectMapper();
+				final IResponseParserOptions options =
+						DomainManager.getInstance().getParserOptionsFactory()
+								.createOptions();
+				writer.registerModule(options.getTypeMappings());
+
+				try
+				{
+					writer.writeValue(inOutStream, inResource);
+				} catch (final IOException ioe)
+				{
+					throw new ServiceConnectionException(
+							inErrorMsg, ioe);
+				}
+			}
+		};
 	}
 
 	/**

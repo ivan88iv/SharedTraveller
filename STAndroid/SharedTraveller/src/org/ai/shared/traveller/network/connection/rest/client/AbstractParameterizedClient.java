@@ -15,8 +15,8 @@ import org.ai.shared.traveller.exceptions.ServiceConnectionException;
 import android.content.Context;
 
 /**
- * This client is responsible for executing REST requests which send a number of
- * simple form parameters to the service
+ * This client is responsible for executing POST REST requests which send a
+ * number of simple form parameters to the service
  * 
  * @author "Ivan Ivanov"
  * 
@@ -35,15 +35,13 @@ public abstract class AbstractParameterizedClient
 	 * @param inContext
 	 *            the context into which the client is created. It may not be
 	 *            null
-	 * @param inType
-	 *            the request type of the client. It may not be null.
 	 * @param inServerPath
 	 *            the server path of the service. It may not be null
 	 */
 	public AbstractParameterizedClient(final Context inContext,
-			final RequestType inType, final String inServerPath)
+			final String inServerPath)
 	{
-		super(inContext, inType, inServerPath);
+		super(inContext, RequestType.POST, inServerPath);
 	}
 
 	@Override

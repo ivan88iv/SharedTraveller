@@ -28,6 +28,8 @@ import android.content.Context;
  */
 public abstract class AbstractRestClient implements IServiceClient
 {
+	private static final String NO_VALID_RESPONSE = "No valid server response.";
+
 	private final RequestType type;
 
 	private final URL serviceUrl;
@@ -84,7 +86,10 @@ public abstract class AbstractRestClient implements IServiceClient
 			try
 			{
 				resposeCode = connection.getResponseCode();
-				if (resposeCode < 400)
+				if (resposeCode == -1)
+				{
+					responseMsg = NO_VALID_RESPONSE;
+				} else if (resposeCode < 400)
 				{
 					inputStream = connection.getInputStream();
 				} else

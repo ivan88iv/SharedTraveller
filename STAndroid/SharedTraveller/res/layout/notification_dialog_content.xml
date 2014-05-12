@@ -10,7 +10,7 @@
     	<TextView android:text="@string/notification_dialog_email"
     	    android:layout_height="wrap_content"
     	    style="@style/notification_dialog_label"/>
-    	<CheckBox  
+    	<CheckBox android:id="@+id/notification_email" 
     	    android:layout_width="wrap_content"
     	    android:layout_height="wrap_content"/>    
     </LinearLayout>
@@ -21,7 +21,7 @@
     	<TextView android:text="@string/notification_dialog_sms"
     	    android:layout_height="wrap_content"
     	    style="@style/notification_dialog_label"/>
-    	<CheckBox  
+    	<CheckBox android:id="@+id/notification_sms"
     	    android:layout_width="wrap_content"
     	    android:layout_height="wrap_content"/>    
     </LinearLayout>

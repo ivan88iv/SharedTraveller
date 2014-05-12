@@ -5,14 +5,13 @@ import java.util.List;
 
 import org.ai.shared.traveller.call.CallerActivity;
 import org.ai.shared.traveller.dialog.STDialogFragment;
-import org.ai.shared.traveller.dialog.request.AcceptRequestDialogFactory;
-import org.ai.shared.traveller.dialog.request.RejectRequestDialogFactory;
+import org.ai.shared.traveller.dialog.request.AcceptRequestDialogContext;
+import org.ai.shared.traveller.dialog.request.RejectRequestDialogContext;
 import org.ai.sharedtraveller.R;
-import org.shared.traveller.client.domain.IAnnouncement;
 import org.shared.traveller.client.domain.IAnnouncement.Status;
-import org.shared.traveller.client.domain.request.IRequestInfo;
+import org.shared.traveller.client.domain.IRequestedAnnouncement;
+import org.shared.traveller.client.domain.request.IPlainRequest;
 import org.shared.traveller.client.domain.request.RequestStatus;
-import org.shared.traveller.utility.DeepCopier;
 
 import android.app.Activity;
 import android.support.v4.app.FragmentActivity;
@@ -31,7 +30,7 @@ import android.widget.TextView;
  * @author "Ivan Ivanov"
  * 
  */
-public class RequestsAdapter extends ArrayAdapter<IRequestInfo>
+public class RequestsAdapter extends ArrayAdapter<IPlainRequest>
 {
 	/**
 	 * The class represents a holder of the visual resources for a single row
@@ -59,9 +58,7 @@ public class RequestsAdapter extends ArrayAdapter<IRequestInfo>
 
 	private final int layoutId;
 
-	private IAnnouncement announcement;
-
-	private List<? extends IRequestInfo> requests = new ArrayList<IRequestInfo>();
+	private IRequestedAnnouncement requestInfo;
 
 	private final IRequestSelectionListener requestSelectionListener;
 
@@ -73,68 +70,49 @@ public class RequestsAdapter extends ArrayAdapter<IRequestInfo>
 	 *            calls to the requests in the adapter
 	 * @param inLayoutId
 	 *            the id of the used layout
-	 * @param inAnnouncement
-	 *            the announcement for which the requests are visualized
 	 * @param inRequestSelectionListener
 	 *            the listener of selections of the requests represented by the
 	 *            adapter
 	 */
 	public RequestsAdapter(final CallerActivity inActivity,
-			final int inLayoutId, final IAnnouncement inAnnouncement,
+			final int inLayoutId,
 			final IRequestSelectionListener inRequestSelectionListener)
 	{
-		super(inActivity, inLayoutId, new ArrayList<IRequestInfo>());
+		super(inActivity, inLayoutId, new ArrayList<IPlainRequest>());
 
 		layoutId = inLayoutId;
-		announcement = inAnnouncement;
 		requestSelectionListener = inRequestSelectionListener;
 	}
 
 	/**
-	 * The method renews the list of requests to be shown
+	 * Returns the request information represented by the current adapter
 	 * 
-	 * @param inRequests
-	 *            the requests to be displayed in the view that the current
-	 *            adapter is responsible for
+	 * @return the request information represented by the current adapter
 	 */
-	public void setRequests(final List<? extends IRequestInfo> inRequests)
+	public IRequestedAnnouncement getRequestInfo()
 	{
-		clear();
-		if (inRequests == null)
+		return requestInfo;
+	}
+
+	/**
+	 * Sets the new requested information for the adapter
+	 * 
+	 * @param inRequestInfo
+	 *            the new request information for which requests are represented
+	 *            by this adapter
+	 */
+	public void setRequestInfo(final IRequestedAnnouncement inRequestInfo)
+	{
+		requestInfo = inRequestInfo;
+		List<? extends IPlainRequest> newRequests =
+				new ArrayList<IPlainRequest>();
+		if (inRequestInfo != null)
 		{
-			requests = new ArrayList<IRequestInfo>();
-		} else
-		{
-			requests = DeepCopier.copy(inRequests);
-			for (final IRequestInfo info : inRequests)
-			{
-				add(info);
-			}
+			newRequests = inRequestInfo.getRequests();
 		}
-	}
 
-	/**
-	 * Returns the announcement for which requests are represented by this
-	 * adapter
-	 * 
-	 * @return the announcement for which requests are represented by this
-	 *         adapter
-	 */
-	public IAnnouncement getSelectedAnnouncement()
-	{
-		return announcement;
-	}
-
-	/**
-	 * Sets the new announcement for the adapter instance
-	 * 
-	 * @param inAnnouncement
-	 *            the new announcement for which requests are represented by
-	 *            this adapter
-	 */
-	public void setSelectedAnnouncement(final IAnnouncement inAnnouncement)
-	{
-		announcement = inAnnouncement;
+		setRequests(newRequests);
+		notifyDataSetChanged();
 	}
 
 	@Override
@@ -153,12 +131,31 @@ public class RequestsAdapter extends ArrayAdapter<IRequestInfo>
 
 		final ViewHolder holder = loadViewHolder(inConvertView, inParent,
 				loadNewHolder);
-		final IRequestInfo currRequest = requests.get(inPosition);
+		final IPlainRequest currRequest = getItem(inPosition);
 		attachBtnListeners(inPosition, holder, currRequest);
 		showAppropriateStatus(holder, currRequest);
-		holder.usernameHodler.setText(currRequest.getSender());
+		holder.usernameHodler.setText(currRequest.getSender().getUsername());
 
 		return inConvertView;
+	}
+
+	/**
+	 * The method renews the list of requests to be shown
+	 * 
+	 * @param inRequests
+	 *            the requests to be displayed in the view that the current
+	 *            adapter is responsible for
+	 */
+	private void setRequests(final List<? extends IPlainRequest> inRequests)
+	{
+		clear();
+		if (inRequests != null)
+		{
+			for (final IPlainRequest info : inRequests)
+			{
+				add(info);
+			}
+		}
 	}
 
 	/**
@@ -215,7 +212,7 @@ public class RequestsAdapter extends ArrayAdapter<IRequestInfo>
 	 *            the request information to be visualized
 	 */
 	private void showAppropriateStatus(final ViewHolder inHolder,
-			final IRequestInfo inRequest)
+			final IPlainRequest inRequest)
 	{
 		switch (inRequest.getStatus())
 		{
@@ -247,10 +244,9 @@ public class RequestsAdapter extends ArrayAdapter<IRequestInfo>
 	 *            the request information to be displayed
 	 */
 	private void attachBtnListeners(final int inPosition,
-			final ViewHolder inHolder,
-			final IRequestInfo inRequest)
+			final ViewHolder inHolder, final IPlainRequest inRequest)
 	{
-		if (Status.ACTIVE.equals(announcement.getStatus()))
+		if (Status.ACTIVE.equals(requestInfo.getStatus()))
 		{
 			prepareFutureTravelRequest(inPosition, inHolder, inRequest);
 		} else
@@ -264,7 +260,7 @@ public class RequestsAdapter extends ArrayAdapter<IRequestInfo>
 			public void onClick(final View v)
 			{
 				final CallerActivity caller = (CallerActivity) getContext();
-				caller.call(inRequest.getDriverPhone());
+				caller.call(inRequest.getSender().getPhoneNumber());
 			}
 		});
 	}
@@ -281,24 +277,24 @@ public class RequestsAdapter extends ArrayAdapter<IRequestInfo>
 	 *            the request information to be applied
 	 */
 	private void prepareFutureTravelRequest(final int inPosition,
-			final ViewHolder inHolder, final IRequestInfo inRequest)
+			final ViewHolder inHolder, final IPlainRequest inRequest)
 	{
 		inHolder.rateBtn.setVisibility(View.GONE);
 		inHolder.btnPlaceholder.setVisibility(View.GONE);
 
 		final RequestStatus requestStatus = inRequest.getStatus();
 		if (RequestStatus.PENDING.equals(requestStatus) &&
-				announcement.getSeats() > 0)
+				requestInfo.getSeats() > 0)
 		{
 			inHolder.acceptBtn.setOnClickListener(new View.OnClickListener()
 			{
 				@Override
 				public void onClick(final View v)
 				{
-					final AcceptRequestDialogFactory factory =
-							new AcceptRequestDialogFactory(
+					final AcceptRequestDialogContext factory =
+							new AcceptRequestDialogContext(
 									(FragmentActivity) getContext(),
-									inRequest.getSender());
+									inRequest.getSender().getUsername());
 					requestSelectionListener.onRequestSelect(inPosition);
 					STDialogFragment.show(factory);
 				}
@@ -308,10 +304,10 @@ public class RequestsAdapter extends ArrayAdapter<IRequestInfo>
 				@Override
 				public void onClick(final View v)
 				{
-					final RejectRequestDialogFactory factory =
-							new RejectRequestDialogFactory(
+					final RejectRequestDialogContext factory =
+							new RejectRequestDialogContext(
 									(FragmentActivity) getContext(),
-									inRequest.getSender());
+									inRequest.getSender().getUsername());
 					requestSelectionListener.onRequestSelect(inPosition);
 					STDialogFragment.show(factory);
 				}
@@ -333,11 +329,11 @@ public class RequestsAdapter extends ArrayAdapter<IRequestInfo>
 	 *            the request for which the view holder is prepared
 	 */
 	private void preparePastTravelRequest(final ViewHolder inHolder,
-			final IRequestInfo inRequest)
+			final IPlainRequest inRequest)
 	{
 		inHolder.acceptBtn.setVisibility(View.GONE);
 		inHolder.rejectBtn.setVisibility(View.GONE);
-		if (Status.COMPLETED.equals(announcement.getStatus()) &&
+		if (Status.COMPLETED.equals(requestInfo.getStatus()) &&
 				RequestStatus.APPROVED.equals(inRequest.getStatus()))
 		{
 			inHolder.rateBtn.setOnClickListener(new View.OnClickListener()

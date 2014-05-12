@@ -3,8 +3,6 @@ package org.ai.shared.traveller.network.connection.task.request;
 import java.text.MessageFormat;
 
 import org.ai.shared.traveller.MainActivity;
-import org.ai.shared.traveller.factory.client.IServiceClientFactory;
-import org.ai.shared.traveller.manager.domain.DomainManager;
 import org.ai.shared.traveller.network.connection.client.IServiceClient;
 import org.ai.shared.traveller.network.connection.task.AbstractNetworkTask;
 import org.shared.traveller.client.domain.request.IRequestInfo;
@@ -82,9 +80,6 @@ public class NewRequestTask extends AbstractNetworkTask<MainActivity, Void>
 	{
 		InstanceAsserter.assertNotNull(inContext, "context");
 		InstanceAsserter.assertNotNull(inServerPath, "service path");
-
-		final IServiceClientFactory clientFactory =
-				DomainManager.getInstance().getServiceClientFactory();
 
 		return clientFactory.createNewResourceClient(inContext, inServerPath,
 				inRequest,

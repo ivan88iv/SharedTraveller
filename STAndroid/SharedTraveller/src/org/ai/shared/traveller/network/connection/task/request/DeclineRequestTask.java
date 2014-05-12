@@ -1,8 +1,15 @@
 package org.ai.shared.traveller.network.connection.task.request;
 
-import org.ai.shared.traveller.MainActivity;
-import org.shared.traveller.rest.domain.ErrorResponse;
+import java.util.HashMap;
+import java.util.Map;
 
+import org.ai.shared.traveller.MainActivity;
+import org.ai.shared.traveller.network.connection.client.IServiceClient;
+import org.ai.shared.traveller.network.connection.task.AbstractNetworkTask;
+import org.shared.traveller.rest.domain.ErrorResponse;
+import org.shared.traveller.utility.InstanceAsserter;
+
+import android.content.Context;
 import android.util.Log;
 
 /**
@@ -11,7 +18,7 @@ import android.util.Log;
  * @author "Ivan Ivanov"
  * 
  */
-public class DeclineRequestTask extends ChangeRequestStatusTask<MainActivity>
+public class DeclineRequestTask extends AbstractNetworkTask<MainActivity, Void>
 {
 	/**
 	 * Instantiates a new request declination task
@@ -26,7 +33,8 @@ public class DeclineRequestTask extends ChangeRequestStatusTask<MainActivity>
 	public DeclineRequestTask(final MainActivity inActivity,
 			final Long inRequestId)
 	{
-		super(inActivity, "request/decline", inRequestId);
+		super(inActivity, createServiceClient(inActivity, "request/decline",
+				inRequestId), Void.class);
 	}
 
 	@Override
@@ -42,5 +50,30 @@ public class DeclineRequestTask extends ChangeRequestStatusTask<MainActivity>
 		Log.d("DeclineRequestTask",
 				"The request could not be declined successfully.");
 		getContext().onRequestDeclinationProblem();
+	}
+
+	/**
+	 * The method creates and returns the service client used for changing the
+	 * status of the specified request in the provided context
+	 * 
+	 * @param inContext
+	 *            the context in which the status of the request is changed. It
+	 *            may not be null.
+	 * @param inPath
+	 *            the service path of the request. It may not be null.
+	 * @param inRequestId
+	 *            the id of the request to be declined. It may not be null.
+	 * @return the created service client
+	 */
+	private static IServiceClient createServiceClient(
+			final Context inContext, final String inPath, final Long inRequestId)
+	{
+		InstanceAsserter.assertNotNull(inRequestId, "request's id");
+
+		final Map<String, String> params = new HashMap<String, String>();
+		params.put("id", String.valueOf(inRequestId));
+
+		return clientFactory.createFormSubmitionClient(inContext, inPath,
+				params);
 	}
 }

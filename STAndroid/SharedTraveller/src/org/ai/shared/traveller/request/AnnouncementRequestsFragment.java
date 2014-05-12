@@ -4,7 +4,6 @@ import org.ai.shared.traveller.call.CallerActivity;
 import org.ai.shared.traveller.command.request.IRequestExtractionCommand;
 import org.ai.shared.traveller.list.swipe.AbstractSwipeListFragment;
 import org.ai.sharedtraveller.R;
-import org.shared.traveller.client.domain.IAnnouncement;
 import org.shared.traveller.client.domain.request.IRequestInfo;
 
 import android.app.Activity;
@@ -20,7 +19,7 @@ public class AnnouncementRequestsFragment
 {
 	private IRequestExtractionCommand requestCommand;
 
-	private IAnnouncement announcement;
+	private Long announcementId;
 
 	private IRequestSelectionListener requestSelectionListener;
 
@@ -30,18 +29,19 @@ public class AnnouncementRequestsFragment
 	 * @param inCommand
 	 *            the command for extracting travel requests from the server
 	 *            side
-	 * @param inAnnouncement
-	 *            the announcement for which requests are to be extracted
+	 * @param inAnnouncementId
+	 *            the id of the announcement for which requests are to be
+	 *            extracted
 	 * @return the newly created fragment
 	 */
 	public static AnnouncementRequestsFragment newInstance(
 			final IRequestExtractionCommand inCommand,
-			final IAnnouncement inAnnouncement)
+			final Long inAnnouncementId)
 	{
 		final AnnouncementRequestsFragment fragment =
 				new AnnouncementRequestsFragment();
 		fragment.requestCommand = inCommand;
-		fragment.announcement = inAnnouncement;
+		fragment.announcementId = inAnnouncementId;
 		return fragment;
 	}
 
@@ -68,10 +68,9 @@ public class AnnouncementRequestsFragment
 	protected RequestsAdapter loadAdapter()
 	{
 		final RequestsAdapter adapter = new RequestsAdapter(
-				(CallerActivity) getActivity(),
-				R.layout.requests_list, announcement,
+				(CallerActivity) getActivity(), R.layout.requests_list,
 				requestSelectionListener);
-		requestCommand.extractRequests(announcement, adapter);
+		requestCommand.extractRequests(announcementId, adapter);
 		return adapter;
 	}
 }

@@ -1,6 +1,7 @@
 package org.ai.shared.traveller.dialog;
 
 import org.ai.sharedtraveller.R;
+import org.shared.traveller.utility.InstanceAsserter;
 
 import android.content.res.Resources;
 import android.support.v4.app.FragmentActivity;
@@ -20,27 +21,28 @@ import eu.inmite.android.lib.dialogs.SimpleDialogFragment;
 public class STDialogFragment extends SimpleDialogFragment
 {
 	/**
-	 * The class represents a factory that is used to provide the common
-	 * functionality for creating an application dialog
+	 * The class represents an application dialog's contextual information
 	 * 
 	 * @author "Ivan Ivanov"
 	 * 
 	 */
-	public static abstract class AbstractDialogFactory
+	public static abstract class AbstractDialogContext
 	{
 		private final FragmentActivity activity;
 
 		private final String tag;
 
+		private STDialogFragment attachedDialog;
+
 		/**
-		 * Instantiates a new dialog factory
+		 * Instantiates a new dialog context
 		 * 
 		 * @param inActivity
 		 *            the activity in which the new dialog is to be created
 		 * @param inTag
 		 *            the tag with which the dialog fragment is to be related
 		 */
-		protected AbstractDialogFactory(
+		protected AbstractDialogContext(
 				final FragmentActivity inActivity,
 				final String inTag)
 		{
@@ -96,30 +98,12 @@ public class STDialogFragment extends SimpleDialogFragment
 		protected abstract int loadRequestCode();
 
 		/**
-		 * The factory method used for creating a new dialog
-		 * 
-		 * @return the newly created dialog
-		 */
-		public STDialogFragment create()
-		{
-			final STDialogFragment dialog = new STDialogFragment();
-			dialog.titleResourceId = loadTitleResourceId();
-			dialog.descriptionMsg = loadDescriptionMsg();
-			dialog.confirmBtnResourceId = loadConfirmBtnResourceId();
-			dialog.rejectBtnResourceId = loadRejectBtnResourceId();
-			dialog.content = loadContent();
-			dialog.requestCode = loadRequestCode();
-
-			return dialog;
-		}
-
-		/**
 		 * The method returns the activity which is related to the newly created
 		 * dialog
 		 * 
 		 * @return the activity which is related to the newly created dialog
 		 */
-		public FragmentActivity getActivity()
+		protected FragmentActivity getActivity()
 		{
 			return activity;
 		}
@@ -129,46 +113,112 @@ public class STDialogFragment extends SimpleDialogFragment
 		 * 
 		 * @return the tag with which the new dialog is to be created
 		 */
-		public String getTag()
+		protected String getTag()
 		{
 			return tag;
 		}
+
+		/**
+		 * The method attaches a dialog to the context
+		 * 
+		 * @param inDialog
+		 *            the dialog to be attached. It may not be null
+		 */
+		private void attachDialog(final STDialogFragment inDialog)
+		{
+			InstanceAsserter.assertNotNull(inDialog, "dialog");
+
+			attachedDialog = inDialog;
+			inDialog.confirmBtnResourceId = loadConfirmBtnResourceId();
+			inDialog.rejectBtnResourceId = loadRejectBtnResourceId();
+			inDialog.requestCode = loadRequestCode();
+			inDialog.dialogView = prepareDialogView();
+		}
+
+		/**
+		 * Returns the attached dialog to this context if any or null
+		 * 
+		 * @return the attached dialog to this context if any or null
+		 */
+		private STDialogFragment getAttachedDialog()
+		{
+			return attachedDialog;
+		}
+
+		private View prepareDialogView()
+		{
+			final View dialogView = LayoutInflater.from(
+					activity).inflate(R.layout.requests_approval_dialog,
+					null);
+			final TextView title = (TextView)
+					dialogView.findViewById(R.id.dialog_title);
+			title.setText(activity.getResources()
+					.getString(loadTitleResourceId()));
+
+			final TextView description = (TextView)
+					dialogView.findViewById(R.id.dialog_description);
+			description.setText(loadDescriptionMsg());
+
+			final View content = loadContent();
+
+			if (content != null)
+			{
+				final FrameLayout contentHolder = (FrameLayout)
+						dialogView.findViewById(R.id.dialog_content);
+				contentHolder.addView(content);
+			}
+
+			return dialogView;
+		}
 	}
-
-	private int titleResourceId;
-
-	private String descriptionMsg;
 
 	private int confirmBtnResourceId;
 
 	private int rejectBtnResourceId;
 
-	private View content;
-
 	private int requestCode;
 
+	private View dialogView;
+
 	/**
-	 * The method shows creates and displays a new dialog with the help of the
-	 * specified dialog factory
-	 * 
-	 * @param inFactory
-	 *            the dialog factory used for the new dialog instantiation
+	 * This constructor should not be used by application code. Its sole purpose
+	 * is to allow the android framework to restore the fragment's state
+	 * correctly. Instead the method {@link #show(AbstractDialogContext)} should
+	 * be utilized to show the current dialog
 	 */
-	public static void show(final AbstractDialogFactory inFactory)
+	public STDialogFragment()
 	{
-		final STDialogFragment dialog = inFactory.create();
-		dialog.show(
-				inFactory.getActivity().getSupportFragmentManager(),
-				inFactory.getTag());
+	}
+
+	/**
+	 * The method creates and displays a new dialog with the help of the
+	 * specified dialog context
+	 * 
+	 * @param inContext
+	 *            the dialog's context used in the new dialog's instantiation.
+	 *            It may not be null
+	 */
+	public static void show(final AbstractDialogContext inContext)
+	{
+		InstanceAsserter.assertNotNull(inContext, "dialog context");
+
+		STDialogFragment dialog = inContext.getAttachedDialog();
+		if (null == dialog)
+		{
+			dialog = new STDialogFragment();
+			inContext.attachDialog(dialog);
+		}
+
+		dialog.show(inContext.getActivity().getSupportFragmentManager(),
+				inContext.getTag());
 	}
 
 	@Override
 	protected Builder build(final Builder initialBuilder)
 	{
-		final FragmentActivity activity = getActivity();
 		final Resources resources = getActivity().getResources();
-		configureView(activity, resources, initialBuilder);
 
+		initialBuilder.setView(dialogView);
 		initialBuilder.setPositiveButton(
 				resources.getString(confirmBtnResourceId),
 				new View.OnClickListener()
@@ -203,40 +253,5 @@ public class STDialogFragment extends SimpleDialogFragment
 				});
 
 		return initialBuilder;
-	}
-
-	/**
-	 * The method configures and orders the view of the current dialog
-	 * 
-	 * @param inActivity
-	 *            the activity with which the dialog fragment is associated
-	 * @param inResources
-	 *            the resources information of the current dialog
-	 * @param initialBuilder
-	 *            the dialog builder instance used to create the dialog
-	 */
-	private void configureView(final FragmentActivity inActivity,
-			final Resources inResources,
-			final Builder initialBuilder)
-	{
-		final View dialogView = LayoutInflater.from(
-				inActivity).inflate(R.layout.requests_approval_dialog,
-				null);
-		final TextView title = (TextView)
-				dialogView.findViewById(R.id.dialog_title);
-		title.setText(inResources.getString(titleResourceId));
-
-		final TextView description = (TextView)
-				dialogView.findViewById(R.id.dialog_description);
-		description.setText(descriptionMsg);
-
-		if (content != null)
-		{
-			final FrameLayout contentHolder = (FrameLayout)
-					dialogView.findViewById(R.id.dialog_content);
-			contentHolder.addView(content);
-		}
-
-		initialBuilder.setView(dialogView);
 	}
 }

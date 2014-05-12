@@ -4,6 +4,8 @@ import java.text.MessageFormat;
 
 import org.ai.shared.traveller.exceptions.ParseException;
 import org.ai.shared.traveller.exceptions.ServiceConnectionException;
+import org.ai.shared.traveller.factory.client.IServiceClientFactory;
+import org.ai.shared.traveller.manager.domain.DomainManager;
 import org.ai.shared.traveller.network.connection.client.IServiceClient;
 import org.ai.shared.traveller.network.connection.response.ServerResponse;
 import org.ai.shared.traveller.network.connection.response.ServerResponseParser;
@@ -36,6 +38,9 @@ public abstract class AbstractNetworkTask<T extends Context, Result> extends
 
 	private static final String UNABLE_TO_CONNECT =
 			"Could not connect to service {0}.";
+
+	protected static final IServiceClientFactory clientFactory =
+			DomainManager.getInstance().getServiceClientFactory();
 
 	private final IServiceClient serviceClient;
 
@@ -160,7 +165,7 @@ public abstract class AbstractNetworkTask<T extends Context, Result> extends
 	{
 		if (null != result)
 		{
-			if (result.getStatusCode() < 400)
+			if (result.getStatusCode() < 400 && result.getStatusCode() != -1)
 			{
 				onSuccess(result.getResponseBody());
 			} else

@@ -79,7 +79,7 @@ public final class DomainManager implements Serializable
 
 	private final static DomainManager INSTANCE = new DomainManager();
 
-	private final Domain selectedDomain = Domain.REST;
+	private transient final Domain selectedDomain = Domain.REST;
 
 	/**
 	 * This class is not meant to be instantiated from outer classes. There is a

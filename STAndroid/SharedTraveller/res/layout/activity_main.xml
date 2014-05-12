@@ -1,62 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:orientation="vertical" >
-
-    <FrameLayout
-        android:id="@+id/fragment_container"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:visibility="gone" />
-
-    <Button
-        android:id="@+id/show_view_pager_indicator"
-        style="@style/ListButtonAction"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/announcements" />
-
-    <Button
-        android:id="@+id/show_swipe_list_view"
-        style="@style/ListButtonAction"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/details" />
-
-    <Button
-        android:id="@+id/show_new_request_dialog"
-        style="@style/ListButtonAction"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/newRequest" />
-
-    <Button
-        android:id="@+id/show_requests"
-        style="@style/ListButtonAction"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/requests" />
-
-    <Button
-        android:id="@+id/show_my_requests"
-        style="@style/ListButtonAction"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/my_requests" />
-    
-    <Button
-        android:id="@+id/send_request_declination_notification"
-        style="@style/ListButtonAction"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/send_request_declination_notification" />
-    
-    <Button
-        android:id="@+id/travel_cancelation_notification"
-        style="@style/ListButtonAction"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/send_notificaiton_on_travel_cancelation" />
-</LinearLayout>
+    android:layout_height="fill_parent">
+	<LinearLayout 
+	    android:layout_width="fill_parent"
+	    android:layout_height="fill_parent"
+	    android:orientation="vertical" >
+	
+	    <FrameLayout
+	        android:id="@+id/fragment_container"
+	        android:layout_width="fill_parent"
+	        android:layout_height="fill_parent"
+	        android:visibility="gone" />
+	
+	    <Button
+	        android:id="@+id/show_view_pager_indicator"
+	        style="@style/ListButtonAction"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="@string/announcements" />
+	
+	    <Button
+	        android:id="@+id/show_swipe_list_view"
+	        style="@style/ListButtonAction"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="@string/details" />
+	
+	    <Button
+	        android:id="@+id/show_new_request_dialog"
+	        style="@style/ListButtonAction"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="@string/newRequest" />
+	
+	    <Button
+	        android:id="@+id/show_requests"
+	        style="@style/ListButtonAction"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="@string/requests" />
+	
+	    <Button
+	        android:id="@+id/show_my_requests"
+	        style="@style/ListButtonAction"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="@string/my_requests" />
+	    
+	    <Button
+	        android:id="@+id/send_request_declination_notification"
+	        style="@style/ListButtonAction"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="@string/send_request_declination_notification" />
+	    
+	    <Button
+	        android:id="@+id/travel_cancelation_notification"
+	        style="@style/ListButtonAction"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="@string/send_notificaiton_on_travel_cancelation" />
+	</LinearLayout>
+	
+	<LinearLayout android:id="@+id/trips_progress_indicator"
+	    android:visibility="gone"
+	    android:layout_height="fill_parent"
+	    android:layout_width="fill_parent"
+	    android:gravity="center"
+	    style="@style/progress_indicator_inverse">
+	    
+	   	<ProgressBar 
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_gravity="center"
+		    style="@android:style/Widget.ProgressBar.Inverse"/>
+	</LinearLayout>
+</FrameLayout>

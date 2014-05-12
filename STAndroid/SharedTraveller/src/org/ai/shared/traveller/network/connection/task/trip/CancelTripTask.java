@@ -4,8 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.ai.shared.traveller.MainActivity;
-import org.ai.shared.traveller.factory.client.IServiceClientFactory;
-import org.ai.shared.traveller.manager.domain.DomainManager;
 import org.ai.shared.traveller.network.connection.client.IServiceClient;
 import org.ai.shared.traveller.network.connection.task.AbstractNetworkTask;
 import org.shared.traveller.rest.domain.ErrorResponse;
@@ -74,8 +72,6 @@ public class CancelTripTask extends AbstractNetworkTask<MainActivity, Void>
 
 		final Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put("announcementId", String.valueOf(inAnnouncementId));
-		final IServiceClientFactory clientFactory =
-				DomainManager.getInstance().getServiceClientFactory();
 
 		return clientFactory.createFormSubmitionClient(inActivity, inPath,
 				parameters);

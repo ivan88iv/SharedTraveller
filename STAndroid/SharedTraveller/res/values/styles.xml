@@ -43,6 +43,10 @@
         <item name="android:background">@drawable/topless_border_light</item>
     </style>
 
+    <style name="progress_indicator_inverse">
+        <item name="android:background">#88FFFFFF</item>
+    </style>
+    
     <!-- ======================= Announcement Tabs ====================== -->
     <style name="announcement_tab" parent="Theme.PageIndicatorDefaults">
         <item name="android:textColor">#FFFFFF</item>
@@ -239,8 +243,8 @@
     </style>
 
     <style name="requests_row_btns_holder" parent="topless_light_border">
-        <item name="android:paddingTop">4dp</item>
-        <item name="android:paddingBottom">4dp</item>
+        <item name="android:paddingTop">6dp</item>
+        <item name="android:paddingBottom">6dp</item>
     </style>
 
     <style name="requests_btn">

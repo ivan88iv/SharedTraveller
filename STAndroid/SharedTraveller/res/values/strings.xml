@@ -131,4 +131,30 @@
     <string name="requests_notification_confirm_btn">OK</string>
     <string name="requests_notification_reject_btn">Cancel</string>
 
+    <!-- ========================= Social notifications ===================== -->
+    <string name="notification_sms_error">Could not send an sms 
+        notification because of a problem.</string>
+   	<string name="notification_no_sms_service">Could not send an sms 
+        notification because there is no active messaging service.</string>
+   	<string name="notification_sms_radio_turned_off">Could not send an sms 
+        notification because the radio signal is turned off.</string>
+    <string name="notification_sms_delivered">The sms notification is
+        successfully delivered.</string>
+    <string name="notification_sms_not_delivered">The sms notification could
+        not be delivered.</string>
+    <string name="notification_declined_request">Hallo, This is a notification
+        message that {0} declined their request for your travel
+        from {1} to {2} on {3}.</string>
+    <string name="notification_cancelled_trip">Hallo, This is a notification
+        message that {0} cancelled their trip from {1} to {2} on {3}.</string>    
+    <string name="notification_accepted_request">Hallo, This is a notification
+        message that {0} accepted your request for the
+        trip from {1} to {2} on {3}.</string>      
+    <string name="notification_rejected_request">Hallo, This is a notification
+        message that {0} rejected your request for the trip
+        from {1} to {2} on {3}.</string>
+    <string name="notification_email_notification_ok">The email notification
+        was successfully sent.</string> 
+    <string name="notification_email_notification_error">The email notification
+        could not be sent because of a problem.</string> 
 </resources>

@@ -48,6 +48,27 @@ public interface IServiceClientFactory
 			final Map<String, String> inParameters);
 
 	/**
+	 * The method creates a service client used for submitting a resource
+	 * instance to the server
+	 * 
+	 * @param inContext
+	 *            the context used for creating this client. It may not be null
+	 * @param inServicePath
+	 *            the path of the service on the server. It may not be null
+	 * @param inResource
+	 *            the resource instance to be submitted.
+	 * @param inError
+	 *            an error message to be displayed in case the resource is not
+	 *            correctly submitted by the client
+	 * @return the service client that is created
+	 * 
+	 * @param <T>
+	 *            the type of the resource to be submitted
+	 */
+	<T> IServiceClient createResourceSubmittionClient(final Context inContext,
+			final String inServicePath, final T inResource, final String inError);
+
+	/**
 	 * Creates a new service client used to insert a new resource in the server
 	 * by calling the specified service.
 	 * 
