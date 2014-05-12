@@ -33,8 +33,7 @@ public abstract class AbstractDAO<T> implements IDAO<T>
 
 	private static final String DATA_EXTRACTION_PROBLEM =
 			"A problem occurred while trying to find information about"
-			+ " an instance with identificator {0} and class {1}.";
-
+					+ " an instance with identificator {0} and class {1}.";
 
 	@PersistenceContext
 	protected EntityManager entityManager;
@@ -45,7 +44,7 @@ public abstract class AbstractDAO<T> implements IDAO<T>
 		try
 		{
 			return entityManager.find(getEntityClass(), Long.valueOf(inId));
-		} catch(final IllegalArgumentException iae)
+		} catch (final IllegalArgumentException iae)
 		{
 			throw new DataExtractionException(
 					MessageFormat.format(DATA_EXTRACTION_PROBLEM, inId,
@@ -72,17 +71,17 @@ public abstract class AbstractDAO<T> implements IDAO<T>
 
 	@Transactional
 	@Override
-	public void update(T inInstance)
+	public T update(T inInstance)
 	{
 		assert null != inInstance;
 
 		try
 		{
-			entityManager.merge(inInstance);
-		} catch(final IllegalArgumentException | PersistenceException pe)
+			return entityManager.merge(inInstance);
+		} catch (final IllegalArgumentException | PersistenceException pe)
 		{
 			throw new DataModificationException(
-					MessageFormat.format(DATA_UPDATE_PROBLEM, inInstance),pe);
+					MessageFormat.format(DATA_UPDATE_PROBLEM, inInstance), pe);
 		}
 	}
 

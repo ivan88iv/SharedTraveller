@@ -18,9 +18,9 @@ import org.springframework.stereotype.Repository;
 /**
  * The class represents a JPA DAO for accessing the generic notifications from
  * the persistent layer
- *
+ * 
  * @author "Ivan Ivanov"
- *
+ * 
  */
 @Repository
 public class GenericNotificationDAO extends
@@ -36,9 +36,13 @@ public class GenericNotificationDAO extends
 			"A problem occurred while trying to find the template for "
 					+ "notification's type {0}.";
 
+	private static final String NOTIFICATIONS_EXTRACTION_PROBLEM =
+			"A problem occurred while trying to get extract "
+					+ "generic notifications";
+
 	/**
 	 * @throws DataExtractionException
-	 *             - if a problem occurs while trying to extract the information
+	 *             if a problem occurs while trying to extract the information
 	 */
 	@Override
 	public String findNotificationTemplate(final Type inType)
@@ -66,6 +70,31 @@ public class GenericNotificationDAO extends
 		}
 
 		return template;
+	}
+
+	/**
+	 * @throws DataExtractionException
+	 *             if a problem occurs while trying to obtain all generic
+	 *             notifications from the persistent layer
+	 */
+	@Override
+	public List<? extends IPersistentGenericNotification> getAll()
+	{
+		final DataExtractor<GenericNotificationEntity> extractor =
+				new DataExtractor<GenericNotificationEntity>()
+				{
+					@Override
+					protected void prepareQuery(
+							TypedQuery<GenericNotificationEntity> inQuery)
+					{
+						// no query modification needed
+					}
+				};
+
+		return extractor.execute(
+				RequestNamedQueryNames.GET_ALL_GENERIC_NOTIFICATIONS,
+				entityManager, GenericNotificationEntity.class,
+				NOTIFICATIONS_EXTRACTION_PROBLEM);
 	}
 
 	@Override

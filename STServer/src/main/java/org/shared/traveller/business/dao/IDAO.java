@@ -48,10 +48,10 @@ public interface IDAO<T> extends Serializable
 	 * 
 	 * @param inInstance
 	 *            the instance to be modified/saved
-	 * 
+	 * @return a reference to the modified/saved instance
 	 * @throws DataModificationException
 	 *             when a problem occurs while trying to update the information
 	 *             about the specified instance
 	 */
-	void update(final T inInstance);
+	T update(final T inInstance);
 }

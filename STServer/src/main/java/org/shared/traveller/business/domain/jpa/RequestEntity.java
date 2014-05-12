@@ -20,22 +20,24 @@ import org.shared.traveller.business.domain.jpa.query.RequestNamedQueryNames;
 import org.shared.traveller.client.domain.request.RequestStatus;
 import org.shared.traveller.utility.InstanceAsserter;
 
+/**
+ * The class represents a JPA request entity
+ * 
+ * @author "Ivan Ivanov"
+ * 
+ */
 @Entity(name = "Request")
 @Table(name = "request")
 @NamedQueries(
 {
-		@NamedQuery(name = "Request.loadRequests", query = "SELECT r FROM Request r "
-				+ "INNER JOIN r.announcement ann "
-				+ "WHERE ann.startPoint.name = :startPt AND "
-				+ "ann.endPoint.name = :endPt AND "
-				+ "ann.departureDate = :depDate AND "
-				+ "ann.driver.username = :driver"),
 		@NamedQuery(name = RequestNamedQueryNames.LOAD_ANNOUNCEMENT_REQUESTS,
-				query = "SELECT r FROM Request r INNER JOIN r.announcement ann "
-						+ "WHERE ann.id = :announcementId"),
-		@NamedQuery(name = "Request.find", query = "SELECT r FROM Request r "
-				+ "INNER JOIN r.announcement ann "
-				+ "WHERE ann.driver.username = :driver AND " + "r.id = :id"),
+				query = "SELECT r FROM Request r "
+						+ "WHERE r.announcement.id = :announcementId AND "
+						+ "r.announcement.driver.id = :driverId"),
+		@NamedQuery(name = RequestNamedQueryNames.FIND_REQUEST,
+				query = "SELECT r FROM Request r "
+						+ "WHERE r.announcement.driver.id = :driverId AND "
+						+ "r.id = :id"),
 		@NamedQuery(name = RequestNamedQueryNames.GET_REQUESTS_FOR_USER, query = "SELECT r from Request r inner join fetch r.announcement "
 				+ " inner join fetch r.traveller  where r.traveller = :traveller"),
 		@NamedQuery(name = RequestNamedQueryNames.GET_REQUESTS_COUNT_FOR_USER, query = "SELECT count(r) from Request r  where r.traveller = :traveller") })

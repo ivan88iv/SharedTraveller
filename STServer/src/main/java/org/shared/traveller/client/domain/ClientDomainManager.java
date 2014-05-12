@@ -3,7 +3,10 @@ package org.shared.traveller.client.domain;
 import java.io.Serializable;
 
 import org.ai.shared.traveller.client.factory.IDomainFactory;
+import org.ai.shared.traveller.client.factory.builder.IBuilderFactory;
+import org.ai.shared.traveller.client.factory.builder.rest.RestBuilderFactory;
 import org.ai.shared.traveller.client.factory.rest.RestDomainFactory;
+import org.shared.traveller.utility.InstanceAsserter;
 
 /**
  * The class manages the client domains in the server application
@@ -27,13 +30,33 @@ public class ClientDomainManager implements Serializable
 	 */
 	private enum Domain
 	{
-		REST(new RestDomainFactory());
+		/**
+		 * The REST client domain
+		 */
+		REST(new RestDomainFactory(), new RestBuilderFactory());
 
 		private IDomainFactory domainFactory;
 
-		private Domain(final IDomainFactory inDomainFactory)
+		private IBuilderFactory builderFactory;
+
+		/**
+		 * Creates a new client domain
+		 * 
+		 * @param inDomainFactory
+		 *            the factory for creating domain instances directly. It may
+		 *            not be null
+		 * @param inBuilderFactory
+		 *            the factory for creating builders for complex domain
+		 *            instances. It may not be null
+		 */
+		private Domain(final IDomainFactory inDomainFactory,
+				final IBuilderFactory inBuilderFactory)
 		{
+			InstanceAsserter.assertNotNull(inDomainFactory, "domain factory");
+			InstanceAsserter.assertNotNull(inBuilderFactory, "builder factory");
+
 			domainFactory = inDomainFactory;
+			builderFactory = inBuilderFactory;
 		}
 	}
 
@@ -63,6 +86,18 @@ public class ClientDomainManager implements Serializable
 	public IDomainFactory getDomainFactory()
 	{
 		return selectedDomain.domainFactory;
+	}
+
+	/**
+	 * The method returns the builder factory associated with the current client
+	 * domain manager
+	 * 
+	 * @return the builder factory associated with the current client domain
+	 *         manager
+	 */
+	public IBuilderFactory getBuilderFactory()
+	{
+		return selectedDomain.builderFactory;
 	}
 
 	/**

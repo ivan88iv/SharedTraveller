@@ -19,7 +19,7 @@ import org.shared.traveller.business.domain.IPersistentAnnouncement;
 import org.shared.traveller.business.domain.IPersistentNotification;
 import org.shared.traveller.business.domain.IPersistentTraveller;
 import org.shared.traveller.business.domain.jpa.query.RequestNamedQueryNames;
-import org.shared.traveller.business.domain.visitor.INotificationVisitor;
+import org.shared.traveller.business.domain.visitor.IPersistentNotificationVisitor;
 import org.shared.traveller.client.domain.INotification.Type;
 import org.shared.traveller.utility.DeepCopier;
 import org.shared.traveller.utility.InstanceAsserter;
@@ -30,10 +30,20 @@ import org.shared.traveller.utility.InstanceAsserter;
 {
 		@NamedQuery(name = RequestNamedQueryNames.LOAD_USER_NOTIFICATIONS,
 				query = "SELECT n FROM Notification n "
-						+ "WHERE n.receiver.id = :receiverId"),
-		@NamedQuery(name = RequestNamedQueryNames.REMOVE_NOTIFICATIONS,
+						+ "WHERE n.receiver.id = :receiverId "
+						+ "ORDER BY n.creationDate ASC"),
+		@NamedQuery(name = RequestNamedQueryNames.REMOVE_DRIVER_NOTIFICATIONS,
 				query = "DELETE FROM Notification n "
-						+ "WHERE n.id IN (:notificationIds)")
+						+ "WHERE n.receiver.id = :driverId AND "
+						+ "n.announcement.id = :announcementId AND "
+						+ "(n.type = org.shared.traveller.client.domain.INotification$Type.NEW_REQUEST OR "
+						+ "n.type = org.shared.traveller.client.domain.INotification$Type.REQUEST_DECLINATION)"),
+		@NamedQuery(name = RequestNamedQueryNames.REMOVE_PASSENGER_NOTIFICATIONS,
+				query = "DELETE FROM Notification n "
+						+ "WHERE n.receiver.id = :passengerId AND "
+						+ "(n.type = org.shared.traveller.client.domain.INotification$Type.REQUEST_REJECTION OR "
+						+ "n.type = org.shared.traveller.client.domain.INotification$Type.REQUEST_ACCEPTANCE OR "
+						+ "n.type = org.shared.traveller.client.domain.INotification$Type.TRIP_CANCELLATION)")
 })
 public class NotificationEntity extends AbstractEntity implements
 		IPersistentNotification
@@ -50,12 +60,6 @@ public class NotificationEntity extends AbstractEntity implements
 
 	@Column(name = "CREATION_DATE", nullable = false)
 	private Date creationDate;
-
-	@Column(name = "NOTIFICATION_TEXT")
-	private String description;
-
-	@Column(name = "SEEN", nullable = false)
-	private Boolean seen;
 
 	@Column(name = "TYPE", nullable = false)
 	@Enumerated(EnumType.STRING)
@@ -79,10 +83,6 @@ public class NotificationEntity extends AbstractEntity implements
 		private Long idField;
 
 		private final Date creationDateField;
-
-		private String descriptionField;
-
-		private Boolean seenField;
 
 		private final Type typeField;
 
@@ -108,27 +108,12 @@ public class NotificationEntity extends AbstractEntity implements
 			senderField = new TravellerEntity(inSender);
 			creationDateField = DeepCopier.copy(inCreationDate);
 			announcementField = new AnnouncementEntity(inAnnouncement);
-			seenField = Boolean.FALSE;
 		}
 
 		@Override
 		public IPersistentNotificationBuilder id(final Long inId)
 		{
 			idField = inId;
-			return this;
-		}
-
-		@Override
-		public BusinessNotificationBuilder description(final String inText)
-		{
-			descriptionField = inText;
-			return this;
-		}
-
-		@Override
-		public BusinessNotificationBuilder seen(final Boolean inIsSeen)
-		{
-			seenField = inIsSeen;
 			return this;
 		}
 
@@ -148,8 +133,6 @@ public class NotificationEntity extends AbstractEntity implements
 	{
 		id = inBuilder.idField;
 		creationDate = DeepCopier.copy(inBuilder.creationDateField);
-		description = inBuilder.descriptionField;
-		seen = inBuilder.seenField;
 		type = inBuilder.typeField;
 		receiver = new TravellerEntity(inBuilder.receiverField);
 		sender = new TravellerEntity(inBuilder.senderField);
@@ -181,18 +164,6 @@ public class NotificationEntity extends AbstractEntity implements
 	}
 
 	@Override
-	public String getDescription()
-	{
-		return description;
-	}
-
-	@Override
-	public Boolean getSeen()
-	{
-		return seen;
-	}
-
-	@Override
 	public Type getType()
 	{
 		return type;
@@ -205,7 +176,7 @@ public class NotificationEntity extends AbstractEntity implements
 	}
 
 	@Override
-	public void accept(INotificationVisitor inVisitor)
+	public void accept(IPersistentNotificationVisitor inVisitor)
 	{
 		InstanceAsserter.assertNotNull(inVisitor, "visitor");
 
@@ -219,8 +190,6 @@ public class NotificationEntity extends AbstractEntity implements
 		builder.append("-------------- Notification ---------------\n");
 		builder.append("id: ").append(id).append("\n");
 		builder.append("creation date: ").append(creationDate).append("\n");
-		builder.append("description: ").append(description).append("\n");
-		builder.append("seen: ").append(seen).append("\n");
 		builder.append("type: ").append(type).append("\n");
 		builder.append("receiver: ").append(receiver).append("\n");
 		builder.append("sender: ").append(sender).append("\n");

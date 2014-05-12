@@ -21,7 +21,8 @@ import org.shared.traveller.utility.InstanceAsserter;
 @Table(name = "traveller")
 @NamedQueries(
 { @NamedQuery(name = "TravellerEntity.findByUsername", query = "SELECT t FROM traveller t WHERE t.username = :username") })
-public class TravellerEntity extends AbstractEntity implements IPersistentTraveller
+public class TravellerEntity extends AbstractEntity implements
+		IPersistentTraveller
 {
 	/**
 	 * The serial version UID
@@ -63,6 +64,12 @@ public class TravellerEntity extends AbstractEntity implements IPersistentTravel
 	@Column(name = "travel_count")
 	private String travelCount;
 
+	@Column(name = "SMS_NOTIFICATIONS")
+	private boolean smsNotifications;
+
+	@Column(name = "EMAIL_NOTIFICATIONS")
+	private boolean emailNotifications;
+
 	@OneToMany(mappedBy = "owner")
 	private List<VehicleEntity> vehicles;
 
@@ -80,10 +87,11 @@ public class TravellerEntity extends AbstractEntity implements IPersistentTravel
 	}
 
 	/**
-	 * The constructor instantiates a new traveller entity
-	 * by copying a given entity
-	 *
-	 * @param inTraveller the entity to be copied
+	 * The constructor instantiates a new traveller entity by copying a given
+	 * entity
+	 * 
+	 * @param inTraveller
+	 *            the entity to be copied
 	 */
 	public TravellerEntity(final TravellerEntity inTraveller)
 	{
@@ -100,11 +108,13 @@ public class TravellerEntity extends AbstractEntity implements IPersistentTravel
 		ratingCount = inTraveller.ratingCount;
 		ratingSum = inTraveller.ratingSum;
 		travelCount = inTraveller.travelCount;
-//		vehicles = DeepCopier.copy(inTraveller.vehicles);
-//		receivedNotifications = DeepCopier.copy(
-//				inTraveller.receivedNotifications);
-//		sentNotifications = DeepCopier.copy(
-//				inTraveller.sentNotifications);
+		// vehicles = DeepCopier.copy(inTraveller.vehicles);
+		// receivedNotifications = DeepCopier.copy(
+		// inTraveller.receivedNotifications);
+		// sentNotifications = DeepCopier.copy(
+		// inTraveller.sentNotifications);
+		smsNotifications = inTraveller.smsNotifications;
+		emailNotifications = inTraveller.emailNotifications;
 	}
 
 	@Override
@@ -209,5 +219,17 @@ public class TravellerEntity extends AbstractEntity implements IPersistentTravel
 		}
 		vehicles.add(vehicle);
 
+	}
+
+	@Override
+	public boolean getSmsNotifications()
+	{
+		return smsNotifications;
+	}
+
+	@Override
+	public boolean getEmailNotifications()
+	{
+		return emailNotifications;
 	}
 }

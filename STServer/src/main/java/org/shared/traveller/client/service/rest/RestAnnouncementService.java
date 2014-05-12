@@ -7,14 +7,15 @@ import java.util.List;
 import org.shared.traveller.business.domain.IPersistentAnnouncement;
 import org.shared.traveller.business.domain.IPersistentCity;
 import org.shared.traveller.business.service.AnnouncementService;
+import org.shared.traveller.business.service.NotificationService;
 import org.shared.traveller.business.service.dto.GetAllAnnouncementsRequest;
+import org.shared.traveller.business.transformer.IPersistentAnnouncementProducer;
 import org.shared.traveller.client.domain.IAnnouncement;
 import org.shared.traveller.client.domain.rest.Announcement;
 import org.shared.traveller.client.domain.rest.Announcement.AnnouncementBuilder;
 import org.shared.traveller.rest.domain.AnnouncementsList;
 import org.shared.traveller.rest.param.ParamNames;
 import org.shared.traveller.rest.param.SortOrder;
-import org.shared.traveller.transformer.IPersistentAnnouncementProducer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,11 +35,15 @@ public class RestAnnouncementService
 	private AnnouncementService businessService;
 
 	@Autowired
+	private NotificationService notificationService;
+
+	@Autowired
 	private IPersistentAnnouncementProducer producer;
 
 	@RequestMapping(value = "/new", method = RequestMethod.PUT)
 	public ResponseEntity<Void> createAnnouncement(
-			@RequestBody Announcement inNewAnnouncement)	{
+			@RequestBody Announcement inNewAnnouncement)
+	{
 		inNewAnnouncement.accept(producer);
 		businessService.createNewAnnouncement(producer.produce());
 
@@ -46,41 +51,43 @@ public class RestAnnouncementService
 		return new ResponseEntity<Void>(emptyResponse, HttpStatus.CREATED);
 	}
 
-	@RequestMapping(value = "/new2", method = RequestMethod.GET)
-	public ResponseEntity<IAnnouncement> createAnnouncement()
-	{
-		final AnnouncementBuilder builder = new AnnouncementBuilder(null,
-				null, null, (short)0, null);
-		return new ResponseEntity<IAnnouncement>(builder.build(),
-				HttpStatus.CREATED);
-	}
 	@RequestMapping(value = "/all", method = RequestMethod.GET)
 	@ResponseBody
 	public ResponseEntity<AnnouncementsList> getAnouncements(
-			@RequestParam(value = ParamNames.START) Integer start,			@RequestParam(value = ParamNames.COUNT) Integer count,
+			@RequestParam(value = ParamNames.START) Integer start,
+			@RequestParam(value = ParamNames.COUNT) Integer count,
 			@RequestParam(required = false, value = ParamNames.FROM) String from,
 			@RequestParam(required = false, value = ParamNames.TO) String to,
 			@RequestParam(required = false, value = ParamNames.SORT_ORDER) SortOrder sortOrder,
 			UriComponentsBuilder builder)
 	{
-		GetAllAnnouncementsRequest request = new GetAllAnnouncementsRequest(start, count, from, to, sortOrder);
+		GetAllAnnouncementsRequest request = new GetAllAnnouncementsRequest(
+				start, count, from, to, sortOrder);
 		long allCount = businessService.getAllAnnouncementsCount(request);
-		List<? extends IPersistentAnnouncement> announcements = businessService.getAllAnnouncements(request);
-		AnnouncementsList result = new AnnouncementsList(new BigDecimal(allCount).intValueExact(),
+		List<? extends IPersistentAnnouncement> announcements = businessService
+				.getAllAnnouncements(request);
+		AnnouncementsList result = new AnnouncementsList(new BigDecimal(
+				allCount).intValueExact(),
 				transformDomains(announcements));
 		return new ResponseEntity<AnnouncementsList>(result, HttpStatus.OK);
 	}
 
-	private List<IAnnouncement> transformDomains(List<? extends IPersistentAnnouncement> source)
+	private List<IAnnouncement> transformDomains(
+			List<? extends IPersistentAnnouncement> source)
 	{
 		List<IAnnouncement> result = new ArrayList<IAnnouncement>();
 		for (IPersistentAnnouncement anno : source)
 		{
-			AnnouncementBuilder builder = new AnnouncementBuilder(anno.getStartPoint().getName(), anno.getEndPoint()
-					.getName(), anno.getDepartureDate(), anno.getFreeSeats(), anno.getDriver().getFirstName() + " "
-					+ anno.getDriver().getLastName());
-			builder.depTime(anno.getDepartureTime()).price(anno.getPrice()).depAddress(anno.getAddress())
-					.intermediatePoints(getInterPoints(anno.getIntermediatePoints()));
+			AnnouncementBuilder builder = new AnnouncementBuilder(anno
+					.getStartPoint().getName(), anno.getEndPoint()
+					.getName(), anno.getDepartureDate(), anno.getFreeSeats(),
+					anno.getDriver().getFirstName() + " "
+							+ anno.getDriver().getLastName());
+			builder.depTime(anno.getDepartureTime())
+					.price(anno.getPrice())
+					.depAddress(anno.getAddress())
+					.intermediatePoints(
+							getInterPoints(anno.getIntermediatePoints()));
 			if (anno.getVehicle() != null)
 			{
 				builder.vehicleName(anno.getVehicle().getMake());
@@ -90,7 +97,8 @@ public class RestAnnouncementService
 		return result;
 	}
 
-	private List<String> getInterPoints(List<? extends IPersistentCity> jpaInterPoints)
+	private List<String> getInterPoints(
+			List<? extends IPersistentCity> jpaInterPoints)
 	{
 		List<String> interPoints = new ArrayList<String>();
 		for (IPersistentCity interPoint : jpaInterPoints)

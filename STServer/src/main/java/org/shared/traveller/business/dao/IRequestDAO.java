@@ -1,6 +1,5 @@
 package org.shared.traveller.business.dao;
 
-import java.util.Date;
 import java.util.List;
 
 import org.shared.traveller.business.authentication.domain.AuthenticatedUser;
@@ -18,48 +17,30 @@ import org.shared.traveller.business.exception.persistence.DataExtractionExcepti
 public interface IRequestDAO extends IDAO<IPersistentRequest>
 {
 	/**
-	 * The method loads all the requests for the specified announcement
-	 * information
-	 * 
-	 * @param inStartPt
-	 *            the start settlement point for the announcement. It may not be
-	 *            null.
-	 * @param inEndPt
-	 *            the end settlement point for the announcement. It may not be
-	 *            null.
-	 * @param inDepDate
-	 *            the departure date for the announcement. It may not be null.
-	 * @param inDriverUsrname
-	 *            the user name for the announcement. It may not be null.
-	 * @return the requests for the specified announcement information. It may
-	 *         not be null.
-	 * @throws DataExtractionException
-	 *             if a problem occurs while extracting the requests
-	 */
-	List<? extends IPersistentRequest> loadRequests(final String inStartPt,
-			final String inEndPt, final Date inDepDate,
-			final String inDriverUsrname);
-
-	/**
 	 * The method loads all requests which have been made for the current
-	 * announcement
+	 * announcement and driver
 	 * 
 	 * @param inAnnouncementId
-	 *            the id of the announcement whose requests are to be loaded
+	 *            the id of the announcement whose requests are to be loaded. It
+	 *            may not be null
+	 * @param inDriverId
+	 *            the id the driver for which requests are loaded. It may not be
+	 *            null
 	 * @return the loaded announcement requests
 	 * 
 	 * @throws DataExtractionException
 	 *             if a problem occurs while extracting the requests
 	 */
-	List<? extends IPersistentRequest> loadRequests(final Long inAnnouncementId);
+	List<? extends IPersistentRequest> loadRequests(
+			final Long inAnnouncementId, final Long inDriverId);
 
 	/**
 	 * The method finds and returns a request by the user name of the driver and
 	 * the identification of the request
 	 * 
 	 * @param inDriver
-	 *            the user name of the driver to whom the searched request was
-	 *            sent. It may not be null.
+	 *            the id of the driver to whom the searched request was sent. It
+	 *            may not be null.
 	 * @param inRequestId
 	 *            the identification of the request. It may not be null
 	 * @return the request with the provided identification that belongs to the
@@ -68,7 +49,7 @@ public interface IRequestDAO extends IDAO<IPersistentRequest>
 	 * @throws DataExtractionException
 	 *             if a problem occurs while trying to extract the requests
 	 */
-	IPersistentRequest findRequest(final String inDriver, final Long inRequestId);
+	IPersistentRequest findRequest(final Long inDriverId, final Long inRequestId);
 
 	Long findUserRequestsCount(final AuthenticatedUser inUser);
 

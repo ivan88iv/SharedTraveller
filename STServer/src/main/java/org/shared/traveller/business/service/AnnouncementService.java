@@ -37,7 +37,7 @@ public class AnnouncementService implements Serializable
 	/**
 	 * The method loads the announcement that has the given start and end
 	 * points, the provided departure date and driver
-	 *
+	 * 
 	 * @param inStartCity
 	 *            the start point of the announcement
 	 * @param inEndCity
@@ -64,7 +64,7 @@ public class AnnouncementService implements Serializable
 	/**
 	 * Returns the count of the announcements from the persistent layer that
 	 * correspond to the specified information
-	 *
+	 * 
 	 * @param request
 	 *            the information needed for extracting all announcements
 	 * @return the count of the announcements in the database
@@ -77,7 +77,7 @@ public class AnnouncementService implements Serializable
 	/**
 	 * Returns a list of all persistent announcements that relate to the
 	 * specified information
-	 *
+	 * 
 	 * @param request
 	 *            the information needed to extract
 	 * @return
@@ -87,5 +87,4 @@ public class AnnouncementService implements Serializable
 	{
 		return announcementDAO.getAll(request);
 	}
-
 }

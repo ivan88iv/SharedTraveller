@@ -49,4 +49,18 @@ public interface IAnnouncementDAO extends IDAO<IPersistentAnnouncement>
 	 *             if a problem occurs while loading this announcement
 	 */
 	IPersistentAnnouncement loadAnnouncementWithRequests(final Long inId);
+
+	/**
+	 * The method finds the announcement(if any) with their requests loaded for
+	 * the specified id and driver
+	 * 
+	 * @param inId
+	 *            the id of the announcement. It may not be null
+	 * @param inDriverId
+	 *            the id of the announcement's driver. It may not be null
+	 * @return the announcement which corresponds to the provided resources or
+	 *         null if there is none
+	 */
+	IPersistentAnnouncement findAnnouncementWithRequests(final Long inId,
+			final Long inDriverId);
 }

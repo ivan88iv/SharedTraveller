@@ -22,7 +22,10 @@ import org.shared.traveller.client.domain.INotification.Type;
 		@NamedQuery(name =
 				RequestNamedQueryNames.FIND_NOTIFICATION_TEMPLATE_BY_TYPE,
 				query = "SELECT gn.template FROM generic_notification gn "
-						+ "WHERE gn.type = :type")
+						+ "WHERE gn.type = :type"),
+		@NamedQuery(name =
+				RequestNamedQueryNames.GET_ALL_GENERIC_NOTIFICATIONS,
+				query = "SELECT gn FROM generic_notification gn")
 })
 public class GenericNotificationEntity extends AbstractEntity
 		implements IPersistentGenericNotification
@@ -44,6 +47,12 @@ public class GenericNotificationEntity extends AbstractEntity
 	@Column(name = "TEMPLATE", nullable = false)
 	private String template;
 
+	@Column(name = "SINGULAR_TITLE")
+	private String singularTitle;
+
+	@Column(name = "PLURAL_TITLE")
+	private String pluralTitle;
+
 	@Override
 	public Long getId()
 	{
@@ -60,5 +69,32 @@ public class GenericNotificationEntity extends AbstractEntity
 	public String getTemplate()
 	{
 		return template;
+	}
+
+	@Override
+	public String getSingularTitle()
+	{
+		return singularTitle;
+	}
+
+	@Override
+	public String getPluralTitle()
+	{
+		return pluralTitle;
+	}
+
+	@Override
+	public String toString()
+	{
+		final StringBuilder builder = new StringBuilder();
+		builder.append("------------------ Generi Notification -----------\n");
+		builder.append("id: ").append(id).append("\n");
+		builder.append("type: ").append(type).append("\n");
+		builder.append("template: ").append(template).append("\n");
+		builder.append("singular title: ").append(singularTitle).append("\n");
+		builder.append("plural title: ").append(pluralTitle).append("\n");
+		builder.append("--------------------------------------------------\n");
+
+		return builder.toString();
 	}
 }

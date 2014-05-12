@@ -46,6 +46,10 @@ public class AnnouncementDAO extends AbstractDAO<IPersistentAnnouncement>
 	private static final String ANNOUNCEMENT_LOAD_PROBLEM =
 			"A problem occurred while loading an announcement with id {0}.";
 
+	private static final String ANNOUNCEMENT_FIND_PROBLEM =
+			"A problem occurred while searching an announcement for id {0} and "
+					+ "driver's id {1}";
+
 	@Override
 	public List<? extends IPersistentAnnouncement> getAll(
 			GetAllAnnouncementsRequest request)
@@ -100,6 +104,67 @@ public class AnnouncementDAO extends AbstractDAO<IPersistentAnnouncement>
 		}
 
 		return resultEntity;
+	}
+
+	@Override
+	public IPersistentAnnouncement loadAnnouncementWithRequests(final Long inId)
+	{
+		InstanceAsserter.assertNotNull(inId, "announcement id");
+
+		final DataExtractor<AnnouncementEntity> extractor =
+				new DataExtractor<AnnouncementEntity>()
+				{
+					@Override
+					protected void prepareQuery(
+							TypedQuery<AnnouncementEntity> inQuery)
+					{
+						inQuery.setParameter("id", inId).setMaxResults(1);
+					}
+				};
+
+		final List<AnnouncementEntity> resultList = extractor.execute(
+				RequestNamedQueryNames.LOAD_ANNOUNCEMENT_WITH_REQUESTS,
+				entityManager, AnnouncementEntity.class,
+				MessageFormat.format(ANNOUNCEMENT_LOAD_PROBLEM, inId));
+		AnnouncementEntity announcement = null;
+
+		if (!resultList.isEmpty())
+		{
+			announcement = resultList.get(0);
+		}
+
+		return announcement;
+	}
+
+	@Override
+	public IPersistentAnnouncement findAnnouncementWithRequests(
+			final Long inId, final Long inDriverId)
+	{
+		final DataExtractor<AnnouncementEntity> extractor =
+				new DataExtractor<AnnouncementEntity>()
+				{
+					@Override
+					protected void prepareQuery(
+							final TypedQuery<AnnouncementEntity> inQuery)
+					{
+						inQuery.setParameter("id", inId)
+								.setParameter("driverId", inDriverId)
+								.setMaxResults(1);
+					}
+				};
+
+		AnnouncementEntity entity = null;
+		final List<AnnouncementEntity> results = extractor.execute(
+				RequestNamedQueryNames.FIND_ANNOUNCEMENT_WITH_REQUESTS,
+				entityManager, AnnouncementEntity.class,
+				MessageFormat.format(ANNOUNCEMENT_FIND_PROBLEM, inId,
+						inDriverId));
+		if (!results.isEmpty())
+		{
+			entity = results.get(0);
+		}
+
+		return entity;
 	}
 
 	@Override
@@ -185,35 +250,5 @@ public class AnnouncementDAO extends AbstractDAO<IPersistentAnnouncement>
 			return cb.asc(c.get(AnnouncementEntity_.startPoint));
 
 		}
-	}
-
-	@Override
-	public IPersistentAnnouncement loadAnnouncementWithRequests(final Long inId)
-	{
-		InstanceAsserter.assertNotNull(inId, "announcement id");
-
-		final DataExtractor<AnnouncementEntity> extractor =
-				new DataExtractor<AnnouncementEntity>()
-				{
-					@Override
-					protected void prepareQuery(
-							TypedQuery<AnnouncementEntity> inQuery)
-					{
-						inQuery.setParameter("id", inId).setMaxResults(1);
-					}
-				};
-
-		final List<AnnouncementEntity> resultList = extractor.execute(
-				RequestNamedQueryNames.LOAD_ANNOUNCEMENT_WITH_REQUESTS,
-				entityManager, AnnouncementEntity.class,
-				MessageFormat.format(ANNOUNCEMENT_LOAD_PROBLEM, inId));
-		AnnouncementEntity announcement = null;
-
-		if (!resultList.isEmpty())
-		{
-			announcement = resultList.get(0);
-		}
-
-		return announcement;
 	}
 }

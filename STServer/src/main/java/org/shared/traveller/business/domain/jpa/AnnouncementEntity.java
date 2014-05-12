@@ -41,7 +41,11 @@ import org.shared.traveller.utility.InstanceAsserter;
 						+ "ann.driver.username = :driver"),
 		@NamedQuery(name = RequestNamedQueryNames.LOAD_ANNOUNCEMENT_WITH_REQUESTS,
 				query = "SELECT ann FROM Announcement ann JOIN FETCH ann.requests "
-						+ "WHERE ann.id = :id")
+						+ "WHERE ann.id = :id"),
+		@NamedQuery(name = RequestNamedQueryNames.FIND_ANNOUNCEMENT_WITH_REQUESTS,
+				query = "SELECT ann FROM Announcement ann "
+						+ "JOIN FETCH ann.requests "
+						+ "WHERE ann.id = :id AND ann.driver.id = :driverId")
 })
 public class AnnouncementEntity extends AbstractEntity implements
 		IPersistentAnnouncement

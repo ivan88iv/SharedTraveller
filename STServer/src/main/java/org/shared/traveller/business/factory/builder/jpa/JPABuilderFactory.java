@@ -16,9 +16,9 @@ import org.shared.traveller.utility.InstanceAsserter;
 /**
  * The class represents a factory for builder instances. These builder instances
  * are used for the creation of complex domain objects.
- *
+ * 
  * @author "Ivan Ivanov"
- *
+ * 
  */
 public class JPABuilderFactory implements IBusinessBuilderFactory
 {

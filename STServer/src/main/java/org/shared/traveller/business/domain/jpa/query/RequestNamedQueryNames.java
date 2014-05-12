@@ -15,6 +15,13 @@ public abstract class RequestNamedQueryNames
 			"GenericNotification.findByType";
 
 	/**
+	 * The name of the query that extracts all generic notifications from the
+	 * persistent layer
+	 */
+	public static final String GET_ALL_GENERIC_NOTIFICATIONS =
+			"GenericNotification.getAll";
+
+	/**
 	 * The name of the query that loads all of the requests for a particular
 	 * announcement
 	 */
@@ -36,8 +43,25 @@ public abstract class RequestNamedQueryNames
 			"Notification.loadUserNotifications";
 
 	/**
-	 * The name of the query used for notification deletion
+	 * The name of the query used for drivers' notifications deletion
 	 */
-	public static final String REMOVE_NOTIFICATIONS =
-			"Notifications.delete";
+	public static final String REMOVE_DRIVER_NOTIFICATIONS =
+			"Notifications.deleteDriverNotifications";
+
+	/**
+	 * The name of the query used for passengers' notifications deletion
+	 */
+	public static final String REMOVE_PASSENGER_NOTIFICATIONS =
+			"Notifications.deletePassengerNotifications";
+
+	/**
+	 * The name of the query for finding a specific request instance
+	 */
+	public static final String FIND_REQUEST = "Request.find";
+
+	/**
+	 * The name of the query for finding announcements with request information
+	 */
+	public static final String FIND_ANNOUNCEMENT_WITH_REQUESTS =
+			"Announcement.findAnnouncement";
 }
