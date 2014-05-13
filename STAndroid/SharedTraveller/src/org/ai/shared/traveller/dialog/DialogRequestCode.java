@@ -43,7 +43,13 @@ public enum DialogRequestCode {
 	/**
 	 * The request code for notifications after canceling a travel
 	 */
-	CANCEL_TRAVEL_NOTIFICATION(5);
+	CANCEL_TRAVEL_NOTIFICATION(5),
+
+	/**
+	 * The request code for notifications after creating a new travel request
+	 * for an announcement
+	 */
+	REQUEST_CREATION_NOTIFICATION(6);
 
 	private final int code;
 

@@ -145,11 +145,15 @@ public class STDialogFragment extends SimpleDialogFragment
 			return attachedDialog;
 		}
 
+		/**
+		 * The method configures the view of the dialog without the buttons
+		 * 
+		 * @return the whole dialog view without the buttons
+		 */
 		private View prepareDialogView()
 		{
 			final View dialogView = LayoutInflater.from(
-					activity).inflate(R.layout.requests_approval_dialog,
-					null);
+					activity).inflate(R.layout.dialog_layout, null);
 			final TextView title = (TextView)
 					dialogView.findViewById(R.id.dialog_title);
 			title.setText(activity.getResources()

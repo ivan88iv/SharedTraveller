@@ -110,12 +110,17 @@
     <string name="notification_dialog_rejection_btn">Cancel</string>
     <string name="notification_dialog_email">email:</string>
     <string name="notification_dialog_sms">sms:</string>
+    
+    <!-- =================== Notification Dialog ======================== -->
     <string name="new_request_title">Send Request</string>
-    <string name="new_request_confirmation_btn">OK</string>
-    <string name="new_request_rejection_btn">Cancel</string>
-    <string name="new_request_sub_title">Send additional notifications by:</string>
-    <string name="new_request_email">email:</string>
-    <string name="new_request_sms">sms:</string>
+    <string name="new_request_sub_title">Are you sure you want to send a
+        request to {0} about the travel from {1} to {2} on {3}.</string>
+    <string name="new_request_confirmation_btn">Yes</string>
+    <string name="new_request_rejection_btn">No</string>
+    <string name="new_request_send_success">
+        A new request has been sent successfully!</string>
+    <string name="new_request_send_problem">
+        A request could not be sent because of a problem.</string>
 
     <!-- ========================= View requests ======================== -->
     <string name="requests_usrname_hdr">Username</string>
@@ -149,7 +154,10 @@
         message that {0} cancelled their trip from {1} to {2} on {3}.</string>    
     <string name="notification_accepted_request">Hallo, This is a notification
         message that {0} accepted your request for the
-        trip from {1} to {2} on {3}.</string>      
+        trip from {1} to {2} on {3}.</string>
+    <string name="notification_new_request">Hallo, This is a notification
+        message that {0} sent a request for your trip 
+        from {1} to {2} on {3}.</string> 
     <string name="notification_rejected_request">Hallo, This is a notification
         message that {0} rejected your request for the trip
         from {1} to {2} on {3}.</string>

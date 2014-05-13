@@ -11,7 +11,6 @@ import org.shared.traveller.utility.InstanceAsserter;
 
 import android.content.Context;
 import android.util.Log;
-import android.widget.Toast;
 
 /**
  * The class represents a task used to send new business requests to the server
@@ -46,9 +45,7 @@ public class NewRequestTask extends AbstractNetworkTask<MainActivity, Void>
 	protected void onSuccess(final Void inResult)
 	{
 		Log.d("NewRequestTask", "A new request has been sent successfully!");
-		Toast.makeText(getContext(),
-				"A new request has been sent successfully!",
-				Toast.LENGTH_SHORT).show();
+		getContext().onSuccessfulNewRequestSending();
 	}
 
 	@Override
@@ -56,9 +53,7 @@ public class NewRequestTask extends AbstractNetworkTask<MainActivity, Void>
 	{
 		Log.d("NewRequestTask",
 				"The request could not be performed successfully.");
-		Toast.makeText(getContext(),
-				"A request could not be sent because of a problem.",
-				Toast.LENGTH_SHORT).show();
+		getContext().onNewRequestSendingProblem();
 	}
 
 	/**

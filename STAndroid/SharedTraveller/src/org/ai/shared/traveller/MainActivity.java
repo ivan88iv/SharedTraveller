@@ -15,7 +15,8 @@ import org.ai.shared.traveller.data.providers.ICitiesProvider;
 import org.ai.shared.traveller.data.providers.IVehiclesProvider;
 import org.ai.shared.traveller.dialog.DialogRequestCode;
 import org.ai.shared.traveller.dialog.STDialogFragment;
-import org.ai.shared.traveller.dialog.request.NewRequestDialog;
+import org.ai.shared.traveller.dialog.request.NewRequestDialogContext;
+import org.ai.shared.traveller.dialog.request.RequestCreationNotificationContext;
 import org.ai.shared.traveller.dialog.request.RequestStatusNotificationContext;
 import org.ai.shared.traveller.dialog.trip.TripCancellationNotificationContext;
 import org.ai.shared.traveller.factory.client.IServiceClientFactory;
@@ -31,6 +32,7 @@ import org.ai.shared.traveller.network.connection.task.trip.CancelTripTask;
 import org.ai.shared.traveller.notification.NotificationServiceConfigurator;
 import org.ai.shared.traveller.notification.social.CancelledTripNotification;
 import org.ai.shared.traveller.notification.social.DeclinedRequestNotification;
+import org.ai.shared.traveller.notification.social.NewRequestNotification;
 import org.ai.shared.traveller.notification.social.SocialNotificationSender;
 import org.ai.shared.traveller.request.AnnouncementRequestActivity;
 import org.ai.shared.traveller.request.UserRequestsActivity;
@@ -39,13 +41,13 @@ import org.ai.shared.traveller.ui.blocker.UIBlocker;
 import org.ai.shared.traveller.ui.preparator.ICityComponentsPreparator;
 import org.ai.shared.traveller.ui.preparator.IVehicleComponentsPreparator;
 import org.ai.sharedtraveller.R;
+import org.shared.traveller.client.domain.IAnnouncement;
 import org.shared.traveller.client.domain.IAnnouncement.Status;
 import org.shared.traveller.client.domain.IRequestedAnnouncement;
 import org.shared.traveller.client.domain.request.IPlainRequest;
 import org.shared.traveller.client.domain.request.IRequestInfo;
 import org.shared.traveller.client.domain.request.IRequestInfo.IBuilder;
 import org.shared.traveller.client.domain.request.RequestStatus;
-import org.shared.traveller.client.domain.request.rest.RequestInfo;
 import org.shared.traveller.client.domain.rest.Announcement;
 import org.shared.traveller.client.domain.traveller.INotificationTraveller;
 
@@ -105,6 +107,14 @@ public class MainActivity extends AbstractNetworkActivity implements
 	private boolean sendNotification;
 
 	private UIBlocker uiBlocker;
+
+	private IAnnouncement requestedAnnouncement;
+
+	private RequestCreationNotificationContext newRequestDialogContext;
+
+	private INotificationTraveller requestedDriver;
+
+	private IRequestInfo newRequest;
 
 	@Override
 	public boolean onCreateOptionsMenu(final Menu menu)
@@ -178,12 +188,30 @@ public class MainActivity extends AbstractNetworkActivity implements
 			}
 		});
 
+		// TODO replace hardcoded announcement
+		final IBuilderFactory builderFactory = DomainManager.getInstance()
+				.getBuilderFactory();
+		final IAnnouncement.IBuilder annonBuilder = builderFactory
+				.createAnnouncementBuilder("Bansko", "Sofia",
+						new Date(114, 1, 9), (short) 5, "temp");
+		requestedAnnouncement = annonBuilder.build();
+		final INotificationTraveller.IBuilder travellerBuilder =
+				builderFactory.createNotificationTravellerBuilder();
+		requestedDriver = travellerBuilder.id(1l)
+				.username(
+						requestedAnnouncement.getDriverUsername())
+				.phoneNumber("0888888888")
+				.email("temp@temp.com")
+				.allowEmailNotifications(true)
+				.allowSmsNotifications(true).build();
+
 		showNewRequestDialog.setOnClickListener(new View.OnClickListener()
 		{
 			@Override
 			public void onClick(final View v)
 			{
-				NewRequestDialog.show(MainActivity.this);
+				STDialogFragment.show(new NewRequestDialogContext(
+						MainActivity.this, requestedAnnouncement));
 			}
 		});
 
@@ -213,10 +241,6 @@ public class MainActivity extends AbstractNetworkActivity implements
 		});
 
 		// TODO replace hard-coded values
-		final IBuilderFactory builderFactory = DomainManager.getInstance()
-				.getBuilderFactory();
-		final INotificationTraveller.IBuilder travellerBuilder =
-				builderFactory.createNotificationTravellerBuilder();
 		final INotificationTraveller driver =
 				travellerBuilder.phoneNumber("0888888888")
 						.email("temp@temp.com")
@@ -308,7 +332,7 @@ public class MainActivity extends AbstractNetworkActivity implements
 	}
 
 	@Override
-	public void sendRequest(final RequestInfo inRequest)
+	public void sendRequest(final IRequestInfo inRequest)
 	{
 		addTask(NEW_REQUEST_TASK_KEY, new NewRequestTask(this, inRequest));
 		executeTask(NEW_REQUEST_TASK_KEY);
@@ -340,22 +364,29 @@ public class MainActivity extends AbstractNetworkActivity implements
 	@Override
 	public void onPositiveButtonClicked(final int requestCode)
 	{
-		if (requestCode == DialogRequestCode.NEW_REQUEST.getCode())
+		if (requestCode == DialogRequestCode.NEW_REQUEST
+				.getCode())
 		{
 			final IBuilderFactory factory =
 					DomainManager.getInstance().getBuilderFactory();
-			final INotificationTraveller.IBuilder travellerBuilder =
-					factory.createNotificationTravellerBuilder();
-			final INotificationTraveller traveller =
-					travellerBuilder.username("temp").build();
-
 			final IRequestInfo.IBuilder builder = factory
 					.createRequestInfoBuilder();
-			builder.sender("temp").fromPoint("Bansko").toPoint("Sofia")
-					.departureDate(new Date(114, 1, 9))
-					.driver(traveller);
-			final RequestInfo request = builder.build();
-			sendRequest(request);
+			// TODO replace the hard-coded sender
+			builder.sender("temp").fromPoint(requestedAnnouncement.getFrom())
+					.toPoint(requestedAnnouncement.getTo())
+					.departureDate(requestedAnnouncement.getDepartureDate())
+					.driver(requestedDriver);
+			newRequest = builder.build();
+			newRequestDialogContext = new RequestCreationNotificationContext(
+					MainActivity.this,
+					requestedDriver.isSmsNotificationAllowed(),
+					requestedDriver.isEmailNotificationAllowed());
+			STDialogFragment.show(newRequestDialogContext);
+		} else if (requestCode == DialogRequestCode.REQUEST_CREATION_NOTIFICATION
+				.getCode())
+		{
+			sendRequest(newRequest);
+			sendNotification = true;
 		} else if (requestCode == DialogRequestCode.REQUEST_NOTIFICATION
 				.getCode())
 		{
@@ -378,7 +409,13 @@ public class MainActivity extends AbstractNetworkActivity implements
 	@Override
 	public void onNegativeButtonClicked(final int requestCode)
 	{
-		if (requestCode == DialogRequestCode.REQUEST_NOTIFICATION.getCode())
+		if (requestCode == DialogRequestCode.REQUEST_CREATION_NOTIFICATION
+				.getCode())
+		{
+			sendRequest(newRequest);
+			sendNotification = false;
+		} else if (requestCode == DialogRequestCode.REQUEST_NOTIFICATION
+				.getCode())
 		{
 			addTask(REQUEST_DECLINATION_TASK_KEY, new DeclineRequestTask(
 					MainActivity.this, declinationRequestInfo.getId()));
@@ -489,6 +526,53 @@ public class MainActivity extends AbstractNetworkActivity implements
 		uiBlocker.block(false);
 		Toast.makeText(this, TRIP_CANCELLATION_PROBLEM, Toast.LENGTH_SHORT)
 				.show();
+	}
+
+	/**
+	 * The method is called when a new request has been successfully posted for
+	 * the selected announcement
+	 */
+	public void onSuccessfulNewRequestSending()
+	{
+		if (sendNotification)
+		{
+			final boolean isSmsNotificationOn =
+					newRequestDialogContext.isSmsNotificationOn();
+			final boolean isEmailNotificationOn =
+					newRequestDialogContext.isEmailNotificationOn();
+
+			String phoneNumber = null;
+			Long recipientId = null;
+			if (isSmsNotificationOn)
+			{
+				phoneNumber = newRequest.getDriver().getPhoneNumber();
+			}
+
+			if (isEmailNotificationOn)
+			{
+				recipientId = newRequest.getDriver().getId();
+			}
+
+			final SocialNotificationSender notificationSender =
+					new SocialNotificationSender(this,
+							new NewRequestNotification(this, newRequest));
+			notificationSender.send(phoneNumber, recipientId);
+		}
+		Toast.makeText(this, getResources().getString(
+				R.string.new_request_send_success),
+				Toast.LENGTH_LONG).show();
+	}
+
+	/**
+	 * The method is called when there has been a problem while trying to post a
+	 * new request for the selected announcement
+	 * 
+	 */
+	public void onNewRequestSendingProblem()
+	{
+		Toast.makeText(this, getResources().getString(
+				R.string.new_request_send_problem),
+				Toast.LENGTH_LONG).show();
 	}
 
 	/**
