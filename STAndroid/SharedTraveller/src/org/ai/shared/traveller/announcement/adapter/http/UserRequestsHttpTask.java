@@ -5,7 +5,6 @@ import org.ai.shared.traveller.exceptions.ServiceConnectionException;
 import org.ai.shared.traveller.factory.client.IServiceClientFactory;
 import org.ai.shared.traveller.manager.domain.DomainManager;
 import org.ai.shared.traveller.network.connection.client.IServiceClient;
-import org.ai.shared.traveller.network.connection.path.resolver.PathResolver;
 import org.ai.shared.traveller.network.connection.response.ServerResponse;
 import org.ai.shared.traveller.network.connection.response.ServerResponseParser;
 import org.shared.traveller.client.domain.request.IRequestInfo;
@@ -53,9 +52,7 @@ public class UserRequestsHttpTask
 
 	private String buildUrl(int fetchSize, int position)
 	{
-		final PathResolver pathResolver = new PathResolver(activity);
-		final StringBuilder builder = new StringBuilder(
-				pathResolver.resolvePath(URL));
+		final StringBuilder builder = new StringBuilder(URL);
 		builder.append(ParamNames.START).append(URL_EQUALS_SEPARATOR)
 				.append(position).append(URL_AMPERSAND_SEPARATOR)
 				.append(ParamNames.COUNT).append(URL_EQUALS_SEPARATOR)

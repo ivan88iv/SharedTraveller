@@ -135,6 +135,7 @@
     <string name="requests_reject_btn">No</string>
     <string name="requests_notification_confirm_btn">OK</string>
     <string name="requests_notification_reject_btn">Cancel</string>
+    <string name="dash_separator">-</string>
 
     <!-- ========================= Social notifications ===================== -->
     <string name="notification_sms_error">Could not send an sms 

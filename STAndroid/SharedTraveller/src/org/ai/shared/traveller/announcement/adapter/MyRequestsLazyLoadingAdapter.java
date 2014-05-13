@@ -36,6 +36,7 @@ public class MyRequestsLazyLoadingAdapter extends
 		TextView from;
 		TextView to;
 		TextView date;
+		TextView status;
 		Button bAction1;
 		Button bAction2;
 		Button bAction3;
@@ -65,7 +66,8 @@ public class MyRequestsLazyLoadingAdapter extends
 			{
 				final LayoutInflater li = (LayoutInflater) getContext()
 						.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-				convertView = li.inflate(R.layout.swipe_list_view_row, parent,
+				convertView = li.inflate(
+						R.layout.my_requests_swipe_list_view_row, parent,
 						false);
 				holder = new ViewHolder();
 				holder.container = (LinearLayout) convertView
@@ -73,6 +75,8 @@ public class MyRequestsLazyLoadingAdapter extends
 				holder.from = (TextView) convertView.findViewById(R.id.from);
 				holder.to = (TextView) convertView.findViewById(R.id.to);
 				holder.date = (TextView) convertView.findViewById(R.id.date);
+				holder.status = (TextView) convertView
+						.findViewById(R.id.request_status);
 				holder.bAction1 = (Button) convertView
 						.findViewById(R.id.row_b_action_1);
 				holder.bAction2 = (Button) convertView
@@ -92,7 +96,7 @@ public class MyRequestsLazyLoadingAdapter extends
 			holder.from.setText(item.getFromPoint());
 			holder.to.setText(item.getToPoint());
 			holder.date.setText(item.getDepartureDate().toString());
-
+			holder.status.setText(item.getStatus().toString());
 			// SwipeListViewType.ANNOUNCEMENT must be passes as parameter
 			// from the view that creates the adapter
 			final RowButtonComposer<IRequestInfo> composer = new RequestRowButtonComposer(
